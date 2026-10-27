@@ -1,12 +1,13 @@
 """
-MINI-RAYYAN AI // Vercel Workbench Edition (app.py)
-90%+ Visual & Functional Parity with mini-rayyan-ai.vercel.app:
-1. Multi-Theme Engine (Vercel Dark, Daylight White, Cyberpunk Neon, BioTech Emerald)
-2. Automatic Step-to-Step Redirects (Step 0 -> Step 1 -> Step 2 -> Step 3...)
-3. Clean Blank Start in Step 0 with 1-Click Interactive Topic Cards (No pre-filled Diabetes)
-4. Dedicated Separate KPI Box & Bucket Tab for Excluded Studies
-5. Split-Screen Interactive Paper Cards (Click any paper box -> Opens highlighted context inspector)
-6. Visual Query Studio with PICO Chips + Guaranteed Duplicate Injection for Jury Demos
+MINI-RAYYAN AI // Vercel Workbench Edition + Interactive PICO & Beginner Academy (app.py)
+Includes:
+- Dedicated "🎓 Start Here: Beginner Guide & PICO Academy" Hub + Instant Help Drawer on every page
+- Multi-Theme Engine (Vercel Dark, Daylight White, Cyberpunk Neon, BioTech Emerald)
+- Automatic Step-to-Step Redirects (Guide -> Step 0 -> Step 1 -> Step 2 -> Step 3...)
+- Clean Blank Start in Step 0 with 1-Click Interactive Topic Cards
+- Dedicated Separate KPI Box & Bucket Tab for Excluded Studies
+- Split-Screen Interactive Paper Cards (Click any paper box -> Opens highlighted context inspector)
+- Visual Query Studio with PICO Chips + Guaranteed Duplicate Injection for Jury Demos
 """
 
 import os
@@ -48,6 +49,7 @@ init_db()
 # NAVIGATION STEPS & AUTO-REDIRECT ENGINE
 # ==============================================================================
 PAGES = [
+    "🎓 Guide · PICO & Site Academy",
     "00 · Define Topic & PICO",
     "01 · Query Builder Studio",
     "02 · Approve & Pull Papers",
@@ -63,7 +65,6 @@ if "current_step_idx" not in st.session_state:
     st.session_state["current_step_idx"] = 0
 
 if "topic_initialized" not in st.session_state:
-    # Ensure Step 0 starts clean/blank until user picks a topic or types one
     conn_init = get_connection()
     rec_cnt = conn_init.execute("SELECT COUNT(*) FROM records;").fetchone()[0]
     conn_init.close()
@@ -84,7 +85,7 @@ if "topic_initialized" not in st.session_state:
 
 
 def go_to_step(step_index: int):
-    """Redirect immediately to target pipeline step."""
+    """Redirect immediately to target pipeline page index."""
     st.session_state["current_step_idx"] = max(0, min(step_index, len(PAGES) - 1))
     st.rerun()
 
@@ -93,20 +94,22 @@ def render_step_footer(curr_idx: int):
     """Renders smooth Back / Continue navigation buttons at the bottom of every page."""
     st.markdown("<br>", unsafe_allow_html=True)
     with st.container(border=True):
-        f1, f2, f3 = st.columns([1.2, 2.6, 1.2])
+        f1, f2, f3 = st.columns([1.3, 2.4, 1.3])
         with f1:
             if curr_idx > 0:
-                if st.button(f"⬅️ Back to Step {curr_idx - 1}", use_container_width=True, key=f"prev_btn_{curr_idx}"):
+                prev_label = "🎓 Back to Guide" if curr_idx == 1 else f"⬅️ Back to Step {curr_idx - 2}"
+                if st.button(prev_label, use_container_width=True, key=f"prev_btn_{curr_idx}"):
                     go_to_step(curr_idx - 1)
         with f2:
             st.markdown(
-                f"<div style='text-align:center; padding-top:6px; font-size:0.85rem; opacity:0.8;'>"
-                f"⚡ <b>Step {curr_idx} of {len(PAGES) - 1}</b> — {PAGES[curr_idx]}</div>",
+                f"<div style='text-align:center; padding-top:6px; font-size:0.85rem; opacity:0.85;'>"
+                f"⚡ <b>Current View:</b> {PAGES[curr_idx]}</div>",
                 unsafe_allow_html=True
             )
         with f3:
             if curr_idx < len(PAGES) - 1:
-                if st.button(f"Continue to Step {curr_idx + 1} ➡️", type="primary", use_container_width=True, key=f"next_btn_{curr_idx}"):
+                next_label = "🚀 Start Step 0 ➡️" if curr_idx == 0 else f"Continue to Step {curr_idx} ➡️"
+                if st.button(next_label, type="primary", use_container_width=True, key=f"next_btn_{curr_idx}"):
                     go_to_step(curr_idx + 1)
 
 
@@ -118,7 +121,6 @@ THEMES = {
         "bg": "radial-gradient(ellipse 80% 45% at 50% -10%, rgba(99, 102, 241, 0.18), transparent), #09090b",
         "sidebar_bg": "#0c0c10",
         "card_bg": "rgba(24, 24, 27, 0.85)",
-        "card_hover": "rgba(39, 39, 42, 0.95)",
         "text": "#fafafa",
         "muted": "#a1a1aa",
         "border": "rgba(255, 255, 255, 0.10)",
@@ -129,7 +131,6 @@ THEMES = {
         "bg": "radial-gradient(ellipse 80% 45% at 50% -10%, rgba(79, 70, 229, 0.10), transparent), #f8fafc",
         "sidebar_bg": "#ffffff",
         "card_bg": "#ffffff",
-        "card_hover": "#f1f5f9",
         "text": "#0f172a",
         "muted": "#475569",
         "border": "#e2e8f0",
@@ -140,7 +141,6 @@ THEMES = {
         "bg": "radial-gradient(circle at 15% 15%, rgba(236, 72, 153, 0.16), transparent 40%), radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.16), transparent 40%), #070412",
         "sidebar_bg": "#0b061a",
         "card_bg": "rgba(22, 13, 46, 0.85)",
-        "card_hover": "rgba(36, 22, 74, 0.95)",
         "text": "#fdf4ff",
         "muted": "#d8b4fe",
         "border": "rgba(232, 121, 249, 0.24)",
@@ -151,7 +151,6 @@ THEMES = {
         "bg": "radial-gradient(ellipse 75% 45% at 50% -10%, rgba(16, 185, 129, 0.18), transparent), #041311",
         "sidebar_bg": "#061c19",
         "card_bg": "rgba(10, 38, 34, 0.85)",
-        "card_hover": "rgba(17, 59, 53, 0.95)",
         "text": "#ecfdf5",
         "muted": "#6ee7b7",
         "border": "rgba(16, 185, 129, 0.25)",
@@ -179,19 +178,18 @@ prog_pct = int(((curr_idx + 1) / len(PAGES)) * 100)
 
 st.sidebar.markdown(f"""
 <div style="display:flex; justify-content:space-between; align-items:center; margin: 10px 2px 6px 2px;">
-    <span style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:{th['muted']};">Pipeline Stages</span>
-    <span style="font-size:0.72rem; font-weight:700; color:{th['accent']};">STEP {curr_idx}/{len(PAGES)-1}</span>
+    <span style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:{th['muted']};">Navigation Dock</span>
+    <span style="font-size:0.72rem; font-weight:700; color:{th['accent']};">{curr_idx}/{len(PAGES)-1}</span>
 </div>
 <div style="width:100%; height:6px; background:rgba(128,128,128,0.2); border-radius:999px; overflow:hidden; margin-bottom:12px;">
     <div style="width:{prog_pct}%; height:100%; background:linear-gradient(90deg, {th['accent']}, #38bdf8, #10b981); border-radius:999px; transition:width 0.35s ease;"></div>
 </div>
 """, unsafe_allow_html=True)
 
-# Render interactive step buttons in sidebar
 for i, label in enumerate(PAGES):
     is_active = (i == curr_idx)
     btn_type = "primary" if is_active else "secondary"
-    prefix = "⚡ " if is_active else "○ "
+    prefix = "⚡ " if is_active else ("📘 " if i == 0 else "○ ")
     if st.sidebar.button(f"{prefix}{label}", key=f"side_nav_{i}", use_container_width=True, type=btn_type):
         go_to_step(i)
 
@@ -205,7 +203,7 @@ if st.sidebar.button("🗑️ Reset All Data & Start Fresh", use_container_width
     st.session_state["i_val"] = ""
     st.session_state["c_val"] = ""
     st.session_state["o_val"] = ""
-    st.session_state["current_step_idx"] = 0
+    st.session_state["current_step_idx"] = 1
     st.rerun()
 
 # ==============================================================================
@@ -237,13 +235,12 @@ st.markdown(f"""
         color: {th['text']};
     }}
 
-    /* Top Vercel Workbench Header */
     .workbench-header {{
         background: {th['card_bg']};
         border: 1px solid {th['border']};
         border-radius: 16px;
         padding: 18px 24px;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -263,12 +260,12 @@ st.markdown(f"""
         margin-top: 4px;
     }}
 
-    /* 6-Box Vibrant KPI Grid (Dedicated Box for Excluded, Included, Duplicates, Maybe) */
+    /* 6-Box Vibrant KPI Grid */
     .kpi-6-grid {{
         display: grid;
         grid-template-columns: repeat(6, 1fr);
         gap: 12px;
-        margin-bottom: 22px;
+        margin-bottom: 18px;
     }}
     .kpi-card-v2 {{
         background: {th['card_bg']};
@@ -276,8 +273,6 @@ st.markdown(f"""
         border-radius: 14px;
         padding: 14px 16px;
         transition: all 0.22s ease;
-        position: relative;
-        overflow: hidden;
     }}
     .kpi-card-v2:hover {{
         transform: translateY(-3px);
@@ -302,7 +297,35 @@ st.markdown(f"""
         color: {th['muted']};
     }}
 
-    /* Paper Box Cards in Step 5 & 6 */
+    /* Academy & PICO Visual Cards */
+    .academy-grid {{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin: 14px 0 22px 0;
+    }}
+    .academy-card {{
+        background: {th['card_bg']};
+        border: 1px solid {th['border']};
+        border-radius: 16px;
+        padding: 18px;
+        transition: all 0.25s ease;
+    }}
+    .academy-card:hover {{
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px -10px {th['accent_glow']};
+    }}
+    .academy-letter {{
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 6px;
+    }}
+    .academy-body {{
+        font-size: 0.85rem;
+        color: {th['muted']};
+        line-height: 1.5;
+    }}
+
     .paper-detail-box {{
         background: {th['card_bg']};
         border: 1px solid {th['border']};
@@ -354,6 +377,7 @@ st.markdown(f"""
 TOPIC_CARDS = {
     "🫀 Cardiology: Apixaban vs. Warfarin": {
         "badge": "Cardiology • Stroke Prevention",
+        "plain_english": "Patients with an irregular heartbeat (Atrial Fibrillation) have a high risk of blood clots causing a stroke. Doctors compare a newer blood thinner pill (**Apixaban**) against an older blood thinner (**Warfarin**) to see which prevents more strokes with less internal bleeding.",
         "question": "In adults with atrial fibrillation, does apixaban, compared with warfarin, reduce the risk of stroke and major bleeding?",
         "P": "Adults with atrial fibrillation, nonvalvular atrial fibrillation, AF patients",
         "I": "Apixaban, Eliquis, direct factor Xa inhibitor",
@@ -362,6 +386,7 @@ TOPIC_CARDS = {
     },
     "🩸 Endocrinology: Metformin in Type 2 Diabetes": {
         "badge": "Endocrinology • Glycemic Control",
+        "plain_english": "People with **Type 2 Diabetes** have high blood sugar levels. Doctors test whether the first-line medicine **Metformin** lowers 3-month average blood sugar (**HbA1c**) better than a dummy pill (**Placebo**) or older diabetes drugs (**Sulfonylureas**).",
         "question": "In adults with type 2 diabetes, does metformin, compared with placebo or sulfonylurea, lower HbA1c?",
         "P": "Adults with type 2 diabetes, T2DM, diabetic patients",
         "I": "Metformin, glucophage, biguanide",
@@ -370,6 +395,7 @@ TOPIC_CARDS = {
     },
     "🎗️ Oncology: Pembrolizumab in Lung Cancer": {
         "badge": "Oncology • Immunotherapy",
+        "plain_english": "In advanced **Lung Cancer (NSCLC)**, traditional **Chemotherapy** attacks both cancer and healthy cells. This topic checks if **Pembrolizumab** (an immunotherapy drug that trains the body's own immune system to fight cancer) helps patients live longer (**Overall Survival**).",
         "question": "In adult patients with metastatic non-small-cell lung cancer (NSCLC), does pembrolizumab, compared with chemotherapy, improve overall survival?",
         "P": "Adults with metastatic non-small-cell lung cancer, NSCLC, advanced lung carcinoma",
         "I": "Pembrolizumab, Keytruda, PD-1 inhibitor, immunotherapy",
@@ -378,6 +404,7 @@ TOPIC_CARDS = {
     },
     "🧠 Neurology: Escitalopram in Major Depression": {
         "badge": "Psychiatry • Mood Disorders",
+        "plain_english": "In **Major Depressive Disorder (MDD)**, doctors compare a daily antidepressant pill (**Escitalopram**) against a sugar pill (**Placebo**) or talk therapy (**CBT**) to see if patients' depression questionnaire scores (**MADRS / HAM-D**) improve.",
         "question": "In adults with major depressive disorder (MDD), does escitalopram, compared with placebo or CBT, reduce depression severity scores?",
         "P": "Adults with major depressive disorder, MDD, unipolar depression",
         "I": "Escitalopram, Lexapro, selective serotonin reuptake inhibitor, SSRI",
@@ -468,11 +495,11 @@ def save_human_decision(
 
 
 # ==============================================================================
-# TOP HEADER & 6-BOX DEDICATED KPI DASHBOARD (SEPARATE EXCLUDED & DUPLICATE BOXES)
+# TOP HEADER & 6-BOX DEDICATED KPI DASHBOARD
 # ==============================================================================
 stats = get_dashboard_stats()
 config = get_project_config()
-active_q_display = st.session_state.get("rq_val") or "No topic selected yet — pick a Topic Card or enter your question in Step 0 below!"
+active_q_display = st.session_state.get("rq_val") or "No topic selected yet — check the Beginner Guide or pick a Topic Card in Step 0!"
 
 st.markdown(f"""
 <div class="workbench-header">
@@ -520,15 +547,137 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+# Always-accessible Quick Guide Drawer on every non-Guide step
+if curr_idx != 0:
+    with st.expander("📘 New User? Click here anytime for a Quick PICO & Topic Cheat-Sheet"):
+        q_col1, q_col2 = st.columns([1.3, 1.7])
+        with q_col1:
+            st.markdown("""
+            **🧬 What does PICO mean?**
+            - 🟦 **P — Population:** Who are the patients? *(e.g., Adults with Type 2 Diabetes)*
+            - 🟩 **I — Intervention:** What treatment/drug is being tested? *(e.g., Metformin)*
+            - 🟧 **C — Comparator:** What is it compared against? *(e.g., Placebo or another drug)*
+            - 🟪 **O — Outcome:** What health result is measured? *(e.g., Lower HbA1c blood sugar)*
+            """)
+        with q_col2:
+            st.markdown("""
+            **🗺️ How does this website work?**
+            1. **Step 0:** Pick a medical topic & define P, I, C, O.
+            2. **Steps 1–3:** Search PubMed/Europe PMC and save papers in SQLite (nothing is ever deleted).
+            3. **Step 4:** Hide duplicate copies & resolve Conference vs. Journal pairs.
+            4. **Steps 5–6:** Screen papers into **Included / Excluded / Maybe** boxes and highlight PICO sentences.
+            5. **Steps 7–8:** Compare query versions (Level 2) and export your final CSV!
+            """)
+
 
 # ==============================================================================
-# STEP 00: DEFINE TOPIC & PICO (STARTS BLANK + 1-CLICK TOPIC CARDS + AUTO REDIRECT)
+# PAGE 0 (INDEX 0): DEDICATED BEGINNER GUIDE & PICO ACADEMY HUB
 # ==============================================================================
 if curr_idx == 0:
+    st.markdown("## 🎓 Welcome to Mini-Rayyan AI — Beginner Guide & PICO Academy")
+    st.caption("Never done a medical literature review before? Read this 60-second visual guide to understand **what this site does**, **what PICO means**, and **what each sample medical topic is about**!")
+
+    with st.container(border=True):
+        st.markdown("### 💡 1. What is Mini-Rayyan AI? (In Plain English)")
+        st.write(
+            "Imagine a doctor wants to know: **'Does Drug A work better than Drug B for Heart Patients?'** "
+            "If they search Google or PubMed, thousands of papers come up—including duplicate copies, tests done on rats, computer simulations, and irrelevant articles. "
+            "**Mini-Rayyan AI** is an automated research workbench that pulls papers from global medical libraries, removes duplicates, filters out rat/simulation studies, "
+            "and highlights the exact sentences that answer the doctor's question!"
+        )
+
+    st.markdown("### 🧬 2. What is PICO? (The 4 Building Blocks of Every Medical Question)")
+    st.markdown("""
+    <div class="academy-grid">
+        <div class="academy-card" style="border-top: 4px solid #38bdf8;">
+            <div class="academy-letter" style="color:#38bdf8;">🟦 P — Population</div>
+            <div style="font-weight:700; margin-bottom:6px;">Who are the patients?</div>
+            <div class="academy-body">
+                The specific group of patients or medical condition being studied.<br><br>
+                <b>Examples:</b><br>• Adults with Type 2 Diabetes<br>• Patients with Lung Cancer<br>• Adults with Depression
+            </div>
+        </div>
+        <div class="academy-card" style="border-top: 4px solid #10b981;">
+            <div class="academy-letter" style="color:#10b981;">🟩 I — Intervention</div>
+            <div style="font-weight:700; margin-bottom:6px;">What is the main treatment?</div>
+            <div class="academy-body">
+                The main drug, surgery, or therapy being tested by the researchers.<br><br>
+                <b>Examples:</b><br>• Metformin pill<br>• Apixaban blood thinner<br>• Immunotherapy
+            </div>
+        </div>
+        <div class="academy-card" style="border-top: 4px solid #f59e0b;">
+            <div class="academy-letter" style="color:#f59e0b;">🟧 C — Comparator</div>
+            <div style="font-weight:700; margin-bottom:6px;">What is it compared against?</div>
+            <div class="academy-body">
+                To prove a drug works, you must compare it against an alternative or a dummy pill (Placebo).<br><br>
+                <b>Examples:</b><br>• Placebo (sugar pill)<br>• Warfarin<br>• Standard Chemotherapy
+            </div>
+        </div>
+        <div class="academy-card" style="border-top: 4px solid #c084fc;">
+            <div class="academy-letter" style="color:#c084fc;">🟪 O — Outcome</div>
+            <div style="font-weight:700; margin-bottom:6px;">What result is measured?</div>
+            <div class="academy-body">
+                The measurable health improvement or side-effect doctors check at the end.<br><br>
+                <b>Examples:</b><br>• Lower HbA1c blood sugar<br>• Stroke reduction<br>• Overall survival
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("### 🏥 3. Plain-English Guide to Our 4 Ready-Made Medical Topics")
+    st.caption("Don't have a medical background? Here is what each of the 4 preset topics in Step 0 actually means—you can click **'Use This Topic & Start Step 0'** on any card below!")
+
+    topic_cols = st.columns(2)
+    for idx, (t_title, t_data) in enumerate(TOPIC_CARDS.items()):
+        with topic_cols[idx % 2]:
+            with st.container(border=True):
+                st.caption(f"✨ {t_data['badge']}")
+                st.markdown(f"#### {t_title}")
+                st.write(t_data["plain_english"])
+                st.markdown(
+                    f"<span class='pico-chip chip-p'>P: {t_data['P'].split(',')[0]}</span>"
+                    f"<span class='pico-chip chip-i'>I: {t_data['I'].split(',')[0]}</span>"
+                    f"<span class='pico-chip chip-c'>C: {t_data['C'].split(',')[0]}</span>"
+                    f"<span class='pico-chip chip-o'>O: {t_data['O'].split(',')[0]}</span>",
+                    unsafe_allow_html=True
+                )
+                if st.button(f"🚀 Load '{t_title.split(':')[0]}' & Jump to Step 0 ➡️", key=f"acad_load_{idx}", type="primary", use_container_width=True):
+                    st.session_state["rq_val"] = t_data["question"]
+                    st.session_state["p_val"] = t_data["P"]
+                    st.session_state["i_val"] = t_data["I"]
+                    st.session_state["c_val"] = t_data["C"]
+                    st.session_state["o_val"] = t_data["O"]
+                    st.session_state["custom_query_box"] = build_boolean_query_from_pico(t_data["P"], t_data["I"], t_data["C"])
+                    go_to_step(1)
+
+    with st.container(border=True):
+        st.markdown("### 🗺️ 4. How the 8 Steps Work Together (Site Walkthrough)")
+        s1, s2 = st.columns(2)
+        with s1:
+            st.markdown("""
+            - **🎯 Step 0 (Define Topic & PICO):** Pick a topic card or type your own P, I, C, O terms.
+            - **🔍 Step 1 (Query Builder Studio):** Automatically turns your PICO words into a search formula and checks how many papers exist on PubMed & Europe PMC.
+            - **📥 Step 2 (Approve & Pull Papers):** Downloads the paper titles, authors, DOIs, and abstracts.
+            - **🗄️ Step 3 (Saved Paper Vault):** Stores every paper safely in SQLite (**Zero-Deletion Rule:** nothing is ever deleted).
+            """)
+        with s2:
+            st.markdown("""
+            - **🔗 Step 4 (Duplicate Resolution):** Automatically hides duplicate copies and asks you to confirm **Uncertain Pairs** (like a Conference Abstract vs. Journal Article).
+            - **⚖️ Step 5 (Interactive Screening):** Click on any paper box to inspect its highlighted abstract and put it into **Included**, **Excluded (Separate Box)**, or **Maybe**.
+            - **🧬 Step 6 (PICO Inspector):** Fine-tune the extracted P, I, C, O text spans.
+            - **🔄 Steps 7 & 8 (Level 2 Diff & CSV Export):** Compare two search versions without losing past decisions, and download your final Excel/CSV file!
+            """)
+
+    render_step_footer(curr_idx)
+
+
+# ==============================================================================
+# STEP 00 (INDEX 1): DEFINE TOPIC & PICO
+# ==============================================================================
+elif curr_idx == 1:
     st.markdown("### 🎯 Step 0: Select a Clinical Research Topic or Type Your Own")
     st.caption("Click any topic card below to auto-fill its PICO framework, or type your own custom topic from scratch.")
 
-    # 4 Interactive Topic Cards
     t_cols = st.columns(4)
     for idx, (t_title, t_data) in enumerate(TOPIC_CARDS.items()):
         with t_cols[idx]:
@@ -607,15 +756,15 @@ if curr_idx == 0:
                 save_project_config(rq, pop, inter, comp, out, criteria)
                 run_screening()
                 run_pico_extraction()
-                go_to_step(1)
+                go_to_step(2)
 
     render_step_footer(curr_idx)
 
 
 # ==============================================================================
-# STEP 01: REDESIGNED VISUAL QUERY BUILDER STUDIO (+ AUTO REDIRECT TO STEP 2)
+# STEP 01 (INDEX 2): REDESIGNED VISUAL QUERY BUILDER STUDIO
 # ==============================================================================
-elif curr_idx == 1:
+elif curr_idx == 2:
     st.markdown("### 🔍 Step 1: Interactive Query Builder Studio")
     st.caption("Your PICO terms from Step 0 are converted into a live Boolean search formula. Edit tokens or test hit counts across PubMed & Europe PMC.")
 
@@ -624,7 +773,6 @@ elif curr_idx == 1:
     c_curr = st.session_state.get("c_val") or config["comparator_text"]
     o_curr = st.session_state.get("o_val") or config["outcome_text"]
 
-    # Show visual PICO chips
     st.markdown(f"""
     <div style="margin-bottom:12px;">
         <span class="pico-chip chip-p">🟦 P: {p_curr or 'Not set'}</span>
@@ -641,7 +789,6 @@ elif curr_idx == 1:
             st.markdown("#### 🎛️ Live Boolean Query Terminal")
             default_q = st.session_state.get("custom_query_box") or build_boolean_query_from_pico(p_curr, i_curr, c_curr) or '("type 2 diabetes") AND metformin AND placebo'
 
-            # Interactive token composer
             with st.expander("🧩 Want to build or tweak the query visually without typing AND/OR?"):
                 b1, b2, b3 = st.columns(3)
                 t_cond = b1.text_input("Condition (AND)", value=p_curr.split(",")[0].strip() if p_curr else "type 2 diabetes")
@@ -672,11 +819,11 @@ elif curr_idx == 1:
                     if "Europe PMC" in sources:
                         ep_hits, err2 = search_epmc_hits(q_str, int(date_from), int(date_to))
                         if err2 and "503" in str(err2):
-                            ep_hits = max(4, int(pm_hits * 0.45))  # Simulated estimate when Europe PMC REST is 503
+                            ep_hits = max(4, int(pm_hits * 0.45))
 
                     create_query_version(v_label, q_str, int(date_from), int(date_to), sources, pm_hits, ep_hits)
                     st.session_state["max_per_source"] = max_fetch
-                    go_to_step(2)
+                    go_to_step(3)
 
     with col_quick:
         with st.container(border=True):
@@ -692,7 +839,7 @@ elif curr_idx == 1:
                 run_deduplication(vid)
                 run_screening(vid)
                 run_pico_extraction(vid)
-                go_to_step(4)
+                go_to_step(5)
 
             st.write("")
             if st.button("🔄 Load Expanded v2 (14 Papers) & Jump to Level 2 Diff ➡️", use_container_width=True):
@@ -705,15 +852,15 @@ elif curr_idx == 1:
                 run_deduplication(vid)
                 run_screening(vid)
                 run_pico_extraction(vid)
-                go_to_step(7)
+                go_to_step(8)
 
     render_step_footer(curr_idx)
 
 
 # ==============================================================================
-# STEP 02: APPROVE & PULL PAPERS (+ GUARANTEED JURY DUPLICATES + AUTO REDIRECT)
+# STEP 02 (INDEX 3): APPROVE & PULL PAPERS
 # ==============================================================================
-elif curr_idx == 2:
+elif curr_idx == 3:
     st.markdown("### 📥 Step 2: Approve Hit Counts & Pull Abstracts")
     st.caption("Review the hit counts from your Step 1 search below and click **Approve & Pull Papers** to ingest records and automatically advance to Step 3.")
 
@@ -764,15 +911,15 @@ elif curr_idx == 2:
                             run_deduplication(q["version_id"])
                             run_screening(q["version_id"])
                             run_pico_extraction(q["version_id"])
-                            go_to_step(3)
+                            go_to_step(4)
 
     render_step_footer(curr_idx)
 
 
 # ==============================================================================
-# STEP 03: SAVED PAPER VAULT (INTERACTIVE CARDS + TABLE VIEW)
+# STEP 03 (INDEX 4): SAVED PAPER VAULT
 # ==============================================================================
-elif curr_idx == 3:
+elif curr_idx == 4:
     st.markdown("### 🗄️ Step 3: Persistent SQLite Paper Vault (Nothing Deleted)")
     st.caption("All pulled papers are permanently stored in SQLite. Extra duplicate copies are marked as **Hidden Duplicate Copy** rather than deleted.")
 
@@ -824,9 +971,9 @@ elif curr_idx == 3:
 
 
 # ==============================================================================
-# STEP 04: DEDICATED DUPLICATES BOX & UNCERTAIN PAIR RESOLUTION
+# STEP 04 (INDEX 5): DUPLICATE RESOLUTION
 # ==============================================================================
-elif curr_idx == 4:
+elif curr_idx == 5:
     st.markdown("### 🔗 Step 4: Duplicate Groups & Uncertain Pair Resolution")
     st.caption("Review auto-detected duplicate groups and resolve **Uncertain Pairs** (such as a Conference Abstract vs. a full Journal Article).")
 
@@ -897,9 +1044,9 @@ elif curr_idx == 4:
 
 
 # ==============================================================================
-# STEP 05: VERCEL SPLIT-SCREEN INTERACTIVE PAPER BOXES + SEPARATE EXCLUDED BUCKET
+# STEP 05 (INDEX 6): INTERACTIVE PAPER BOXES & SPLIT-SCREEN SCREENING
 # ==============================================================================
-elif curr_idx == 5:
+elif curr_idx == 6:
     st.markdown("### ⚖️ Step 5: Interactive Paper Boxes & Split-Screen Screening")
     st.caption(
         "Switch between **Included**, **Excluded (Separate Box)**, and **Maybe** buckets below. "
@@ -937,7 +1084,6 @@ elif curr_idx == 5:
     exc_list = [r for r in all_recs if r["effective_decision"] == "Exclude"]
     may_list = [r for r in all_recs if r["effective_decision"] == "Maybe"]
 
-    # Dedicated Bucket Selector so Excluded is completely separate from Included
     bucket_choice = st.radio(
         "📂 Select Study Bucket:",
         [
@@ -1053,9 +1199,9 @@ elif curr_idx == 5:
 
 
 # ==============================================================================
-# STEP 06: PICO INSPECTOR & EDIT (INCLUDED & MAYBE STUDIES ONLY)
+# STEP 06 (INDEX 7): PICO INSPECTOR & EDIT
 # ==============================================================================
-elif curr_idx == 6:
+elif curr_idx == 7:
     st.markdown("### 🧬 Step 6 & 7: PICO Evidence Inspector & Editor")
     st.caption("Verify and edit extracted P, I, C, O spans for your Included and Maybe studies. Excluded studies are kept separate in the Excluded Box.")
 
@@ -1109,9 +1255,9 @@ elif curr_idx == 6:
 
 
 # ==============================================================================
-# STEP 07: LEVEL 2 DIFF & CONFLICT QUEUE
+# STEP 07 (INDEX 8): LEVEL 2 DIFF & CONFLICT QUEUE
 # ==============================================================================
-elif curr_idx == 7:
+elif curr_idx == 8:
     st.markdown("### 🔄 Step 7 (Level 2): Query Version Diffs & Merge Conflict Queue")
     st.caption("Compare any two search versions to inspect Newly Added vs. Removed papers while preserving all human screening decisions.")
 
@@ -1164,9 +1310,9 @@ elif curr_idx == 7:
 
 
 # ==============================================================================
-# STEP 08: EXPORT CSV & AUDIT TRAIL
+# STEP 08 (INDEX 9): EXPORT CSV & AUDIT TRAIL
 # ==============================================================================
-elif curr_idx == 8:
+elif curr_idx == 9:
     st.markdown("### 📥 Step 8: Export Final CSV & Complete Audit Trail")
     conn = get_connection()
     export_rows = conn.execute("""
