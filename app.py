@@ -1,16 +1,18 @@
 """
-MINI-RAYYAN AI // Vercel Workbench Edition + Interactive PICO & Beginner Academy (app.py)
+MINI-RAYYAN AI // Vercel Workbench + AI Evidence Gap & White-Space Discovery Engine (app.py)
 Includes:
-- Dedicated "🎓 Start Here: Beginner Guide & PICO Academy" Hub + Instant Help Drawer on every page
-- Multi-Theme Engine (Vercel Dark, Daylight White, Cyberpunk Neon, BioTech Emerald)
-- Automatic Step-to-Step Redirects (Guide -> Step 0 -> Step 1 -> Step 2 -> Step 3...)
-- Clean Blank Start in Step 0 with 1-Click Interactive Topic Cards
-- Dedicated Separate KPI Box & Bucket Tab for Excluded Studies
-- Split-Screen Interactive Paper Cards (Click any paper box -> Opens highlighted context inspector)
-- Visual Query Studio with PICO Chips + Guaranteed Duplicate Injection for Jury Demos
+- 🎓 Beginner Guide & PICO Academy
+- 🎨 Multi-Theme Engine (Vercel Dark, Daylight White, Cyberpunk Neon, BioTech Emerald)
+- ⏭️ Auto-Redirects across all steps
+- 🧹 Clean Blank Start in Step 0 with 1-Click Topic Cards
+- 📊 6 Separate KPI Boxes (Dedicated Excluded & Duplicates Boxes)
+- 🗂️ Split-Screen Interactive Paper Boxes (Step 5)
+- 🧠 BONUS AI APPLICATION: "The Unasked Question" — 2D Evidence Gap Matrix,
+  White-Space Finder, Auto-Trial Protocol Generator & 1-Click Level-2 Gap Search Mutator!
 """
 
 import os
+import re
 import json
 from datetime import datetime
 import pandas as pd
@@ -58,7 +60,8 @@ PAGES = [
     "05 · Interactive Screening",
     "06 · PICO Inspector & Edit",
     "07 · Level 2 Diff & Conflicts",
-    "08 · Export CSV & Audit Trail",
+    "🧠 08 · AI White-Space & Gap Lab",
+    "📥 09 · Export CSV & Audit Trail",
 ]
 
 if "current_step_idx" not in st.session_state:
@@ -97,18 +100,18 @@ def render_step_footer(curr_idx: int):
         f1, f2, f3 = st.columns([1.3, 2.4, 1.3])
         with f1:
             if curr_idx > 0:
-                prev_label = "🎓 Back to Guide" if curr_idx == 1 else f"⬅️ Back to Step {curr_idx - 2}"
+                prev_label = "🎓 Back to Guide" if curr_idx == 1 else f"⬅️ Previous ({PAGES[curr_idx - 1].split('·')[0].strip()})"
                 if st.button(prev_label, use_container_width=True, key=f"prev_btn_{curr_idx}"):
                     go_to_step(curr_idx - 1)
         with f2:
             st.markdown(
                 f"<div style='text-align:center; padding-top:6px; font-size:0.85rem; opacity:0.85;'>"
-                f"⚡ <b>Current View:</b> {PAGES[curr_idx]}</div>",
+                f"⚡ <b>Active Stage:</b> {PAGES[curr_idx]}</div>",
                 unsafe_allow_html=True
             )
         with f3:
             if curr_idx < len(PAGES) - 1:
-                next_label = "🚀 Start Step 0 ➡️" if curr_idx == 0 else f"Continue to Step {curr_idx} ➡️"
+                next_label = "🚀 Start Step 0 ➡️" if curr_idx == 0 else f"Next ({PAGES[curr_idx + 1].split('·')[0].strip()}) ➡️"
                 if st.button(next_label, type="primary", use_container_width=True, key=f"next_btn_{curr_idx}"):
                     go_to_step(curr_idx + 1)
 
@@ -189,7 +192,7 @@ st.sidebar.markdown(f"""
 for i, label in enumerate(PAGES):
     is_active = (i == curr_idx)
     btn_type = "primary" if is_active else "secondary"
-    prefix = "⚡ " if is_active else ("📘 " if i == 0 else "○ ")
+    prefix = "⚡ " if is_active else ("📘 " if i == 0 else ("🧠 " if i == 9 else "○ "))
     if st.sidebar.button(f"{prefix}{label}", key=f"side_nav_{i}", use_container_width=True, type=btn_type):
         go_to_step(i)
 
@@ -212,6 +215,11 @@ if st.sidebar.button("🗑️ Reset All Data & Start Fresh", use_container_width
 st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    @keyframes pulseGap {{
+        0%, 100% {{ box-shadow: 0 0 12px rgba(244, 63, 94, 0.25); border-color: rgba(244, 63, 94, 0.55); }}
+        50% {{ box-shadow: 0 0 24px rgba(244, 63, 94, 0.55); border-color: rgba(244, 63, 94, 0.95); }}
+    }}
 
     html, body, [class*="css"] {{
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -324,6 +332,30 @@ st.markdown(f"""
         font-size: 0.85rem;
         color: {th['muted']};
         line-height: 1.5;
+    }}
+
+    /* Evidence Gap Heatmap Matrix Cells */
+    .gap-cell-dense {{
+        background: rgba(16, 185, 129, 0.16);
+        border: 1px solid rgba(16, 185, 129, 0.45);
+        border-radius: 12px;
+        padding: 14px 10px;
+        text-align: center;
+    }}
+    .gap-cell-sparse {{
+        background: rgba(245, 158, 11, 0.16);
+        border: 1px solid rgba(245, 158, 11, 0.45);
+        border-radius: 12px;
+        padding: 14px 10px;
+        text-align: center;
+    }}
+    .gap-cell-zero {{
+        background: rgba(244, 63, 94, 0.16);
+        border: 1px solid rgba(244, 63, 94, 0.65);
+        border-radius: 12px;
+        padding: 14px 10px;
+        text-align: center;
+        animation: pulseGap 2.6s infinite ease-in-out;
     }}
 
     .paper-detail-box {{
@@ -495,6 +527,85 @@ def save_human_decision(
 
 
 # ==============================================================================
+# AI WHITE-SPACE & EVIDENCE GAP MATRIX ENGINE (STEP 8 BONUS AI LAB)
+# ==============================================================================
+def compute_ai_evidence_gap_matrix(records: list, config: dict) -> dict:
+    """
+    Analyzes all Included/Maybe studies across 4 Clinical Sub-Populations (Rows)
+    and 4 Clinical Outcome Domains (Columns) to discover populated areas vs.
+    0-Study Scientific White-Spaces ("The Unasked Questions").
+    """
+    main_drug = (config.get("intervention_text") or "Metformin").split(",")[0].strip()
+    main_cond = (config.get("population_text") or "Type 2 Diabetes").split(",")[0].strip()
+
+    subgroups = [
+        ("General Adult Cohort", ["adult", "patient", "men and women", "type 2", "atrial", "cancer", "depress"], "general adults"),
+        ("Elderly / Geriatric (>65 yrs)", ["elderly", "older", "geriatric", "aged", "65 years", "75 years"], "elderly patients aged >65"),
+        ("Renal / Hepatic Comorbidity", ["renal", "kidney", "ckd", "nephropathy", "GFR", "hepatic"], "patients with chronic kidney disease"),
+        ("Active Drug Head-to-Head", ["glimepiride", "sulfonylurea", "sitagliptin", "warfarin", "docetaxel", "sertraline"], "active head-to-head comparator arm"),
+    ]
+
+    outcomes = [
+        ("Primary Biomarker / HbA1c", ["hba1c", "glycated", "glucose", "fasting", "response rate", "madrs", "inr"], "primary biomarker reduction"),
+        ("Cardiovascular / Stroke Events", ["stroke", "cardiovascular", "embolism", "myocardial", "heart failure", "mace"], "major adverse cardiovascular events"),
+        ("Safety / Hypoglycemia / Bleed", ["hypoglycemia", "bleeding", "adverse", "safety", "tolerability", "hemorrhage", "toxicity"], "severe adverse event rate"),
+        ("Long-Term Mortality & QoL (>2 yr)", ["mortality", "survival", "quality of life", "qol", "5-year", "long-term death"], "long-term all-cause mortality & QoL"),
+    ]
+
+    matrix = {}
+    gaps = []
+    total_cells = len(subgroups) * len(outcomes)
+    zero_count = 0
+    sparse_count = 0
+    dense_count = 0
+
+    for sg_label, sg_kw, sg_query_term in subgroups:
+        matrix[sg_label] = {}
+        for out_label, out_kw, out_query_term in outcomes:
+            matched_ids = []
+            for r in records:
+                blob = f"{r.get('title', '')} {r.get('abstract', '')} {r.get('pico_p', '')} {r.get('pico_o', '')}".lower()
+                has_sg = any(k.lower() in blob for k in sg_kw)
+                has_out = any(k.lower() in blob for k in out_kw)
+                if has_sg and has_out:
+                    matched_ids.append(r["record_id"])
+
+            cnt = len(matched_ids)
+            if cnt == 0:
+                zero_count += 1
+                gaps.append({
+                    "subgroup": sg_label,
+                    "outcome": out_label,
+                    "unasked_question": f"In {sg_query_term} with {main_cond}, what is the effect of {main_drug} on {out_query_term}?",
+                    "trial_design": f"Double-blind, multicenter Phase III RCT (N=420 {sg_query_term}, 104-week follow-up) comparing {main_drug} vs. active control with primary endpoint of {out_query_term}.",
+                    "why_missed": f"Existing trials focused heavily on short-term primary biomarkers in general adults, leaving {sg_label} × {out_label} completely unstudied (0 RCTs).",
+                    "mutated_query": f'("{main_cond}") AND ("{main_drug}") AND ("{sg_kw[0]}" OR "{sg_kw[1]}") AND ("{out_kw[0]}" OR "{out_kw[1]}")'
+                })
+            elif cnt == 1:
+                sparse_count += 1
+            else:
+                dense_count += 1
+
+            matrix[sg_label][out_label] = {
+                "count": cnt,
+                "paper_ids": matched_ids,
+            }
+
+    return {
+        "subgroups": [s[0] for s in subgroups],
+        "outcomes": [o[0] for o in outcomes],
+        "matrix": matrix,
+        "gaps": gaps,
+        "total_cells": total_cells,
+        "zero_count": zero_count,
+        "sparse_count": sparse_count,
+        "dense_count": dense_count,
+        "main_drug": main_drug,
+        "main_cond": main_cond,
+    }
+
+
+# ==============================================================================
 # TOP HEADER & 6-BOX DEDICATED KPI DASHBOARD
 # ==============================================================================
 stats = get_dashboard_stats()
@@ -547,7 +658,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Always-accessible Quick Guide Drawer on every non-Guide step
 if curr_idx != 0:
     with st.expander("📘 New User? Click here anytime for a Quick PICO & Topic Cheat-Sheet"):
         q_col1, q_col2 = st.columns([1.3, 1.7])
@@ -565,8 +675,8 @@ if curr_idx != 0:
             1. **Step 0:** Pick a medical topic & define P, I, C, O.
             2. **Steps 1–3:** Search PubMed/Europe PMC and save papers in SQLite (nothing is ever deleted).
             3. **Step 4:** Hide duplicate copies & resolve Conference vs. Journal pairs.
-            4. **Steps 5–6:** Screen papers into **Included / Excluded / Maybe** boxes and highlight PICO sentences.
-            5. **Steps 7–8:** Compare query versions (Level 2) and export your final CSV!
+            4. **Steps 5–7:** Screen papers into **Included / Excluded / Maybe** boxes, highlight PICO, and compare searches.
+            5. **Step 8 (AI Lab):** Discover **0-Study Scientific White-Spaces** with the AI Evidence Gap Matrix!
             """)
 
 
@@ -583,7 +693,7 @@ if curr_idx == 0:
             "Imagine a doctor wants to know: **'Does Drug A work better than Drug B for Heart Patients?'** "
             "If they search Google or PubMed, thousands of papers come up—including duplicate copies, tests done on rats, computer simulations, and irrelevant articles. "
             "**Mini-Rayyan AI** is an automated research workbench that pulls papers from global medical libraries, removes duplicates, filters out rat/simulation studies, "
-            "and highlights the exact sentences that answer the doctor's question!"
+            "highlights PICO answers, and uses **AI White-Space Discovery** to find brand-new research gaps!"
         )
 
     st.markdown("### 🧬 2. What is PICO? (The 4 Building Blocks of Every Medical Question)")
@@ -625,8 +735,6 @@ if curr_idx == 0:
     """, unsafe_allow_html=True)
 
     st.markdown("### 🏥 3. Plain-English Guide to Our 4 Ready-Made Medical Topics")
-    st.caption("Don't have a medical background? Here is what each of the 4 preset topics in Step 0 actually means—you can click **'Use This Topic & Start Step 0'** on any card below!")
-
     topic_cols = st.columns(2)
     for idx, (t_title, t_data) in enumerate(TOPIC_CARDS.items()):
         with topic_cols[idx % 2]:
@@ -649,24 +757,6 @@ if curr_idx == 0:
                     st.session_state["o_val"] = t_data["O"]
                     st.session_state["custom_query_box"] = build_boolean_query_from_pico(t_data["P"], t_data["I"], t_data["C"])
                     go_to_step(1)
-
-    with st.container(border=True):
-        st.markdown("### 🗺️ 4. How the 8 Steps Work Together (Site Walkthrough)")
-        s1, s2 = st.columns(2)
-        with s1:
-            st.markdown("""
-            - **🎯 Step 0 (Define Topic & PICO):** Pick a topic card or type your own P, I, C, O terms.
-            - **🔍 Step 1 (Query Builder Studio):** Automatically turns your PICO words into a search formula and checks how many papers exist on PubMed & Europe PMC.
-            - **📥 Step 2 (Approve & Pull Papers):** Downloads the paper titles, authors, DOIs, and abstracts.
-            - **🗄️ Step 3 (Saved Paper Vault):** Stores every paper safely in SQLite (**Zero-Deletion Rule:** nothing is ever deleted).
-            """)
-        with s2:
-            st.markdown("""
-            - **🔗 Step 4 (Duplicate Resolution):** Automatically hides duplicate copies and asks you to confirm **Uncertain Pairs** (like a Conference Abstract vs. Journal Article).
-            - **⚖️ Step 5 (Interactive Screening):** Click on any paper box to inspect its highlighted abstract and put it into **Included**, **Excluded (Separate Box)**, or **Maybe**.
-            - **🧬 Step 6 (PICO Inspector):** Fine-tune the extracted P, I, C, O text spans.
-            - **🔄 Steps 7 & 8 (Level 2 Diff & CSV Export):** Compare two search versions without losing past decisions, and download your final Excel/CSV file!
-            """)
 
     render_step_footer(curr_idx)
 
@@ -762,7 +852,7 @@ elif curr_idx == 1:
 
 
 # ==============================================================================
-# STEP 01 (INDEX 2): REDESIGNED VISUAL QUERY BUILDER STUDIO
+# STEP 01 (INDEX 2): VISUAL QUERY BUILDER STUDIO
 # ==============================================================================
 elif curr_idx == 2:
     st.markdown("### 🔍 Step 1: Interactive Query Builder Studio")
@@ -828,7 +918,7 @@ elif curr_idx == 2:
     with col_quick:
         with st.container(border=True):
             st.markdown("#### ⚡ 1-Click Jury Demo Packs")
-            st.caption("Want instant papers with **guaranteed duplicates, uncertain pairs, animal studies, and simulations**? Click below to load & jump straight to Step 4!")
+            st.caption("Want instant papers with **guaranteed duplicates, uncertain pairs, animal studies, and AI White-Space gaps**? Click below!")
             if st.button("📦 Load Benchmark v1 (12 Papers) & Jump to Step 4 ➡️", type="primary", use_container_width=True):
                 vid = create_query_version(
                     "Benchmark v1 (Metformin vs Placebo)",
@@ -842,17 +932,17 @@ elif curr_idx == 2:
                 go_to_step(5)
 
             st.write("")
-            if st.button("🔄 Load Expanded v2 (14 Papers) & Jump to Level 2 Diff ➡️", use_container_width=True):
+            if st.button("🧠 Load Pack & Jump Straight to AI Gap Lab ➡️", use_container_width=True):
                 vid = create_query_version(
-                    "Benchmark v2 (Expanded Query)",
-                    '("type 2 diabetes") AND metformin AND (placebo OR sulfonylurea OR sitagliptin)',
-                    2015, 2025, ["PubMed", "Europe PMC"], 9, 5
+                    "Benchmark v1 (AI Gap Analysis)",
+                    '("type 2 diabetes") AND metformin AND placebo',
+                    2015, 2025, ["PubMed", "Europe PMC"], 8, 4
                 )
-                store_fetched_records(vid, get_benchmark_papers("v2"))
+                store_fetched_records(vid, get_benchmark_papers("v1"))
                 run_deduplication(vid)
                 run_screening(vid)
                 run_pico_extraction(vid)
-                go_to_step(8)
+                go_to_step(9)
 
     render_step_footer(curr_idx)
 
@@ -1310,10 +1400,138 @@ elif curr_idx == 8:
 
 
 # ==============================================================================
-# STEP 08 (INDEX 9): EXPORT CSV & AUDIT TRAIL
+# STEP 08 (INDEX 9): BONUS AI APPLICATION — "THE UNASKED QUESTION"
+# 2D EVIDENCE GAP MATRIX & WHITE-SPACE DISCOVERY ENGINE
 # ==============================================================================
 elif curr_idx == 9:
-    st.markdown("### 📥 Step 8: Export Final CSV & Complete Audit Trail")
+    st.markdown("## 🧠 Step 8 (AI Innovation Lab): 'The Unasked Question' — Evidence Gap & White-Space Finder")
+    st.caption(
+        "Most literature review tools only show what papers **already exist**. "
+        "Our AI White-Space Engine cross-maps **Patient Sub-Groups × Clinical Outcomes** across your Included & Maybe studies "
+        "to discover **0-Study Scientific Blind Spots**—and auto-designs the next PhD clinical trial protocol + Level-2 search mutation!"
+    )
+
+    conn = get_connection()
+    rows = conn.execute("""
+    SELECT
+        r.*,
+        COALESCE(rd.screening_decision, ms.decision, 'Maybe') AS final_decision,
+        COALESCE(rd.pico_p, mp.population_span, '') AS pico_p,
+        COALESCE(rd.pico_i, mp.intervention_span, '') AS pico_i,
+        COALESCE(rd.pico_c, mp.comparator_span, '') AS pico_c,
+        COALESCE(rd.pico_o, mp.outcome_span, '') AS pico_o
+    FROM records r
+    LEFT JOIN machine_screening ms ON r.record_id = ms.record_id
+    LEFT JOIN reviewer_decisions rd ON r.duplicate_group_id = rd.group_id
+    LEFT JOIN machine_pico mp ON r.record_id = mp.record_id
+    WHERE r.is_hidden_duplicate = 0;
+    """).fetchall()
+    conn.close()
+
+    eligible_studies = [dict(r) for r in rows if r["final_decision"] in ("Include", "Maybe")]
+
+    if not eligible_studies:
+        st.warning("No Included or Maybe studies in the database yet! Click below to load the 12-Paper Benchmark Dataset and see the AI Evidence Gap Matrix live.")
+        if st.button("⚡ Load 12 Benchmark Papers & Run AI White-Space Engine Now", type="primary"):
+            vid = create_query_version(
+                "Benchmark v1 (Metformin vs Placebo)",
+                '("type 2 diabetes") AND metformin AND placebo',
+                2015, 2025, ["PubMed", "Europe PMC"], 8, 4
+            )
+            store_fetched_records(vid, get_benchmark_papers("v1"))
+            run_deduplication(vid)
+            run_screening(vid)
+            run_pico_extraction(vid)
+            st.rerun()
+    else:
+        gap_data = compute_ai_evidence_gap_matrix(eligible_studies, config)
+
+        # Summary telemetry for the AI Matrix
+        g1, g2, g3, g4 = st.columns(4)
+        g1.metric("🧬 Analyzed Eligible Studies", len(eligible_studies))
+        g2.metric("🟢 Dense Evidence Cells (2+ RCTs)", gap_data["dense_count"])
+        g3.metric("🟡 Sparse Evidence Cells (1 RCT)", gap_data["sparse_count"])
+        g4.metric("🔥 Discovered White-Space Gaps (0 RCTs)", gap_data["zero_count"])
+
+        st.markdown("### 🗺️ 1. Live 2D PICO Evidence Heatmap (`Patient Sub-Cohorts` × `Clinical Outcomes`)")
+        st.caption("🟢 **Green** = Well-studied area &nbsp;|&nbsp; 🟡 **Amber** = Only 1 trial exists &nbsp;|&nbsp; 🔥 **Pulsing Red (0 Studies)** = **Unexplored Research White-Space!**")
+
+        # Render 2D Heatmap Grid Header
+        hdr_cols = st.columns([1.3, 1, 1, 1, 1])
+        hdr_cols[0].markdown("**Sub-Population \\ Outcome**")
+        for c_idx, out_name in enumerate(gap_data["outcomes"]):
+            hdr_cols[c_idx + 1].markdown(f"<div style='text-align:center; font-weight:700; font-size:0.84rem;'>{out_name}</div>", unsafe_allow_html=True)
+
+        # Render each row of the 2D Heatmap
+        for sg_name in gap_data["subgroups"]:
+            r_cols = st.columns([1.3, 1, 1, 1, 1])
+            r_cols[0].markdown(f"<div style='padding-top:18px; font-weight:700; font-size:0.88rem;'>👥 {sg_name}</div>", unsafe_allow_html=True)
+            for c_idx, out_name in enumerate(gap_data["outcomes"]):
+                cell = gap_data["matrix"][sg_name][out_name]
+                cnt = cell["count"]
+                pids = ", ".join(f"#{i}" for i in cell["paper_ids"])
+                if cnt >= 2:
+                    r_cols[c_idx + 1].markdown(
+                        f"<div class='gap-cell-dense'>"
+                        f"<div style='font-size:1.25rem; font-weight:800; color:#10b981;'>🟢 {cnt} Studies</div>"
+                        f"<div style='font-size:0.72rem; opacity:0.85;'>Papers: {pids}</div>"
+                        f"</div>",
+                        unsafe_allow_html=True
+                    )
+                elif cnt == 1:
+                    r_cols[c_idx + 1].markdown(
+                        f"<div class='gap-cell-sparse'>"
+                        f"<div style='font-size:1.25rem; font-weight:800; color:#f59e0b;'>🟡 1 Study</div>"
+                        f"<div style='font-size:0.72rem; opacity:0.85;'>Paper: {pids}</div>"
+                        f"</div>",
+                        unsafe_allow_html=True
+                    )
+                else:
+                    r_cols[c_idx + 1].markdown(
+                        f"<div class='gap-cell-zero'>"
+                        f"<div style='font-size:1.15rem; font-weight:800; color:#fb7185;'>🔥 0 STUDIES</div>"
+                        f"<div style='font-size:0.70rem; color:#fda4af; font-weight:700;'>WHITE-SPACE GAP</div>"
+                        f"</div>",
+                        unsafe_allow_html=True
+                    )
+            st.write("")
+
+        st.markdown("---")
+        st.markdown("### 🚀 2. AI 'Unasked Question' & Clinical Trial Protocol Generator")
+        st.caption("Select any discovered **🔥 0-Study White-Space Gap** below to generate a ready-to-pitch PhD/Clinical Trial Protocol or auto-mutate your Level 2 search query!")
+
+        if gap_data["gaps"]:
+            gap_labels = [f"🔥 GAP #{idx+1}: {g['subgroup']} × {g['outcome']} (0 Clinical Trials Found)" for idx, g in enumerate(gap_data["gaps"])]
+            chosen_idx = st.selectbox("Select a Discovered Scientific White-Space Gap to Inspect:", range(len(gap_labels)), format_func=lambda i: gap_labels[i])
+            sel_gap = gap_data["gaps"][chosen_idx]
+
+            with st.container(border=True):
+                st.markdown(f"#### 💡 AI-Discovered Unasked Research Question")
+                st.markdown(f"<div class='query-terminal'>❓ \"{sel_gap['unasked_question']}\"</div>", unsafe_allow_html=True)
+
+                col_a, col_b = st.columns(2)
+                with col_a:
+                    st.markdown("##### 🕵️ Why This Blind Spot Exists in Literature")
+                    st.write(sel_gap["why_missed"])
+                with col_b:
+                    st.markdown("##### 🧪 AI-Synthesized Phase III Trial Blueprint")
+                    st.write(sel_gap["trial_design"])
+
+                st.markdown("##### 🔄 Close the Loop: Auto-Mutate Search Query for Level 2")
+                st.code(sel_gap["mutated_query"], language="text")
+
+                if st.button("⚡ Inject This Gap Query into Step 1 (Query Studio) & Launch Level-2 Search ➡️", type="primary", use_container_width=True):
+                    st.session_state["custom_query_box"] = sel_gap["mutated_query"]
+                    go_to_step(2)
+
+    render_step_footer(curr_idx)
+
+
+# ==============================================================================
+# STEP 09 (INDEX 10): EXPORT CSV & AUDIT TRAIL
+# ==============================================================================
+elif curr_idx == 10:
+    st.markdown("### 📥 Step 9: Export Final CSV & Complete Audit Trail")
     conn = get_connection()
     export_rows = conn.execute("""
     SELECT
