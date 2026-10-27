@@ -1,7 +1,7 @@
 """
 MINI-RAYYAN // Ultra-Clean Vibe-Coded Edition (app.py)
-Designed for complete beginners with a Linear/Vercel-inspired glassmorphic UI,
-guided visual sub-steps for Steps 1-3, and full Level 1 + Level 2 functionality.
+Features a Futuristic Interactive Sidebar Command Dock with smooth animations,
+while keeping all beginner-friendly guides and Level 1 + Level 2 features intact.
 """
 
 import os
@@ -40,7 +40,7 @@ st.set_page_config(
 init_db()
 
 # ==============================================================================
-# VIBE-CODED MODERN SaaS CSS (LINEAR / VERCEL / RAYCAST AESTHETIC)
+# VIBE-CODED MODERN SaaS CSS + FUTURISTIC ANIMATED SIDEBAR COMMAND DOCK
 # ==============================================================================
 st.markdown("""
 <style>
@@ -57,6 +57,21 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
 
+    /* Keyframe Animations */
+    @keyframes navPulseGlow {
+        0%, 100% { box-shadow: 0 0 14px rgba(56, 189, 248, 0.22), inset 0 0 12px rgba(56, 189, 248, 0.08); }
+        50% { box-shadow: 0 0 22px rgba(129, 140, 248, 0.40), inset 0 0 16px rgba(129, 140, 248, 0.14); }
+    }
+    @keyframes progressShimmer {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    @keyframes fadeInSlide {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
     /* Smooth Ambient Dark Background */
     .stApp {
         background:
@@ -66,27 +81,142 @@ st.markdown("""
         color: #f8fafc;
     }
 
-    /* Sleek Sidebar */
+    /* ==========================================================================
+       FUTURISTIC INTERACTIVE SIDEBAR COMMAND DOCK
+       ========================================================================== */
     section[data-testid="stSidebar"] {
-        background: rgba(11, 15, 25, 0.92) !important;
-        backdrop-filter: blur(20px);
-        border-right: 1px solid rgba(255, 255, 255, 0.07);
-    }
-    section[data-testid="stSidebar"] .stRadio label {
-        font-size: 0.96rem !important;
-        font-weight: 500 !important;
-        color: #cbd5e1 !important;
-        padding: 8px 6px !important;
-        border-radius: 8px;
-        transition: all 0.2s ease;
-    }
-    section[data-testid="stSidebar"] .stRadio label:hover {
-        color: #38bdf8 !important;
-        background: rgba(56, 189, 248, 0.06);
+        background: linear-gradient(180deg, rgba(10, 15, 28, 0.96) 0%, rgba(7, 11, 20, 0.98) 100%) !important;
+        backdrop-filter: blur(24px);
+        border-right: 1px solid rgba(56, 189, 248, 0.14);
     }
 
-    /* Hero Banner */
+    /* Sidebar Brand Box */
+    .sidebar-brand {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.85) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.22);
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+        box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+    }
+    .sidebar-brand-title {
+        font-size: 1.15rem;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        background: linear-gradient(90deg, #38bdf8, #818cf8, #e879f9);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .sidebar-brand-sub {
+        font-size: 0.74rem;
+        color: #94a3b8;
+        margin-top: 2px;
+        letter-spacing: 0.3px;
+    }
+
+    /* Pipeline Progress Tracker in Sidebar */
+    .nav-header-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 14px 2px 6px 2px;
+    }
+    .nav-header-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.1px;
+        color: #7dd3fc;
+    }
+    .nav-header-step {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #c084fc;
+        background: rgba(192, 132, 252, 0.12);
+        padding: 2px 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(192, 132, 252, 0.3);
+    }
+    .nav-progress-track {
+        width: 100%;
+        height: 6px;
+        background: rgba(30, 41, 59, 0.8);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-bottom: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .nav-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+        background-size: 200% 200%;
+        animation: progressShimmer 3s ease infinite;
+        border-radius: 999px;
+        transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Transform Default Radio Group into Futuristic Interactive Cards */
+    section[data-testid="stSidebar"] div[role="radiogroup"] {
+        gap: 7px !important;
+        display: flex;
+        flex-direction: column;
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label {
+        background: rgba(17, 24, 39, 0.65) !important;
+        border: 1px solid rgba(255, 255, 255, 0.07) !important;
+        border-left: 3px solid rgba(100, 116, 139, 0.35) !important;
+        border-radius: 12px !important;
+        padding: 10px 14px !important;
+        margin: 0 !important;
+        cursor: pointer !important;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        position: relative;
+        overflow: hidden;
+    }
+    /* Hide the boring default radio circle */
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label > div:first-child {
+        display: none !important;
+    }
+    /* Step Text Styling */
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label p {
+        font-size: 0.88rem !important;
+        font-weight: 600 !important;
+        color: #94a3b8 !important;
+        margin: 0 !important;
+        transition: all 0.2s ease !important;
+        letter-spacing: -0.1px;
+    }
+    /* Hover Micro-Interaction: Slide Right + Neon Border Glow */
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label:hover {
+        transform: translateX(6px) !important;
+        background: linear-gradient(90deg, rgba(56, 189, 248, 0.12) 0%, rgba(30, 41, 59, 0.75) 100%) !important;
+        border-color: rgba(56, 189, 248, 0.40) !important;
+        border-left: 4px solid #38bdf8 !important;
+        box-shadow: 0 6px 18px -6px rgba(56, 189, 248, 0.28) !important;
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label:hover p {
+        color: #f8fafc !important;
+    }
+    /* Active / Selected Step Card (Glowing Neon Pill) */
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label:has(input:checked) {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.20) 0%, rgba(129, 140, 248, 0.16) 100%) !important;
+        border: 1px solid rgba(56, 189, 248, 0.65) !important;
+        border-left: 5px solid #38bdf8 !important;
+        transform: translateX(6px) !important;
+        animation: navPulseGlow 3s infinite ease-in-out;
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label:has(input:checked) p {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        text-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+    }
+
+    /* ==========================================================================
+       MAIN WORKSPACE STYLING (UNTOUCHED & CLEAN)
+       ========================================================================== */
     .hero-glass {
+        animation: fadeInSlide 0.35s ease-out;
         background: linear-gradient(135deg, rgba(30, 41, 59, 0.55) 0%, rgba(15, 23, 42, 0.75) 100%);
         border: 1px solid rgba(255, 255, 255, 0.09);
         border-radius: 18px;
@@ -193,6 +323,7 @@ st.markdown("""
 
     /* Friendly Coach Card at Top of Every Page */
     .coach-banner {
+        animation: fadeInSlide 0.4s ease-out;
         background: linear-gradient(90deg, rgba(56, 189, 248, 0.10) 0%, rgba(129, 140, 248, 0.08) 100%);
         border: 1px solid rgba(56, 189, 248, 0.25);
         border-left: 4px solid #38bdf8;
@@ -389,35 +520,61 @@ def save_human_decision(
 
 
 # ==============================================================================
-# SIDEBAR NAVIGATION
+# FUTURISTIC SIDEBAR COMMAND DOCK
 # ==============================================================================
-st.sidebar.markdown("## ✨ Mini-Rayyan Studio")
-st.sidebar.caption("AI-Assisted Literature Review")
+st.sidebar.markdown("""
+<div class="sidebar-brand">
+    <div class="sidebar-brand-title">✨ MINI-RAYYAN OS</div>
+    <div class="sidebar-brand-sub">AI-Assisted Evidence Synthesis</div>
+</div>
+""", unsafe_allow_html=True)
 
 reviewer_name = st.sidebar.text_input(
-    "👤 Your Name (Reviewer)",
+    "👤 Operator / Reviewer Name",
     value="Lead Reviewer (UG3)",
     help="Every decision or edit you make is saved under your name."
 )
 
 PAGES = [
-    "Step 0 • Define Topic & PICO",
-    "Steps 1 & 2 • Search & Pull Papers",
-    "Step 3 • Saved Papers Library",
-    "Step 4 • Clean Up Duplicates",
-    "Step 5 • Screen Studies",
-    "Steps 6 & 7 • PICO Highlights & Edit",
-    "Level 2 • Compare Searches & Conflicts",
-    "Step 8 • Download CSV & Logs",
+    "🎯  00 · Define Topic & PICO",
+    "🔍  01–02 · Search & Pull Papers",
+    "🗄️  03 · Saved Papers Library",
+    "🔗  04 · Clean Up Duplicates",
+    "⚖️  05 · Screen Studies",
+    "🧬  06–07 · PICO Highlights & Edit",
+    "🔄  L2 · Compare Searches & Loop",
+    "📥  08 · Download CSV & Logs",
 ]
-page = st.sidebar.radio("🧭 Follow Steps in Order:", PAGES)
 
+# Render Live Progress Header right above the interactive step cards
+current_page_val = st.session_state.get("nav_radio_dock", PAGES[0])
+curr_step_num = PAGES.index(current_page_val) + 1 if current_page_val in PAGES else 1
+progress_pct = int((curr_step_num / len(PAGES)) * 100)
+
+st.sidebar.markdown(f"""
+<div class="nav-header-box">
+    <span class="nav-header-title">⚡ Pipeline Command Dock</span>
+    <span class="nav-header-step">STAGE {curr_step_num}/{len(PAGES)}</span>
+</div>
+<div class="nav-progress-track">
+    <div class="nav-progress-fill" style="width: {progress_pct}%;"></div>
+</div>
+""", unsafe_allow_html=True)
+
+page = st.sidebar.radio(
+    "Follow Steps in Order:",
+    PAGES,
+    key="nav_radio_dock",
+    label_visibility="collapsed"
+)
+
+st.sidebar.write("")
 with st.sidebar.expander("📘 Quick Beginner Glossary"):
     st.markdown("""
     - **PICO:** The 4 building blocks of a medical research question (**P**atients, **I**ntervention/Drug, **C**omparison, **O**utcome).
     - **PubMed & Europe PMC:** Free global search engines for scientific and medical research papers.
     - **Abstract:** The short 1-paragraph summary of a research paper.
-    - **DOI / PMID:** Unique ID codes assigned to every published scientific paper (like an Aadhaar or passport number for a paper).
+    - **DOI / PMID:** Unique ID codes assigned to every published scientific paper.
     """)
 
 st.sidebar.markdown("---")
@@ -468,7 +625,7 @@ for idx, (s_num, s_name) in enumerate(short_steps):
 journey_html += "</div>"
 st.markdown(journey_html, unsafe_allow_html=True)
 
-# 4 Clean, Uncluttered Summary Cards instead of 7 tiny cramped boxes
+# 4 Clean Summary Metric Cards
 st.markdown(f"""
 <div class="stat-row">
     <div class="stat-box">
@@ -498,7 +655,7 @@ st.markdown(f"""
 # ==============================================================================
 # STEP 0: DEFINE TOPIC & PICO
 # ==============================================================================
-if page == "Step 0 • Define Topic & PICO":
+if page == PAGES[0]:
     render_coach_banner(
         "👋 Welcome to Step 0! Let's set up your research topic in plain English.",
         "Before searching for scientific papers, tell Mini-Rayyan <b>what medical question you want to answer</b>. "
@@ -567,14 +724,14 @@ if page == "Step 0 • Define Topic & PICO":
             save_project_config(rq, pop, inter, comp, out, criteria)
             run_screening()
             run_pico_extraction()
-            st.success("✅ Saved! Now click 'Steps 1 & 2 • Search & Pull Papers' in the left sidebar.")
+            st.success("✅ Saved! Now click '01–02 · Search & Pull Papers' in the left sidebar.")
             st.rerun()
 
 
 # ==============================================================================
 # STEPS 1 & 2: BEGINNER-FRIENDLY SEARCH & FETCH
 # ==============================================================================
-elif page == "Steps 1 & 2 • Search & Pull Papers":
+elif page == PAGES[1]:
     render_coach_banner(
         "🔍 How do Steps 1 & 2 work? (No coding or complex syntax needed!)",
         "Finding research papers happens in two easy steps:<br>"
@@ -588,7 +745,7 @@ elif page == "Steps 1 & 2 • Search & Pull Papers":
         "⚡ Option B: Instant Offline Demo Pack (Best for Quick Testing)"
     ])
 
-    with tab_Builder if False else tab_builder:
+    with tab_builder:
         st.markdown("##### 🧩 Build a Search Query Visually")
         st.caption("Don't know how to write `AND` / `OR` queries? Type simple words below and we will build the formula for you:")
         b1, b2, b3 = st.columns(3)
@@ -723,14 +880,14 @@ elif page == "Steps 1 & 2 • Search & Pull Papers":
                     run_deduplication(vid)
                     run_screening(vid)
                     run_pico_extraction(vid)
-                    st.success("✅ Pack 2 loaded as a new Query Version! Go to 'Level 2 • Compare Searches & Conflicts' to see the Diff View!")
+                    st.success("✅ Pack 2 loaded as a new Query Version! Go to 'L2 · Compare Searches & Loop' to see the Diff View!")
                     st.rerun()
 
 
 # ==============================================================================
 # STEP 3: SAVED PAPERS LIBRARY (FRIENDLY DATABASE VIEW)
 # ==============================================================================
-elif page == "Step 3 • Saved Papers Library":
+elif page == PAGES[2]:
     render_coach_banner(
         "🗄️ What is Step 3 (Your Paper Library)?",
         "Every paper you download in Step 2 is safely stored inside your permanent SQLite database. "
@@ -752,7 +909,7 @@ elif page == "Step 3 • Saved Papers Library":
     conn.close()
 
     if not rows:
-        st.info("Your library is empty right now. Go to **Steps 1 & 2 • Search & Pull Papers** to download papers first!")
+        st.info("Your library is empty right now. Go to **01–02 · Search & Pull Papers** to download papers first!")
     else:
         f1, f2 = st.columns([2, 1])
         search_lib = f1.text_input("🔎 Search inside your saved papers (by title, author, or journal):", "")
@@ -773,7 +930,6 @@ elif page == "Step 3 • Saved Papers Library":
 
         st.caption(f"Showing **{len(items)}** of **{len(rows)}** total records stored in database.")
 
-        # Clean, human-readable table
         friendly_rows = []
         for x in items:
             friendly_rows.append({
@@ -794,7 +950,7 @@ elif page == "Step 3 • Saved Papers Library":
 # ==============================================================================
 # STEP 4: CLEAN UP DUPLICATES
 # ==============================================================================
-elif page == "Step 4 • Clean Up Duplicates":
+elif page == PAGES[3]:
     render_coach_banner(
         "🔗 How does Duplicate Cleanup work?",
         "Because we search both PubMed and Europe PMC, the exact same paper often shows up twice. "
@@ -866,7 +1022,7 @@ elif page == "Step 4 • Clean Up Duplicates":
 # ==============================================================================
 # STEP 5: SCREEN STUDIES (INCLUDE / EXCLUDE / MAYBE)
 # ==============================================================================
-elif page == "Step 5 • Screen Studies":
+elif page == PAGES[4]:
     render_coach_banner(
         "⚖️ What happens in Step 5 (Study Screening)?",
         "Here we decide which papers belong in our final review:<br>"
@@ -967,7 +1123,7 @@ elif page == "Step 5 • Screen Studies":
 # ==============================================================================
 # STEPS 6 & 7: PICO HIGHLIGHTS & EDITING
 # ==============================================================================
-elif page == "Steps 6 & 7 • PICO Highlights & Edit":
+elif page == PAGES[5]:
     render_coach_banner(
         "🎨 What is PICO Highlighting & Review?",
         "For every eligible study, Mini-Rayyan automatically finds and highlights the exact sentences describing:<br>"
@@ -1048,7 +1204,7 @@ elif page == "Steps 6 & 7 • PICO Highlights & Edit":
 # ==============================================================================
 # LEVEL 2: QUERY LOOP, DIFF VIEW & CONFLICT RESOLUTION
 # ==============================================================================
-elif page == "Level 2 • Compare Searches & Conflicts":
+elif page == PAGES[6]:
     render_coach_banner(
         "🔄 What is the Level 2 Query-Change Loop?",
         "In real research, you often edit your search query after you have already reviewed several papers. "
@@ -1080,7 +1236,7 @@ elif page == "Level 2 • Compare Searches & Conflicts":
     st.markdown("##### 🔍 2. Compare Search Versions (Diff View)")
     if len(queries) < 2:
         st.info(
-            "You currently have **1** search version. To see the **Diff View** in action, go to **Steps 1 & 2 ➔ Option B (Instant Offline Demo Pack)** "
+            "You currently have **1** search version. To see the **Diff View** in action, go to **01–02 · Search & Pull Papers ➔ Option B (Instant Offline Demo Pack)** "
             "and click **'Load Pack 2 (Expanded Query v2)'** (or run a second live search)!"
         )
     else:
@@ -1112,7 +1268,7 @@ elif page == "Level 2 • Compare Searches & Conflicts":
 # ==============================================================================
 # STEP 8: EXPORT CSV & AUDIT LOGS
 # ==============================================================================
-elif page == "Step 8 • Download CSV & Logs":
+elif page == PAGES[7]:
     render_coach_banner(
         "📥 Download Your Final Results & Audit Trail",
         "Export your final screened studies and verified PICO tags as a clean <b>CSV spreadsheet</b> for Excel or Google Sheets. "
