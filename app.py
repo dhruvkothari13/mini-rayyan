@@ -1,11 +1,10 @@
 """
-MINI-RAYYAN AI // WATERMELON × MANUS × CULT-UI × GSAP EDITION (app.py)
-Engineered for Hackathon Jury Impact:
-1. Watermelon UI: Tactile Bento grids, specular top-edge inner borders & deep layered shadows
-2. Manus.im: Editorial agentic workspace, live autonomous telemetry bar & clean split-screen focus
-3. Cult UI: Recessed double-border shells (outer chassis + inner surface) & pill micro-craft
-4. GSAP Motion: Cubic-bezier staggered card entrances, spring hover physics & kinetic gradient text
-5. Full Pipeline + Theme Switcher + Auto-Redirects + Blank Step 0 + AI White-Space Gap Lab
+MINI-RAYYAN // AWWWARDS KINETIC EDITION (app.py)
+100% Architectural Overhaul inspired by:
+- LandoNorris.com (Acid-Volt #D2FF00 telemetry, infinite marquee ticker, giant brutalist stage numbers, zero sidebar)
+- GSAP.com (Cubic-bezier staggered physics, kinetic text reveals, spring hover transforms)
+- Cult-UI & Watermelon.sh (Double-bezel recessed hardware shells, specular top-edge lighting, tactile pill docks)
+- Manus.im (Autonomous agent live thought stream & split-screen workspace)
 """
 
 import os
@@ -36,33 +35,41 @@ from pipeline import run_deduplication, run_screening
 from pico_extractor import run_pico_extraction, highlight_pico_html
 from level2_loop import compute_query_diff, resolve_duplicate_conflict
 
+# NO SIDEBAR! Full-bleed Lando Norris / Cult-UI canvas
 st.set_page_config(
-    page_title="Mini-Rayyan // Agentic Evidence Studio",
+    page_title="RAYYAN // KINETIC OS",
     page_icon="⚡",
     layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
 init_db()
 
 # ==============================================================================
-# NAVIGATION STEPS & AUTO-REDIRECT ENGINE
+# STATE & AUTO-REDIRECT ENGINE
 # ==============================================================================
-PAGES = [
-    "🎓 00 · Academy & PICO Guide",
-    "🎯 01 · Topic & PICO Studio",
-    "🎛️ 02 · Query Composer",
-    "📥 03 · Pull & Ingest Stream",
-    "🗄️ 04 · Zero-Delete Vault",
-    "🔗 05 · Duplicate Resolver",
-    "⚖️ 06 · Split-Screen Screener",
-    "🧬 07 · PICO Span Inspector",
-    "🔄 08 · Level-2 Diff & Loop",
-    "🧠 09 · AI White-Space Lab",
-    "📊 10 · Export & Audit Ledger",
+STAGES = [
+    ("00", "ACADEMY", "PICO & Site Blueprint"),
+    ("01", "PROTOCOL", "Topic & PICO Matrix"),
+    ("02", "COMPOSER", "Boolean Query Studio"),
+    ("03", "INGEST", "API Hit Probe & Pull"),
+    ("04", "VAULT", "Zero-Delete SQLite"),
+    ("05", "CLUSTERS", "Duplicate Resolver"),
+    ("06", "SCREENER", "Split-Screen Triage"),
+    ("07", "EXTRACTOR", "PICO Span Inspector"),
+    ("08", "LEVEL-2", "Version Diff & Loop"),
+    ("09", "AI GAP LAB", "White-Space Discovery"),
+    ("10", "LEDGER", "CSV Export & Audit"),
 ]
 
 if "current_step_idx" not in st.session_state:
     st.session_state["current_step_idx"] = 0
+
+if "ui_skin" not in st.session_state:
+    st.session_state["ui_skin"] = "⚡ LANDO VOLT (Acid Lime × Obsidian)"
+
+if "reviewer_name" not in st.session_state:
+    st.session_state["reviewer_name"] = "DHRUV KOTHARI // LEAD"
 
 if "topic_initialized" not in st.session_state:
     conn_init = get_connection()
@@ -85,472 +92,401 @@ if "topic_initialized" not in st.session_state:
 
 
 def go_to_step(step_index: int):
-    st.session_state["current_step_idx"] = max(0, min(step_index, len(PAGES) - 1))
+    st.session_state["current_step_idx"] = max(0, min(step_index, len(STAGES) - 1))
     st.rerun()
 
 
-def render_step_footer(curr_idx: int):
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown('<div class="cult-shell">', unsafe_allow_html=True)
-    f1, f2, f3 = st.columns([1.3, 2.4, 1.3])
-    with f1:
-        if curr_idx > 0:
-            prev_lbl = "⬅️ Back to Academy" if curr_idx == 1 else f"⬅️ {PAGES[curr_idx - 1].split('·')[1].strip()}"
-            if st.button(prev_lbl, use_container_width=True, key=f"prev_btn_{curr_idx}"):
-                go_to_step(curr_idx - 1)
-    with f2:
-        st.markdown(
-            f"<div style='text-align:center; padding-top:8px; font-size:0.82rem; font-family:JetBrains Mono, monospace; opacity:0.8;'>"
-            f"STAGE [{curr_idx:02d}/{len(PAGES)-1:02d}] // {PAGES[curr_idx].upper()}</div>",
-            unsafe_allow_html=True
-        )
-    with f3:
-        if curr_idx < len(PAGES) - 1:
-            next_lbl = "Launch Topic Studio ➡️" if curr_idx == 0 else f"Next: {PAGES[curr_idx + 1].split('·')[1].strip()} ➡️"
-            if st.button(next_lbl, type="primary", use_container_width=True, key=f"next_btn_{curr_idx}"):
-                go_to_step(curr_idx + 1)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-
 # ==============================================================================
-# 4 DESIGN-SYSTEM THEMES (MANUS / WATERMELON / GSAP / DAYLIGHT)
+# 4 KINETIC SKINS (LANDO VOLT / CULT OBSIDIAN / WATERMELON CORAL / MANUS PAPER)
 # ==============================================================================
-THEMES = {
-    "🖤 Cult × Manus Obsidian (Signature Dark)": {
-        "bg": "radial-gradient(120% 80% at 50% -15%, rgba(120, 119, 198, 0.22), transparent 55%), radial-gradient(80% 60% at 95% 95%, rgba(16, 185, 129, 0.10), transparent 50%), #060608",
-        "sidebar_bg": "#08080b",
-        "shell_bg": "rgba(18, 18, 22, 0.72)",
-        "card_bg": "linear-gradient(180deg, rgba(28, 28, 34, 0.88) 0%, rgba(16, 16, 20, 0.94) 100%)",
-        "text": "#f4f4f6",
+SKINS = {
+    "⚡ LANDO VOLT (Acid Lime × Obsidian)": {
+        "bg": "#08090a",
+        "grid_line": "rgba(210, 255, 0, 0.05)",
+        "chassis": "#111316",
+        "plate": "linear-gradient(165deg, #181b20 0%, #0e1013 100%)",
+        "text": "#f4f6f8",
+        "muted": "#8a94a6",
+        "accent": "#d2ff00",      # Lando Norris signature Acid Volt
+        "accent_text": "#08090a",
+        "accent2": "#00f0ff",
+        "danger": "#ff3366",
+        "border": "rgba(210, 255, 0, 0.22)",
+        "soft_border": "rgba(255, 255, 255, 0.08)",
+        "glow": "rgba(210, 255, 0, 0.35)",
+    },
+    "🍉 WATERMELON HYPER-POP (Coral × Cyber Cyan)": {
+        "bg": "#09050a",
+        "grid_line": "rgba(255, 42, 109, 0.06)",
+        "chassis": "#160b18",
+        "plate": "linear-gradient(165deg, #241128 0%, #120814 100%)",
+        "text": "#fff0f5",
+        "muted": "#d48fb0",
+        "accent": "#ff2a6d",
+        "accent_text": "#ffffff",
+        "accent2": "#05d9e8",
+        "danger": "#ff0055",
+        "border": "rgba(255, 42, 109, 0.32)",
+        "soft_border": "rgba(255, 255, 255, 0.09)",
+        "glow": "rgba(255, 42, 109, 0.40)",
+    },
+    "🖤 CULT × MANUS MONOLITH (Titanium × Indigo)": {
+        "bg": "#060608",
+        "grid_line": "rgba(255, 255, 255, 0.035)",
+        "chassis": "#101014",
+        "plate": "linear-gradient(165deg, #191920 0%, #0d0d11 100%)",
+        "text": "#fafafa",
         "muted": "#8e8e98",
-        "border": "rgba(255, 255, 255, 0.08)",
-        "specular": "inset 0 1px 0 0 rgba(255, 255, 255, 0.16)",
         "accent": "#818cf8",
+        "accent_text": "#060608",
         "accent2": "#34d399",
-        "accent_glow": "rgba(129, 140, 248, 0.35)",
-        "grad_text": "linear-gradient(135deg, #ffffff 0%, #c7d2fe 45%, #6ee7b7 100%)",
+        "danger": "#f43f5e",
+        "border": "rgba(129, 140, 248, 0.30)",
+        "soft_border": "rgba(255, 255, 255, 0.08)",
+        "glow": "rgba(129, 140, 248, 0.35)",
     },
-    "🟢 GSAP Kinetic Neon (High-Craft Cyber)": {
-        "bg": "radial-gradient(100% 70% at 50% -10%, rgba(14, 246, 118, 0.18), transparent 55%), radial-gradient(70% 60% at 10% 90%, rgba(168, 85, 247, 0.14), transparent 50%), #050806",
-        "sidebar_bg": "#070b08",
-        "shell_bg": "rgba(12, 20, 15, 0.78)",
-        "card_bg": "linear-gradient(180deg, rgba(19, 32, 24, 0.90) 0%, rgba(10, 17, 13, 0.96) 100%)",
-        "text": "#f0fdf4",
-        "muted": "#86efac",
-        "border": "rgba(14, 246, 118, 0.22)",
-        "specular": "inset 0 1px 0 0 rgba(14, 246, 118, 0.30)",
-        "accent": "#0ef676",
-        "accent2": "#38bdf8",
-        "accent_glow": "rgba(14, 246, 118, 0.38)",
-        "grad_text": "linear-gradient(135deg, #ffffff 0%, #0ef676 50%, #38bdf8 100%)",
-    },
-    "🍉 Watermelon Coral Pop (Vibrant Sunset)": {
-        "bg": "radial-gradient(110% 75% at 50% -10%, rgba(255, 77, 121, 0.22), transparent 55%), radial-gradient(80% 50% at 90% 90%, rgba(56, 189, 248, 0.15), transparent 50%), #090508",
-        "sidebar_bg": "#0e070c",
-        "shell_bg": "rgba(28, 14, 24, 0.75)",
-        "card_bg": "linear-gradient(180deg, rgba(40, 19, 33, 0.88) 0%, rgba(20, 10, 17, 0.95) 100%)",
-        "text": "#fff1f2",
-        "muted": "#fda4af",
-        "border": "rgba(255, 107, 139, 0.24)",
-        "specular": "inset 0 1px 0 0 rgba(255, 150, 175, 0.25)",
-        "accent": "#ff4d79",
-        "accent2": "#38bdf8",
-        "accent_glow": "rgba(255, 77, 121, 0.40)",
-        "grad_text": "linear-gradient(135deg, #ffffff 0%, #ff7597 50%, #38bdf8 100%)",
-    },
-    "☀️ Manus Paper Daylight (Editorial Light)": {
-        "bg": "radial-gradient(100% 60% at 50% -10%, rgba(99, 102, 241, 0.10), transparent 55%), #f7f6f2",
-        "sidebar_bg": "#efede7",
-        "shell_bg": "rgba(255, 255, 255, 0.85)",
-        "card_bg": "linear-gradient(180deg, #ffffff 0%, #faf9f5 100%)",
-        "text": "#18181b",
-        "muted": "#52525b",
-        "border": "rgba(24, 24, 27, 0.10)",
-        "specular": "inset 0 1px 0 0 rgba(255, 255, 255, 0.9)",
-        "accent": "#4f46e5",
-        "accent2": "#059669",
-        "accent_glow": "rgba(79, 70, 229, 0.20)",
-        "grad_text": "linear-gradient(135deg, #18181b 0%, #4f46e5 55%, #059669 100%)",
+    "☀️ MANUS EDITORIAL DAYLIGHT (Paper × Ink)": {
+        "bg": "#f3f1ec",
+        "grid_line": "rgba(20, 20, 20, 0.05)",
+        "chassis": "#e5e2dc",
+        "plate": "linear-gradient(165deg, #ffffff 0%, #f8f6f1 100%)",
+        "text": "#111111",
+        "muted": "#555555",
+        "accent": "#111111",
+        "accent_text": "#d2ff00",
+        "accent2": "#2563eb",
+        "danger": "#dc2626",
+        "border": "rgba(17, 17, 17, 0.25)",
+        "soft_border": "rgba(17, 17, 17, 0.10)",
+        "glow": "rgba(17, 17, 17, 0.15)",
     },
 }
 
-# ==============================================================================
-# SIDEBAR: WATERMELON × CULT-UI FLOATING DOCK
-# ==============================================================================
-st.sidebar.markdown("""
-<div style="padding: 4px 2px 10px 2px;">
-    <div style="font-size:1.18rem; font-weight:800; letter-spacing:-0.5px;">⚡ MINI-RAYYAN <span style="font-size:0.68rem; padding:2px 7px; border-radius:99px; background:rgba(129,140,248,0.2); color:#818cf8; vertical-align:middle;">OS v3.0</span></div>
-    <div style="font-size:0.74rem; opacity:0.65; font-family:'JetBrains Mono', monospace;">AGENTIC SYNTHESIS ENGINE</div>
-</div>
-""", unsafe_allow_html=True)
-
-selected_theme_name = st.sidebar.selectbox(
-    "🎨 Design System Theme:",
-    list(THEMES.keys()),
-    index=0,
-)
-th = THEMES[selected_theme_name]
-
-reviewer_name = st.sidebar.text_input("👤 Operator Identity", value="Dhruv Kothari (Lead)")
-
+sk = SKINS[st.session_state["ui_skin"]]
 curr_idx = st.session_state["current_step_idx"]
-prog_pct = int(((curr_idx + 1) / len(PAGES)) * 100)
-
-st.sidebar.markdown(f"""
-<div style="display:flex; justify-content:space-between; align-items:center; margin: 8px 2px 5px 2px;">
-    <span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:{th['muted']}; font-family:'JetBrains Mono', monospace;">WORKFLOW TELEMETRY</span>
-    <span style="font-size:0.70rem; font-weight:800; color:{th['accent']}; font-family:'JetBrains Mono', monospace;">{prog_pct}%</span>
-</div>
-<div style="width:100%; height:5px; background:rgba(128,128,128,0.18); border-radius:999px; overflow:hidden; margin-bottom:12px;">
-    <div style="width:{prog_pct}%; height:100%; background:linear-gradient(90deg, {th['accent']}, {th['accent2']}); border-radius:999px; transition:width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
-</div>
-""", unsafe_allow_html=True)
-
-for i, label in enumerate(PAGES):
-    is_active = (i == curr_idx)
-    btn_type = "primary" if is_active else "secondary"
-    if st.sidebar.button(label, key=f"side_nav_{i}", use_container_width=True, type=btn_type):
-        go_to_step(i)
-
-st.sidebar.markdown("---")
-if st.sidebar.button("🗑️ Reset Workspace Vault", use_container_width=True):
-    if os.path.exists(DB_PATH):
-        os.remove(DB_PATH)
-    init_db()
-    st.session_state["rq_val"] = ""
-    st.session_state["p_val"] = ""
-    st.session_state["i_val"] = ""
-    st.session_state["c_val"] = ""
-    st.session_state["o_val"] = ""
-    st.session_state["current_step_idx"] = 1
-    st.rerun()
+curr_code, curr_short, curr_desc = STAGES[curr_idx]
+reviewer_name = st.session_state["reviewer_name"]
 
 # ==============================================================================
-# MASTER CSS ENGINE: WATERMELON + MANUS + CULT-UI + GSAP MOTION
+# COMPLETE ARCHITECTURAL CSS OVERHAUL (LANDO + GSAP + CULT + WATERMELON + MANUS)
 # ==============================================================================
 st.markdown(f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
-    /* GSAP-Inspired Keyframe Physics */
-    @keyframes gsapRevealUp {{
-        0% {{ opacity: 0; transform: translateY(22px) scale(0.985); filter: blur(4px); }}
-        100% {{ opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }}
-    }}
-    @keyframes gsapPulseDot {{
-        0%, 100% {{ transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 {th['accent_glow']}; }}
-        50% {{ transform: scale(1.15); opacity: 0.85; box-shadow: 0 0 0 8px transparent; }}
-    }}
-    @keyframes borderBeam {{
-        0%, 100% {{ border-color: {th['border']}; }}
-        50% {{ border-color: {th['accent']}; }}
-    }}
-    @keyframes pulseGapRed {{
-        0%, 100% {{ box-shadow: 0 0 15px rgba(244, 63, 94, 0.25), inset 0 1px 0 0 rgba(255,255,255,0.2); border-color: rgba(244, 63, 94, 0.55); }}
-        50% {{ box-shadow: 0 0 28px rgba(244, 63, 94, 0.60), inset 0 1px 0 0 rgba(255,255,255,0.35); border-color: rgba(244, 63, 94, 1); }}
+    /* Kill Default Streamlit Chrome & Sidebar Completely */
+    #MainMenu, footer, header {{ visibility: hidden !important; height: 0 !important; }}
+    section[data-testid="stSidebar"], div[data-testid="collapsedControl"] {{ display: none !important; }}
+    .block-container {{
+        padding-top: 1.2rem !important;
+        padding-bottom: 4rem !important;
+        max-width: 1440px !important;
     }}
 
-    html, body, [class*="css"] {{
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-        color: {th['text']} !important;
-        -webkit-font-smoothing: antialiased;
+    /* GSAP Physics & Lando Marquee Keyframes */
+    @keyframes marqueeScroll {{
+        0% {{ transform: translateX(0%); }}
+        100% {{ transform: translateX(-50%); }}
     }}
-    code, pre {{
-        font-family: 'JetBrains Mono', monospace !important;
+    @keyframes gsapSlideUp {{
+        0% {{ opacity: 0; transform: translateY(28px) scale(0.98); }}
+        100% {{ opacity: 1; transform: translateY(0) scale(1); }}
     }}
-    #MainMenu {{visibility: hidden;}}
-    footer {{visibility: hidden;}}
+    @keyframes voltPulse {{
+        0%, 100% {{ box-shadow: 0 0 18px {sk['glow']}, inset 0 1px 0 rgba(255,255,255,0.2); }}
+        50% {{ box-shadow: 0 0 34px {sk['glow']}, inset 0 1px 0 rgba(255,255,255,0.4); }}
+    }}
+    @keyframes redGapPulse {{
+        0%, 100% {{ box-shadow: 0 0 14px rgba(255, 51, 102, 0.25); border-color: rgba(255, 51, 102, 0.5); }}
+        50% {{ box-shadow: 0 0 30px rgba(255, 51, 102, 0.75); border-color: #ff3366; }}
+    }}
 
+    /* Lando Norris Telemetry Grid Background */
     .stApp {{
-        background: {th['bg']} !important;
-        color: {th['text']} !important;
+        background-color: {sk['bg']} !important;
+        background-image:
+            linear-gradient(to right, {sk['grid_line']} 1px, transparent 1px),
+            linear-gradient(to bottom, {sk['grid_line']} 1px, transparent 1px) !important;
+        background-size: 48px 48px !important;
+        color: {sk['text']} !important;
+        font-family: 'Space Grotesk', sans-serif !important;
     }}
-    section[data-testid="stSidebar"] {{
-        background: {th['sidebar_bg']} !important;
-        border-right: 1px solid {th['border']} !important;
-    }}
+
     p, span, label, h1, h2, h3, h4, h5, h6 {{
-        color: {th['text']};
+        color: {sk['text']};
+        font-family: 'Space Grotesk', sans-serif;
     }}
 
     /* ==========================================================================
-       MANUS.IM + CULT-UI HERO & AUTONOMOUS AGENT STATUS BAR
+       1. LANDO NORRIS INFINITE KINETIC TICKER TAPE
        ========================================================================== */
-    .manus-hero-shell {{
-        animation: gsapRevealUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        background: {th['shell_bg']};
-        border: 1px solid {th['border']};
-        box-shadow: {th['specular']}, 0 20px 45px -20px rgba(0, 0, 0, 0.55);
-        border-radius: 22px;
-        padding: 6px;
-        margin-bottom: 16px;
-        backdrop-filter: blur(24px);
-    }}
-    .manus-hero-inner {{
-        background: {th['card_bg']};
-        border: 1px solid {th['border']};
-        border-radius: 17px;
-        padding: 18px 24px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }}
-    .gsap-hero-title {{
-        font-size: 1.65rem;
-        font-weight: 800;
-        letter-spacing: -0.6px;
-        background: {th['grad_text']};
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }}
-    .editorial-serif {{
-        font-family: 'Instrument Serif', Georgia, serif;
-        font-style: italic;
-        font-weight: 400;
-        font-size: 1.85rem;
-        color: {th['accent']};
-        -webkit-text-fill-color: {th['accent']};
-    }}
-    .manus-agent-bar {{
-        background: rgba(128, 128, 128, 0.07);
-        border-top: 1px solid {th['border']};
-        border-radius: 0 0 16px 16px;
-        padding: 8px 22px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    .lando-ticker-wrap {{
+        width: 100%;
+        overflow: hidden;
+        background: {sk['accent']};
+        color: {sk['accent_text']} !important;
+        border-radius: 10px;
+        padding: 7px 0;
+        margin-bottom: 14px;
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.74rem;
-        color: {th['muted']};
+        font-weight: 800;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        box-shadow: 0 8px 24px -6px {sk['glow']};
     }}
-    .agent-pulse-dot {{
+    .lando-ticker-move {{
         display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: {th['accent2']};
-        margin-right: 8px;
-        animation: gsapPulseDot 2s infinite;
+        white-space: nowrap;
+        animation: marqueeScroll 26s linear infinite;
+    }}
+    .lando-ticker-move span {{
+        color: {sk['accent_text']} !important;
+        margin: 0 24px;
     }}
 
     /* ==========================================================================
-       WATERMELON UI BENTO 6-CARD TELEMETRY GRID (WITH DEDICATED EXCLUDED BOX)
+       2. CULT-UI + WATERMELON DOUBLE-BEZEL HARDWARE CHASSIS
        ========================================================================== */
-    .watermelon-bento-6 {{
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 12px;
-        margin-bottom: 22px;
+    .cult-chassis {{
+        animation: gsapSlideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        background: {sk['chassis']};
+        border: 1px solid {sk['soft_border']};
+        border-radius: 26px;
+        padding: 8px;
+        margin-bottom: 18px;
+        box-shadow: 0 24px 48px -18px rgba(0, 0, 0, 0.65);
     }}
-    .wm-card {{
-        animation: gsapRevealUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-        background: {th['card_bg']};
-        border: 1px solid {th['border']};
-        box-shadow: {th['specular']}, 0 10px 28px -12px rgba(0, 0, 0, 0.45);
-        border-radius: 18px;
-        padding: 15px 16px;
-        transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    .cult-plate {{
+        background: {sk['plate']};
+        border: 1px solid {sk['border']};
+        border-radius: 20px;
+        padding: 24px 28px;
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.16);
         position: relative;
         overflow: hidden;
     }}
-    .wm-card:nth-child(1) {{ animation-delay: 0.04s; }}
-    .wm-card:nth-child(2) {{ animation-delay: 0.08s; }}
-    .wm-card:nth-child(3) {{ animation-delay: 0.12s; }}
-    .wm-card:nth-child(4) {{ animation-delay: 0.16s; }}
-    .wm-card:nth-child(5) {{ animation-delay: 0.20s; }}
-    .wm-card:nth-child(6) {{ animation-delay: 0.24s; }}
 
-    .wm-card:hover {{
-        transform: translateY(-5px) scale(1.015);
-        border-color: {th['accent']};
-        box-shadow: {th['specular']}, 0 16px 36px -10px {th['accent_glow']};
-    }}
-    .wm-tag {{
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.67rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        color: {th['muted']};
-        display: flex;
-        justify-content: space-between;
+    /* Lando Norris Giant Stage Hero Banner */
+    .stage-hero-grid {{
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 24px;
         align-items: center;
     }}
-    .wm-num {{
-        font-size: 1.85rem;
+    .lando-giant-num {{
+        font-family: 'Syne', sans-serif;
+        font-size: 4.8rem;
         font-weight: 800;
-        letter-spacing: -0.8px;
-        margin: 6px 0 3px 0;
-        line-height: 1.05;
+        line-height: 0.88;
+        letter-spacing: -3px;
+        color: {sk['accent']};
+        text-shadow: 0 0 32px {sk['glow']};
+        padding-right: 18px;
+        border-right: 2px solid {sk['border']};
     }}
-    .wm-sub {{
-        font-size: 0.73rem;
-        color: {th['muted']};
+    .stage-kicker {{
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: {sk['accent']};
+        margin-bottom: 4px;
+    }}
+    .stage-headline {{
+        font-family: 'Syne', sans-serif;
+        font-size: 2.15rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        line-height: 1.05;
+        margin: 0;
+    }}
+    .serif-accent {{
+        font-family: 'Instrument Serif', serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: 2.4rem;
+        color: {sk['accent2']};
     }}
 
     /* ==========================================================================
-       CULT-UI DOUBLE-BORDER RECESSED SHELLS & CARDS
+       3. WATERMELON 6-MODULE TELEMETRY STRIP (WITH ISOLATED EXCLUDED MODULE)
        ========================================================================== */
-    .cult-shell {{
-        animation: gsapRevealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        background: {th['shell_bg']};
-        border: 1px solid {th['border']};
-        box-shadow: {th['specular']}, 0 18px 40px -18px rgba(0,0,0,0.45);
-        border-radius: 20px;
-        padding: 18px 22px;
-        margin-bottom: 16px;
-        backdrop-filter: blur(20px);
+    .telemetry-strip-6 {{
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
     }}
+    .tele-pod {{
+        animation: gsapSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        background: {sk['plate']};
+        border: 1px solid {sk['soft_border']};
+        border-radius: 18px;
+        padding: 14px 16px;
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.14), 0 12px 24px -10px rgba(0,0,0,0.45);
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+    }}
+    .tele-pod:hover {{
+        transform: translateY(-6px) scale(1.02);
+        border-color: {sk['accent']};
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.25), 0 18px 34px -10px {sk['glow']};
+    }}
+    .tele-head {{
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: {sk['muted']};
+        display: flex;
+        justify-content: space-between;
+    }}
+    .tele-val {{
+        font-family: 'Syne', sans-serif;
+        font-size: 2.1rem;
+        font-weight: 800;
+        line-height: 1.05;
+        margin: 6px 0 2px 0;
+    }}
+    .tele-sub {{
+        font-size: 0.72rem;
+        color: {sk['muted']};
+    }}
+
+    /* ==========================================================================
+       4. MANUS.IM AUTONOMOUS AGENT STREAM TERMINAL
+       ========================================================================== */
+    .manus-stream {{
+        background: #050608;
+        border: 1px solid {sk['border']};
+        border-left: 5px solid {sk['accent']};
+        border-radius: 14px;
+        padding: 12px 18px;
+        margin-bottom: 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.78rem;
+        color: #e2e8f0;
+        box-shadow: 0 10px 28px -12px {sk['glow']};
+    }}
+
+    /* Streamlit Container Overrides -> Cult-UI Cards */
     div[data-testid="stVerticalBlockBorderWrapper"] {{
-        background: {th['card_bg']} !important;
-        border: 1px solid {th['border']} !important;
-        box-shadow: {th['specular']}, 0 10px 26px -12px rgba(0, 0, 0, 0.35) !important;
-        border-radius: 18px !important;
-        padding: 16px !important;
+        background: {sk['plate']} !important;
+        border: 1px solid {sk['soft_border']} !important;
+        border-radius: 20px !important;
+        padding: 18px !important;
+        box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.12), 0 14px 28px -14px rgba(0,0,0,0.45) !important;
         transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }}
     div[data-testid="stVerticalBlockBorderWrapper"]:hover {{
-        border-color: rgba(129, 140, 248, 0.35) !important;
+        border-color: {sk['border']} !important;
+        transform: translateY(-2px);
     }}
 
-    /* Academy PICO 4-Card Grid */
-    .academy-grid {{
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 14px;
-        margin: 14px 0 22px 0;
+    /* Tactile Buttons (Lando Volt + Watermelon Spring) */
+    div.stButton > button {{
+        font-family: 'Space Grotesk', sans-serif !important;
+        border-radius: 999px !important;
+        font-weight: 700 !important;
+        font-size: 0.82rem !important;
+        letter-spacing: 0.3px !important;
+        border: 1px solid {sk['soft_border']} !important;
+        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }}
-    .academy-card {{
-        background: {th['card_bg']};
-        border: 1px solid {th['border']};
-        box-shadow: {th['specular']}, 0 12px 30px -14px rgba(0,0,0,0.4);
-        border-radius: 18px;
-        padding: 20px;
-        transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    div.stButton > button[kind="primary"] {{
+        background: {sk['accent']} !important;
+        color: {sk['accent_text']} !important;
+        border: 1px solid {sk['accent']} !important;
+        box-shadow: 0 0 22px {sk['glow']} !important;
     }}
-    .academy-card:hover {{
-        transform: translateY(-5px);
-        border-color: {th['accent']};
-        box-shadow: {th['specular']}, 0 16px 35px -10px {th['accent_glow']};
+    div.stButton > button[kind="primary"] * {{
+        color: {sk['accent_text']} !important;
+        font-weight: 800 !important;
+    }}
+    div.stButton > button:hover {{
+        transform: translateY(-3px) scale(1.02) !important;
+        border-color: {sk['accent']} !important;
     }}
 
-    /* Evidence Gap Heatmap Matrix Cells */
-    .gap-cell-dense {{
-        background: linear-gradient(180deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 100%);
+    /* AI Gap Matrix Cells */
+    .gap-dense {{
+        background: rgba(16, 185, 129, 0.14);
         border: 1px solid rgba(16, 185, 129, 0.45);
-        box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.2);
-        border-radius: 14px;
-        padding: 14px 10px;
-        text-align: center;
-        transition: transform 0.2s ease;
-    }}
-    .gap-cell-dense:hover {{ transform: scale(1.03); }}
-    .gap-cell-sparse {{
-        background: linear-gradient(180deg, rgba(245, 158, 11, 0.22) 0%, rgba(245, 158, 11, 0.08) 100%);
-        border: 1px solid rgba(245, 158, 11, 0.45);
-        box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.2);
-        border-radius: 14px;
-        padding: 14px 10px;
-        text-align: center;
-        transition: transform 0.2s ease;
-    }}
-    .gap-cell-sparse:hover {{ transform: scale(1.03); }}
-    .gap-cell-zero {{
-        background: linear-gradient(180deg, rgba(244, 63, 94, 0.25) 0%, rgba(244, 63, 94, 0.10) 100%);
-        border: 1px solid rgba(244, 63, 94, 0.70);
-        border-radius: 14px;
-        padding: 14px 10px;
-        text-align: center;
-        animation: pulseGapRed 2.5s infinite ease-in-out;
-        transition: transform 0.2s ease;
-    }}
-    .gap-cell-zero:hover {{ transform: scale(1.05); }}
-
-    /* Manus Terminal Box */
-    .manus-terminal {{
-        background: #09090d;
-        border: 1px solid {th['accent']};
-        box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.12), 0 0 28px {th['accent_glow']};
         border-radius: 16px;
-        padding: 16px 20px;
-        font-family: 'JetBrains Mono', monospace;
-        color: #a5b4fc;
-        font-size: 0.92rem;
-        margin: 12px 0;
+        padding: 16px 10px;
+        text-align: center;
+    }}
+    .gap-sparse {{
+        background: rgba(245, 158, 11, 0.14);
+        border: 1px solid rgba(245, 158, 11, 0.45);
+        border-radius: 16px;
+        padding: 16px 10px;
+        text-align: center;
+    }}
+    .gap-zero {{
+        background: rgba(255, 51, 102, 0.16);
+        border: 1px solid #ff3366;
+        border-radius: 16px;
+        padding: 16px 10px;
+        text-align: center;
+        animation: redGapPulse 2.2s infinite ease-in-out;
     }}
 
-    /* Cult-UI Tactile Pills */
-    .pico-chip {{
+    /* Tactile Chips */
+    .k-chip {{
         display: inline-block;
         padding: 4px 12px;
         border-radius: 999px;
-        font-size: 0.74rem;
-        font-weight: 700;
         font-family: 'JetBrains Mono', monospace;
+        font-size: 0.72rem;
+        font-weight: 700;
         margin-right: 6px;
         margin-bottom: 6px;
-        box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.2);
-    }}
-    .chip-p {{ background: rgba(56, 189, 248, 0.16); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.45); }}
-    .chip-i {{ background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); }}
-    .chip-c {{ background: rgba(245, 158, 11, 0.16); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.45); }}
-    .chip-o {{ background: rgba(192, 132, 252, 0.16); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.45); }}
-
-    /* Tactile Spring Buttons (Watermelon / Cult UI style) */
-    div.stButton > button {{
-        border-radius: 12px !important;
-        font-weight: 700 !important;
-        letter-spacing: -0.1px !important;
-        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 12px rgba(0, 0, 0, 0.25) !important;
-        transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    }}
-    div.stButton > button:hover {{
-        transform: translateY(-2px) scale(1.01) !important;
-        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.35), 0 8px 22px -4px {th['accent_glow']} !important;
-    }}
-    div.stButton > button:active {{
-        transform: translateY(1px) scale(0.99) !important;
+        border: 1px solid {sk['border']};
+        background: rgba(255,255,255,0.04);
     }}
 </style>
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# TOPIC PRESETS (ONLY POPULATE WHEN CLICKED)
+# CLINICAL TOPIC PRESETS (ONLY LOAD WHEN CLICKED)
 # ==============================================================================
 TOPIC_CARDS = {
-    "🫀 Cardiology: Apixaban vs. Warfarin": {
-        "badge": "CARDIOLOGY // STROKE PREVENTION",
-        "plain_english": "Patients with an irregular heartbeat (Atrial Fibrillation) have a high risk of blood clots causing a stroke. Doctors compare a newer blood thinner pill (**Apixaban**) against an older blood thinner (**Warfarin**) to see which prevents more strokes with less internal bleeding.",
+    "🫀 CARDIOLOGY // APIXABAN vs. WARFARIN": {
+        "tag": "STROKE PREVENTION TRIALS",
+        "plain_english": "Patients with Atrial Fibrillation have an irregular heartbeat that can cause blood clots and strokes. Researchers compare **Apixaban** (a modern Factor Xa blood thinner) against **Warfarin** to see which prevents more strokes with fewer major bleeds.",
         "question": "In adults with atrial fibrillation, does apixaban, compared with warfarin, reduce the risk of stroke and major bleeding?",
         "P": "Adults with atrial fibrillation, nonvalvular atrial fibrillation, AF patients",
         "I": "Apixaban, Eliquis, direct factor Xa inhibitor",
         "C": "Warfarin, vitamin K antagonist, Coumadin, aspirin",
         "O": "Stroke, systemic embolism, major bleeding, intracranial hemorrhage, mortality",
     },
-    "🩸 Endocrinology: Metformin in Type 2 Diabetes": {
-        "badge": "ENDOCRINOLOGY // GLYCEMIC CONTROL",
-        "plain_english": "People with **Type 2 Diabetes** have high blood sugar levels. Doctors test whether the first-line medicine **Metformin** lowers 3-month average blood sugar (**HbA1c**) better than a dummy pill (**Placebo**) or older diabetes drugs (**Sulfonylureas**).",
+    "🩸 ENDOCRINOLOGY // METFORMIN IN T2DM": {
+        "tag": "GLYCEMIC CONTROL RCTs",
+        "plain_english": "People with **Type 2 Diabetes** have elevated blood glucose. This protocol tests whether **Metformin** lowers 3-month average blood sugar (**HbA1c**) more effectively than **Placebo** or **Sulfonylureas**.",
         "question": "In adults with type 2 diabetes, does metformin, compared with placebo or sulfonylurea, lower HbA1c?",
         "P": "Adults with type 2 diabetes, T2DM, diabetic patients",
         "I": "Metformin, glucophage, biguanide",
         "C": "Placebo, sulfonylurea, glimepiride, sitagliptin, standard care",
         "O": "HbA1c, glycated haemoglobin, fasting blood glucose, weight change",
     },
-    "🎗️ Oncology: Pembrolizumab in Lung Cancer": {
-        "badge": "ONCOLOGY // IMMUNOTHERAPY",
-        "plain_english": "In advanced **Lung Cancer (NSCLC)**, traditional **Chemotherapy** attacks both cancer and healthy cells. This topic checks if **Pembrolizumab** (an immunotherapy drug that trains the body's own immune system to fight cancer) helps patients live longer (**Overall Survival**).",
+    "🎗️ ONCOLOGY // PEMBROLIZUMAB IN NSCLC": {
+        "tag": "CHECKPOINT IMMUNOTHERAPY",
+        "plain_english": "In metastatic **Lung Cancer (NSCLC)**, standard **Chemotherapy** damages healthy cells. This review evaluates whether **Pembrolizumab** (PD-1 immunotherapy) extends **Overall Survival**.",
         "question": "In adult patients with metastatic non-small-cell lung cancer (NSCLC), does pembrolizumab, compared with chemotherapy, improve overall survival?",
         "P": "Adults with metastatic non-small-cell lung cancer, NSCLC, advanced lung carcinoma",
         "I": "Pembrolizumab, Keytruda, PD-1 inhibitor, immunotherapy",
         "C": "Platinum-based chemotherapy, docetaxel, carboplatin, placebo",
         "O": "Overall survival, progression-free survival, PFS, objective response rate",
     },
-    "🧠 Neurology: Escitalopram in Major Depression": {
-        "badge": "PSYCHIATRY // MOOD DISORDERS",
-        "plain_english": "In **Major Depressive Disorder (MDD)**, doctors compare a daily antidepressant pill (**Escitalopram**) against a sugar pill (**Placebo**) or talk therapy (**CBT**) to see if patients' depression questionnaire scores (**MADRS / HAM-D**) improve.",
+    "🧠 PSYCHIATRY // ESCITALOPRAM IN MDD": {
+        "tag": "NEURO-MOOD THERAPEUTICS",
+        "plain_english": "In **Major Depressive Disorder (MDD)**, clinicians compare **Escitalopram** (an SSRI) against **Placebo** or **Cognitive Behavioral Therapy (CBT)** on standardized depression scales (**MADRS / HAM-D**).",
         "question": "In adults with major depressive disorder (MDD), does escitalopram, compared with placebo or CBT, reduce depression severity scores?",
         "P": "Adults with major depressive disorder, MDD, unipolar depression",
         "I": "Escitalopram, Lexapro, selective serotonin reuptake inhibitor, SSRI",
@@ -658,8 +594,7 @@ def compute_ai_evidence_gap_matrix(records: list, config: dict) -> dict:
         ("Long-Term Mortality & QoL (>2 yr)", ["mortality", "survival", "quality of life", "qol", "5-year", "long-term death"], "long-term all-cause mortality & QoL"),
     ]
 
-    matrix = {}
-    gaps = []
+    matrix, gaps = {}, []
     zero_count, sparse_count, dense_count = 0, 0, 0
 
     for sg_label, sg_kw, sg_query_term in subgroups:
@@ -700,149 +635,202 @@ def compute_ai_evidence_gap_matrix(records: list, config: dict) -> dict:
     }
 
 
+def render_bottom_teleport_bar(curr_idx: int):
+    st.write("")
+    st.markdown('<div class="cult-chassis"><div class="cult-plate" style="padding:14px 22px;">', unsafe_allow_html=True)
+    b1, b2, b3 = st.columns([1.3, 2.4, 1.3])
+    with b1:
+        if curr_idx > 0:
+            prev_code, prev_name, _ = STAGES[curr_idx - 1]
+            if st.button(f"⬅️ [{prev_code}] {prev_name}", use_container_width=True, key=f"bot_prev_{curr_idx}"):
+                go_to_step(curr_idx - 1)
+    with b2:
+        st.markdown(
+            f"<div style='text-align:center; padding-top:6px; font-family:JetBrains Mono, monospace; font-size:0.78rem;'>"
+            f"⚡ ACTIVE TELEMETRY NODE // [{curr_code}] {curr_short} — {curr_desc.upper()}</div>",
+            unsafe_allow_html=True
+        )
+    with b3:
+        if curr_idx < len(STAGES) - 1:
+            nxt_code, nxt_name, _ = STAGES[curr_idx + 1]
+            if st.button(f"NEXT: [{nxt_code}] {nxt_name} ➡️", type="primary", use_container_width=True, key=f"bot_next_{curr_idx}"):
+                go_to_step(curr_idx + 1)
+    st.markdown('</div></div>', unsafe_allow_html=True)
+
+
 # ==============================================================================
-# TOP MANUS × CULT-UI HERO & WATERMELON 6-BENTO TELEMETRY
+# 1. TOP LANDO NORRIS KINETIC TICKER TAPE + FLOATING COMMAND BAR (NO SIDEBAR!)
 # ==============================================================================
 stats = get_dashboard_stats()
 config = get_project_config()
-active_q_display = st.session_state.get("rq_val") or "Awaiting clinical topic initialization — select a Topic Card in Step 01 or open the Academy Guide."
 
 st.markdown(f"""
-<div class="manus-hero-shell">
-    <div class="manus-hero-inner">
-        <div>
-            <div class="gsap-hero-title">
-                ⚡ Mini-Rayyan <span class="editorial-serif">Synthesis Studio</span>
-            </div>
-            <div style="font-size:0.88rem; color:{th['muted']}; margin-top:4px;">
-                🎯 <b>Active Protocol:</b> {active_q_display}
-            </div>
-        </div>
-        <div style="text-align:right;">
-            <span class="pico-chip chip-p">OPERATOR // {reviewer_name.upper()}</span><br>
-            <span class="pico-chip chip-i">SQLITE VAULT // {stats['query_count']} QUERY VERSIONS</span>
-        </div>
-    </div>
-    <div class="manus-agent-bar">
-        <div><span class="agent-pulse-dot"></span><b>MANUS-CORE TELEMETRY:</b> STAGE {curr_idx:02d} ACTIVE ({PAGES[curr_idx].upper()})</div>
-        <div>ZERO-DELETION LEDGER: <b>ENABLED</b> &nbsp;|&nbsp; LEVEL-2 LOOP: <b>SYNCED</b></div>
-    </div>
-</div>
-
-<div class="watermelon-bento-6">
-    <div class="wm-card">
-        <div class="wm-tag"><span>01 // VAULT</span><span>📥</span></div>
-        <div class="wm-num" style="color:#38bdf8;">{stats['total_records']}</div>
-        <div class="wm-sub">Total Pulled Records</div>
-    </div>
-    <div class="wm-card">
-        <div class="wm-tag"><span>02 // UNIQUE</span><span>📄</span></div>
-        <div class="wm-num" style="color:#818cf8;">{stats['unique_visible']}</div>
-        <div class="wm-sub">Active Representatives</div>
-    </div>
-    <div class="wm-card">
-        <div class="wm-tag"><span>03 // DUPLICATES</span><span>🔗</span></div>
-        <div class="wm-num" style="color:#f472b6;">{stats['hidden_dups']}</div>
-        <div class="wm-sub">{stats['uncertain_dups']} Uncertain Pair(s)</div>
-    </div>
-    <div class="wm-card">
-        <div class="wm-tag"><span>04 // INCLUDED</span><span>✅</span></div>
-        <div class="wm-num" style="color:#34d399;">{stats['included']}</div>
-        <div class="wm-sub">Accepted Clinical Trials</div>
-    </div>
-    <div class="wm-card">
-        <div class="wm-tag"><span>05 // EXCLUDED</span><span>❌</span></div>
-        <div class="wm-num" style="color:#fb7185;">{stats['excluded']}</div>
-        <div class="wm-sub">Isolated w/ Reasons</div>
-    </div>
-    <div class="wm-card">
-        <div class="wm-tag"><span>06 // MAYBE QUEUE</span><span>🤔</span></div>
-        <div class="wm-num" style="color:#fbbf24;">{stats['maybe']}</div>
-        <div class="wm-sub">{stats['overrides']} Human Overrides</div>
+<div class="lando-ticker-wrap">
+    <div class="lando-ticker-move">
+        <span>⚡ MINI-RAYYAN KINETIC OS v4.0</span>
+        <span>// PUBMED + EUROPE PMC LIVE STREAM</span>
+        <span>// SQLITE VAULT: {stats['total_records']} RECORDS (ZERO DELETION)</span>
+        <span>// UNIQUE ACTIVE: {stats['unique_visible']}</span>
+        <span>// INCLUDED: {stats['included']}</span>
+        <span>// EXCLUDED ISOLATED: {stats['excluded']}</span>
+        <span>// AI WHITE-SPACE ENGINE: READY</span>
+        <span>⚡ MINI-RAYYAN KINETIC OS v4.0</span>
+        <span>// PUBMED + EUROPE PMC LIVE STREAM</span>
+        <span>// SQLITE VAULT: {stats['total_records']} RECORDS (ZERO DELETION)</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-if curr_idx != 0:
-    with st.expander("📘 Instant PICO & Workflow Cheat-Sheet (Click to Expand Anytime)"):
-        q_col1, q_col2 = st.columns([1.3, 1.7])
-        with q_col1:
-            st.markdown("""
-            **🧬 PICO Framework Reference**
-            - 🟦 **P — Population:** Patient cohort *(e.g., Adults with Type 2 Diabetes)*
-            - 🟩 **I — Intervention:** Primary drug/therapy *(e.g., Metformin)*
-            - 🟧 **C — Comparator:** Control/alternative *(e.g., Placebo or Sulfonylurea)*
-            - 🟪 **O — Outcome:** Clinical endpoint *(e.g., HbA1c reduction)*
-            """)
-        with q_col2:
-            st.markdown("""
-            **⚡ Architecture Highlights**
-            - **Zero-Deletion Vault:** Excluded & duplicate records are never deleted from SQLite.
-            - **Dedicated Excluded Box:** Rejected studies move to their own isolated bucket.
-            - **AI White-Space Lab (Stage 09):** Cross-maps PICO cohorts vs. outcomes to discover **0-Study Research Blind Spots**.
-            """)
-
+# Top Floating Control Deck (Skin Switcher + Operator + Instant Reset)
+top_c1, top_c2, top_c3, top_c4 = st.columns([1.8, 1.3, 1.1, 0.8])
+with top_c1:
+    chosen_skin = st.selectbox(
+        "🎨 KINETIC SKIN",
+        list(SKINS.keys()),
+        index=list(SKINS.keys()).index(st.session_state["ui_skin"]),
+        label_visibility="collapsed"
+    )
+    if chosen_skin != st.session_state["ui_skin"]:
+        st.session_state["ui_skin"] = chosen_skin
+        st.rerun()
+with top_c2:
+    st.session_state["reviewer_name"] = st.text_input(
+        "OPERATOR",
+        value=st.session_state["reviewer_name"],
+        label_visibility="collapsed"
+    )
+with top_c3:
+    if st.button("⚡ 1-CLICK DEMO DATASET (12 PAPERS)", use_container_width=True):
+        vid = create_query_version(
+            "Benchmark v1 (Metformin vs Placebo)",
+            '("type 2 diabetes") AND metformin AND placebo',
+            2015, 2025, ["PubMed", "Europe PMC"], 8, 4
+        )
+        store_fetched_records(vid, get_benchmark_papers("v1"))
+        run_deduplication(vid)
+        run_screening(vid)
+        run_pico_extraction(vid)
+        st.rerun()
+with top_c4:
+    if st.button("🗑️ RESET VAULT", use_container_width=True):
+        if os.path.exists(DB_PATH):
+            os.remove(DB_PATH)
+        init_db()
+        st.session_state["rq_val"] = ""
+        st.session_state["p_val"] = ""
+        st.session_state["i_val"] = ""
+        st.session_state["c_val"] = ""
+        st.session_state["o_val"] = ""
+        st.session_state["current_step_idx"] = 1
+        st.rerun()
 
 # ==============================================================================
-# STAGE 00: ACADEMY & PICO GUIDE
+# 2. CULT-UI HORIZONTAL FLOATING PILL DOCK (REPLACES BORING LEFT SIDEBAR!)
 # ==============================================================================
-if curr_idx == 0:
-    st.markdown("## 🎓 Welcome to the Agentic Evidence Synthesis Academy")
-    st.caption("New to systematic reviews or PICO? Explore this interactive 60-second briefing or click any medical topic card below to launch straight into the pipeline.")
+dock_cols = st.columns(len(STAGES))
+for idx, (s_code, s_short, _) in enumerate(STAGES):
+    with dock_cols[idx]:
+        is_curr = (idx == curr_idx)
+        if st.button(
+            f"{s_code}·{s_short}",
+            key=f"top_dock_{idx}",
+            type="primary" if is_curr else "secondary",
+            use_container_width=True
+        ):
+            go_to_step(idx)
 
-    st.markdown("""
-    <div class="academy-grid">
-        <div class="academy-card" style="border-top: 3px solid #38bdf8;">
-            <div style="font-size:1.45rem; font-weight:800; color:#38bdf8; margin-bottom:6px;">🟦 P — Population</div>
-            <div style="font-weight:700; margin-bottom:6px;">Who are the patients?</div>
-            <div style="font-size:0.84rem; opacity:0.8; line-height:1.5;">
-                The specific patient group or disease condition under investigation.<br><br>
-                <b>Examples:</b><br>• Adults with Type 2 Diabetes<br>• Nonvalvular Atrial Fibrillation<br>• Metastatic Lung Cancer
+# ==============================================================================
+# 3. LANDO NORRIS GIANT STAGE HERO + MANUS LIVE AGENT STREAM
+# ==============================================================================
+active_q_txt = st.session_state.get("rq_val") or "No protocol locked yet — select a clinical preset card in [01·PROTOCOL] or open [00·ACADEMY]."
+
+st.markdown(f"""
+<div class="cult-chassis">
+    <div class="cult-plate">
+        <div class="stage-hero-grid">
+            <div class="lando-giant-num">{curr_code}</div>
+            <div>
+                <div class="stage-kicker">// STAGE {curr_code} TELEMETRY NODE — {curr_short}</div>
+                <div class="stage-headline">{curr_desc} <span class="serif-accent">Workbench</span></div>
+                <div style="font-size:0.86rem; color:{sk['muted']}; margin-top:6px;">
+                    🎯 <b>ACTIVE PICO PROTOCOL:</b> {active_q_txt}
+                </div>
             </div>
-        </div>
-        <div class="academy-card" style="border-top: 3px solid #34d399;">
-            <div style="font-size:1.45rem; font-weight:800; color:#34d399; margin-bottom:6px;">🟩 I — Intervention</div>
-            <div style="font-weight:700; margin-bottom:6px;">What treatment is tested?</div>
-            <div style="font-size:0.84rem; opacity:0.8; line-height:1.5;">
-                The primary drug, clinical procedure, or therapy being evaluated.<br><br>
-                <b>Examples:</b><br>• Metformin<br>• Apixaban (Factor Xa inhibitor)<br>• Pembrolizumab Immunotherapy
-            </div>
-        </div>
-        <div class="academy-card" style="border-top: 3px solid #fbbf24;">
-            <div style="font-size:1.45rem; font-weight:800; color:#fbbf24; margin-bottom:6px;">🟧 C — Comparator</div>
-            <div style="font-weight:700; margin-bottom:6px;">What is it compared against?</div>
-            <div style="font-size:0.84rem; opacity:0.8; line-height:1.5;">
-                The control group—either a dummy pill (Placebo) or current standard-of-care drug.<br><br>
-                <b>Examples:</b><br>• Placebo<br>• Warfarin<br>• Platinum Chemotherapy
-            </div>
-        </div>
-        <div class="academy-card" style="border-top: 3px solid #c084fc;">
-            <div style="font-size:1.45rem; font-weight:800; color:#c084fc; margin-bottom:6px;">🟪 O — Outcome</div>
-            <div style="font-weight:700; margin-bottom:6px;">What endpoint is measured?</div>
-            <div style="font-size:0.84rem; opacity:0.8; line-height:1.5;">
-                The measurable clinical result or safety event tracked by researchers.<br><br>
-                <b>Examples:</b><br>• HbA1c Blood Sugar Drop<br>• Stroke & Major Bleeding<br>• Overall Survival
+            <div style="text-align:right;">
+                <span class="k-chip">QUERIES // {stats['query_count']}</span><br>
+                <span class="k-chip">OVERRIDES // {stats['overrides']}</span>
             </div>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+</div>
 
-    st.markdown("### 🏥 Plain-English Briefing on the 4 Clinical Preset Topics")
-    topic_cols = st.columns(2)
-    for idx, (t_title, t_data) in enumerate(TOPIC_CARDS.items()):
-        with topic_cols[idx % 2]:
+<div class="manus-stream">
+    <div>🤖 <b>MANUS-AGENT STREAM //</b> Autonomous synthesis engine online — Stage <b>[{curr_code}·{curr_short}]</b> ready for human-in-the-loop command.</div>
+    <div>SQLITE ZERO-DELETE: <b style="color:#10b981;">LOCKED</b></div>
+</div>
+
+<div class="telemetry-strip-6">
+    <div class="tele-pod">
+        <div class="tele-head"><span>01 // VAULT</span><span>📥</span></div>
+        <div class="tele-val" style="color:#38bdf8;">{stats['total_records']}</div>
+        <div class="tele-sub">Total Stored Papers</div>
+    </div>
+    <div class="tele-pod">
+        <div class="tele-head"><span>02 // UNIQUE</span><span>📄</span></div>
+        <div class="tele-val" style="color:#818cf8;">{stats['unique_visible']}</div>
+        <div class="tele-sub">Active Representatives</div>
+    </div>
+    <div class="tele-pod">
+        <div class="tele-head"><span>03 // DUPLICATES</span><span>🔗</span></div>
+        <div class="tele-val" style="color:#f472b6;">{stats['hidden_dups']}</div>
+        <div class="tele-sub">{stats['uncertain_dups']} Uncertain Pair(s)</div>
+    </div>
+    <div class="tele-pod">
+        <div class="tele-head"><span>04 // INCLUDED</span><span>✅</span></div>
+        <div class="tele-val" style="color:#10b981;">{stats['included']}</div>
+        <div class="tele-sub">Eligible Trials</div>
+    </div>
+    <div class="tele-pod">
+        <div class="tele-head"><span>05 // EXCLUDED BOX</span><span>❌</span></div>
+        <div class="tele-val" style="color:#ff3366;">{stats['excluded']}</div>
+        <div class="tele-sub">Isolated w/ Reasons</div>
+    </div>
+    <div class="tele-pod">
+        <div class="tele-head"><span>06 // MAYBE QUEUE</span><span>🤔</span></div>
+        <div class="tele-val" style="color:#fbbf24;">{stats['maybe']}</div>
+        <div class="tele-sub">{stats['conflicts']} Merge Conflicts</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+
+# ==============================================================================
+# STAGE 00: ACADEMY & PICO BLUEPRINT
+# ==============================================================================
+if curr_idx == 0:
+    p_cols = st.columns(4)
+    pico_cards = [
+        ("P", "POPULATION", "#38bdf8", "Who are the patients?", "Adults with Type 2 Diabetes, Atrial Fibrillation, or NSCLC Lung Cancer."),
+        ("I", "INTERVENTION", "#10b981", "What treatment is tested?", "Primary drug or therapy: Metformin, Apixaban, Pembrolizumab, Escitalopram."),
+        ("C", "COMPARATOR", "#fbbf24", "What is the control group?", "Placebo (sugar pill) or active standard care: Warfarin, Chemotherapy."),
+        ("O", "OUTCOME", "#c084fc", "What endpoint is measured?", "HbA1c blood sugar drop, Stroke reduction, Overall survival, MADRS score."),
+    ]
+    for idx, (letter, title, col_hex, q_txt, body_txt) in enumerate(pico_cards):
+        with p_cols[idx]:
             with st.container(border=True):
-                st.caption(f"✨ {t_data['badge']}")
+                st.markdown(f"<div style='font-family:Syne,sans-serif; font-size:2.6rem; font-weight:800; color:{col_hex}; line-height:1;'>{letter} // {title}</div>", unsafe_allow_html=True)
+                st.markdown(f"**{q_txt}**")
+                st.caption(body_txt)
+
+    st.markdown("### 🏎️ Select a Clinical Telemetry Preset to Launch Stage 01")
+    t_cols = st.columns(2)
+    for idx, (t_title, t_data) in enumerate(TOPIC_CARDS.items()):
+        with t_cols[idx % 2]:
+            with st.container(border=True):
+                st.caption(f"⚡ {t_data['tag']}")
                 st.markdown(f"#### {t_title}")
                 st.write(t_data["plain_english"])
-                st.markdown(
-                    f"<span class='pico-chip chip-p'>P: {t_data['P'].split(',')[0]}</span>"
-                    f"<span class='pico-chip chip-i'>I: {t_data['I'].split(',')[0]}</span>"
-                    f"<span class='pico-chip chip-c'>C: {t_data['C'].split(',')[0]}</span>"
-                    f"<span class='pico-chip chip-o'>O: {t_data['O'].split(',')[0]}</span>",
-                    unsafe_allow_html=True
-                )
-                if st.button(f"🚀 Initialize '{t_title.split(':')[0]}' & Enter Studio ➡️", key=f"acad_load_{idx}", type="primary", use_container_width=True):
+                if st.button(f"🚀 INITIALIZE {t_title.split('//')[0].strip()} PROTOCOL ➡️", key=f"acad_btn_{idx}", type="primary", use_container_width=True):
                     st.session_state["rq_val"] = t_data["question"]
                     st.session_state["p_val"] = t_data["P"]
                     st.session_state["i_val"] = t_data["I"]
@@ -851,23 +839,20 @@ if curr_idx == 0:
                     st.session_state["custom_query_box"] = build_boolean_query_from_pico(t_data["P"], t_data["I"], t_data["C"])
                     go_to_step(1)
 
-    render_step_footer(curr_idx)
+    render_bottom_teleport_bar(curr_idx)
 
 
 # ==============================================================================
-# STAGE 01: DEFINE TOPIC & PICO (STARTS BLANK + 1-CLICK CARDS)
+# STAGE 01: PROTOCOL & PICO MATRIX (STARTS BLANK UNLESS TOPIC CLICKED)
 # ==============================================================================
 elif curr_idx == 1:
-    st.markdown("### 🎯 Stage 01 · Topic & PICO Protocol Studio")
-    st.caption("Select a clinical preset card below to populate PICO parameters, or compose a custom research protocol from scratch.")
-
     t_cols = st.columns(4)
     for idx, (t_title, t_data) in enumerate(TOPIC_CARDS.items()):
         with t_cols[idx]:
             with st.container(border=True):
-                st.caption(f"⚡ {t_data['badge']}")
+                st.caption(f"⚡ {t_data['tag']}")
                 st.markdown(f"**{t_title}**")
-                if st.button("Load Preset ➔", key=f"tpl_btn_{idx}", use_container_width=True):
+                if st.button("LOAD PRESET ➔", key=f"p1_btn_{idx}", use_container_width=True):
                     st.session_state["rq_val"] = t_data["question"]
                     st.session_state["p_val"] = t_data["P"]
                     st.session_state["i_val"] = t_data["I"]
@@ -876,31 +861,28 @@ elif curr_idx == 1:
                     st.session_state["custom_query_box"] = build_boolean_query_from_pico(t_data["P"], t_data["I"], t_data["C"])
                     st.rerun()
 
-    if st.button("🧹 Clear Protocol Fields (Blank Slate)"):
-        st.session_state["rq_val"] = ""
-        st.session_state["p_val"] = ""
-        st.session_state["i_val"] = ""
-        st.session_state["c_val"] = ""
-        st.session_state["o_val"] = ""
-        st.rerun()
-
     with st.container(border=True):
-        rq = st.text_area(
-            "Primary Clinical Research Question",
-            value=st.session_state.get("rq_val", ""),
-            placeholder="e.g., In adults with atrial fibrillation, does apixaban compared with warfarin reduce stroke risk?",
-            height=68
-        )
+        c_top1, c_top2 = st.columns([3, 1])
+        c_top1.markdown("#### 🧬 PICO Protocol Matrix")
+        if c_top2.button("🧹 CLEAR TO BLANK SLATE", use_container_width=True):
+            st.session_state["rq_val"] = ""
+            st.session_state["p_val"] = ""
+            st.session_state["i_val"] = ""
+            st.session_state["c_val"] = ""
+            st.session_state["o_val"] = ""
+            st.rerun()
+
+        rq = st.text_area("Primary Research Question", value=st.session_state.get("rq_val", ""), placeholder="Click a preset card above or type your clinical question...", height=68)
         c1, c2 = st.columns(2)
         with c1:
-            pop = st.text_input("🟦 P — Population (Cohort / Condition)", value=st.session_state.get("p_val", ""), placeholder="e.g., Adults with atrial fibrillation")
-            inter = st.text_input("🟩 I — Intervention (Drug / Therapy)", value=st.session_state.get("i_val", ""), placeholder="e.g., Apixaban, factor Xa inhibitor")
+            pop = st.text_input("🟦 [P] Population Cohort", value=st.session_state.get("p_val", ""), placeholder="e.g., Adults with atrial fibrillation")
+            inter = st.text_input("🟩 [I] Intervention Drug/Therapy", value=st.session_state.get("i_val", ""), placeholder="e.g., Apixaban")
         with c2:
-            comp = st.text_input("🟧 C — Comparator (Control / Standard Care)", value=st.session_state.get("c_val", ""), placeholder="e.g., Warfarin, placebo")
-            out = st.text_input("🟪 O — Outcome (Measured Endpoint)", value=st.session_state.get("o_val", ""), placeholder="e.g., Stroke, major bleeding")
+            comp = st.text_input("🟧 [C] Comparator Arm", value=st.session_state.get("c_val", ""), placeholder="e.g., Warfarin, placebo")
+            out = st.text_input("🟪 [O] Clinical Outcome", value=st.session_state.get("o_val", ""), placeholder="e.g., Stroke, major bleeding")
 
         criteria = config["criteria"]
-        with st.expander("⚙️ Automated Exclusion Rule Matrix (Animal, Simulation, Non-English, Case Reports)"):
+        with st.expander("⚙️ Automated Exclusion Rule Triggers (Animal, Simulation, Non-English, Case Reports)"):
             for key, item in criteria.items():
                 cc1, cc2, cc3 = st.columns([1.2, 2.2, 2.2])
                 item["active"] = cc1.checkbox(item["label"], value=item["active"], key=f"act_{key}")
@@ -909,9 +891,9 @@ elif curr_idx == 1:
                 new_kw = cc3.text_input("Keywords", value=kw_str, key=f"kw_{key}", label_visibility="collapsed")
                 item["keywords"] = [k.strip() for k in new_kw.split(",") if k.strip()]
 
-        if st.button("💾 Commit PICO Protocol & Launch Query Composer ➡️", type="primary", use_container_width=True):
+        if st.button("💾 LOCK PROTOCOL & TELEPORT TO [02·COMPOSER] ➡️", type="primary", use_container_width=True):
             if not rq.strip() or not pop.strip() or not inter.strip():
-                st.warning("Please select a Preset Card above or enter the Research Question, Population (P), and Intervention (I).")
+                st.warning("Select a preset card above or fill in Research Question, Population [P], and Intervention [I].")
             else:
                 st.session_state["rq_val"] = rq
                 st.session_state["p_val"] = pop
@@ -924,137 +906,97 @@ elif curr_idx == 1:
                 run_pico_extraction()
                 go_to_step(2)
 
-    render_step_footer(curr_idx)
+    render_bottom_teleport_bar(curr_idx)
 
 
 # ==============================================================================
-# STAGE 02: QUERY COMPOSER STUDIO
+# STAGE 02: BOOLEAN QUERY COMPOSER
 # ==============================================================================
 elif curr_idx == 2:
-    st.markdown("### 🎛️ Stage 02 · Visual Boolean Query Composer")
     p_curr = st.session_state.get("p_val") or config["population_text"]
     i_curr = st.session_state.get("i_val") or config["intervention_text"]
     c_curr = st.session_state.get("c_val") or config["comparator_text"]
-    o_curr = st.session_state.get("o_val") or config["outcome_text"]
 
-    st.markdown(f"""
-    <div style="margin-bottom:12px;">
-        <span class="pico-chip chip-p">🟦 P: {p_curr or 'Unset'}</span>
-        <span class="pico-chip chip-i">🟩 I: {i_curr or 'Unset'}</span>
-        <span class="pico-chip chip-c">🟧 C: {c_curr or 'Unset'}</span>
-        <span class="pico-chip chip-o">🟪 O: {o_curr or 'Unset'}</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-    col_studio, col_quick = st.columns([2.1, 1.1])
-    with col_studio:
+    col_l, col_r = st.columns([2.1, 1.1])
+    with col_l:
         with st.container(border=True):
+            st.markdown("#### 🎛️ Boolean Telemetry Composer")
             default_q = st.session_state.get("custom_query_box") or build_boolean_query_from_pico(p_curr, i_curr, c_curr) or '("type 2 diabetes") AND metformin AND placebo'
-
-            with st.expander("🧩 Interactive Token Builder (No Boolean Syntax Required)"):
-                b1, b2, b3 = st.columns(3)
-                t_cond = b1.text_input("Condition (AND)", value=p_curr.split(",")[0].strip() if p_curr else "type 2 diabetes")
-                t_drug = b2.text_input("Intervention (AND)", value=i_curr.split(",")[0].strip() if i_curr else "metformin")
-                t_comp = b3.text_input("Comparator (AND/OR)", value=c_curr.split(",")[0].strip() if c_curr else "placebo")
-                if st.button("✨ Synthesize Boolean String"):
-                    default_q = f'("{t_cond}") AND ("{t_drug}") AND ("{t_comp}")'
-                    st.session_state["custom_query_box"] = default_q
-                    st.rerun()
-
-            q_str = st.text_input("Compiled Search Expression:", value=default_q)
-            st.markdown(f'<div class="manus-terminal">⚡ MANUS-QUERY // {q_str}</div>', unsafe_allow_html=True)
+            q_str = st.text_input("Compiled Search Formula:", value=default_q)
+            st.code(q_str, language="sql")
 
             k1, k2, k3, k4 = st.columns(4)
-            date_from = k1.number_input("Start Year", 1990, 2026, 2016)
-            date_to = k2.number_input("End Year", 1990, 2026, 2026)
+            date_from = k1.number_input("From Year", 1990, 2026, 2016)
+            date_to = k2.number_input("To Year", 1990, 2026, 2026)
             max_fetch = k3.slider("Max Records", 10, 100, 30, 10)
-            v_label = k4.text_input("Version Tag", value=f"v{stats['query_count'] + 1}.0-search")
+            v_label = k4.text_input("Version ID", value=f"v{stats['query_count'] + 1}.0")
 
-            sources = st.multiselect("Target Literature APIs:", ["PubMed", "Europe PMC"], default=["PubMed", "Europe PMC"])
+            sources = st.multiselect("Literature Endpoints:", ["PubMed", "Europe PMC"], default=["PubMed", "Europe PMC"])
 
-            if st.button("🚀 Execute Hit-Count Probe & Advance to Stage 03 ➡️", type="primary", use_container_width=True):
-                with st.spinner("Probing PubMed E-Utilities & Europe PMC REST APIs..."):
-                    pm_hits, pm_ids, err1 = (0, [], "")
+            if st.button("🚀 PROBE API HIT COUNTS & TELEPORT TO [03·INGEST] ➡️", type="primary", use_container_width=True):
+                with st.spinner("Probing PubMed & Europe PMC endpoints..."):
+                    pm_hits, pm_ids, _ = (0, [], "")
                     ep_hits, err2 = (0, "")
                     if "PubMed" in sources:
-                        pm_hits, pm_ids, err1 = search_pubmed_hits(q_str, int(date_from), int(date_to), max_fetch)
+                        pm_hits, pm_ids, _ = search_pubmed_hits(q_str, int(date_from), int(date_to), max_fetch)
                     if "Europe PMC" in sources:
                         ep_hits, err2 = search_epmc_hits(q_str, int(date_from), int(date_to))
                         if err2 and "503" in str(err2):
                             ep_hits = max(4, int(pm_hits * 0.45))
-
                     create_query_version(v_label, q_str, int(date_from), int(date_to), sources, pm_hits, ep_hits)
                     st.session_state["max_per_source"] = max_fetch
                     go_to_step(3)
 
-    with col_quick:
+    with col_r:
         with st.container(border=True):
             st.markdown("#### ⚡ Instant Jury Benchmark Packs")
-            st.caption("Pre-engineered clinical datasets containing **exact DOI duplicates, missing-DOI fuzzy matches, conference vs. journal pairs, animal/simulation exclusions, and AI White-Space gaps**.")
-            if st.button("📦 Load Benchmark v1 (12 Papers) ➔ Duplicate Resolver ➡️", type="primary", use_container_width=True):
-                vid = create_query_version(
-                    "Benchmark v1 (Metformin vs Placebo)",
-                    '("type 2 diabetes") AND metformin AND placebo',
-                    2015, 2025, ["PubMed", "Europe PMC"], 8, 4
-                )
+            st.caption("Guaranteed cross-database duplicates, conference vs. journal pairs, animal/simulation exclusions, and AI White-Space gaps.")
+            if st.button("📦 LOAD 12-PAPER PACK ➔ [05·CLUSTERS] ➡️", type="primary", use_container_width=True):
+                vid = create_query_version("Benchmark v1", '("type 2 diabetes") AND metformin AND placebo', 2015, 2025, ["PubMed", "Europe PMC"], 8, 4)
                 store_fetched_records(vid, get_benchmark_papers("v1"))
                 run_deduplication(vid)
                 run_screening(vid)
                 run_pico_extraction(vid)
                 go_to_step(5)
-
             st.write("")
-            if st.button("🧠 Load Dataset & Jump to AI White-Space Lab ➡️", use_container_width=True):
-                vid = create_query_version(
-                    "Benchmark v1 (AI Gap Analysis)",
-                    '("type 2 diabetes") AND metformin AND placebo',
-                    2015, 2025, ["PubMed", "Europe PMC"], 8, 4
-                )
+            if st.button("🧠 LOAD PACK ➔ [09·AI GAP LAB] ➡️", use_container_width=True):
+                vid = create_query_version("Benchmark v1", '("type 2 diabetes") AND metformin AND placebo', 2015, 2025, ["PubMed", "Europe PMC"], 8, 4)
                 store_fetched_records(vid, get_benchmark_papers("v1"))
                 run_deduplication(vid)
                 run_screening(vid)
                 run_pico_extraction(vid)
                 go_to_step(9)
 
-    render_step_footer(curr_idx)
+    render_bottom_teleport_bar(curr_idx)
 
 
 # ==============================================================================
-# STAGE 03: APPROVE & PULL PAPERS
+# STAGE 03: API HIT PROBE & INGEST
 # ==============================================================================
 elif curr_idx == 3:
-    st.markdown("### 📥 Stage 03 · Approve Hit Counts & Ingest Abstracts")
     inject_demo_dups = st.checkbox(
-        "✨ Inject Cross-Database Duplicate & Edge-Case Pack alongside live API results (Guarantees rich duplicates & uncertain pairs for Jury Demo)",
+        "✨ Inject Cross-Database Duplicate & Uncertain-Pair Pack alongside live results (Guarantees rich duplicates even if Europe PMC is 503)",
         value=True,
     )
-
     conn = get_connection()
     q_rows = conn.execute("SELECT * FROM query_versions ORDER BY version_id DESC;").fetchall()
     conn.close()
 
     if not q_rows:
-        st.info("No query versions registered yet. Run a probe in Stage 02 first.")
+        st.info("No query versions probed yet. Run Stage 02 first.")
     else:
         for q in q_rows:
-            status_badge = "✅ Ingested into Vault" if q["fetched"] else "⏳ Awaiting Operator Approval"
             with st.container(border=True):
                 c1, c2 = st.columns([3, 1.3])
                 with c1:
-                    st.markdown(f"#### Query Version #{q['version_id']}: {q['version_name']} ({status_badge})")
-                    st.markdown(f"**Expression:** `{q['boolean_query']}` &nbsp;|&nbsp; **Window:** `{q['date_from']}–{q['date_to']}`")
-                    st.markdown(
-                        f"<span class='pico-chip chip-p'>PubMed Hits: {q['pubmed_hits']:,}</span>"
-                        f"<span class='pico-chip chip-i'>Europe PMC Hits: {q['epmc_hits']:,}</span>",
-                        unsafe_allow_html=True
-                    )
+                    st.markdown(f"#### Version #{q['version_id']} // {q['version_name']}")
+                    st.markdown(f"`{q['boolean_query']}` &nbsp;|&nbsp; **PubMed:** `{q['pubmed_hits']:,}` &nbsp;|&nbsp; **Europe PMC:** `{q['epmc_hits']:,}`")
                 with c2:
-                    st.write("")
-                    if st.button(f"📥 Approve & Ingest v{q['version_id']} ➡️", key=f"pull_{q['version_id']}", type="primary", use_container_width=True):
+                    if st.button(f"📥 APPROVE & PULL v{q['version_id']} ➡️", key=f"pull_{q['version_id']}", type="primary", use_container_width=True):
                         max_f = st.session_state.get("max_per_source", 30)
                         fetched_papers = []
                         src_list = q["sources"].split(",")
-                        with st.spinner("Ingesting abstracts & running Deduplication ➔ Screening ➔ PICO Extraction..."):
+                        with st.spinner("Ingesting records & executing Deduplication ➔ Screening ➔ PICO Extraction..."):
                             if "PubMed" in src_list:
                                 _, pm_ids, _ = search_pubmed_hits(q["boolean_query"], q["date_from"], q["date_to"], max_f)
                                 pm_recs, _ = fetch_pubmed_abstracts(pm_ids)
@@ -1062,168 +1004,126 @@ elif curr_idx == 3:
                             if "Europe PMC" in src_list:
                                 ep_recs, _ = fetch_epmc_abstracts(q["boolean_query"], q["date_from"], q["date_to"], max_f)
                                 fetched_papers.extend(ep_recs)
-
                             if inject_demo_dups or not fetched_papers:
                                 fetched_papers.extend(get_benchmark_papers("v1"))
-
                             store_fetched_records(q["version_id"], fetched_papers)
                             run_deduplication(q["version_id"])
                             run_screening(q["version_id"])
                             run_pico_extraction(q["version_id"])
                             go_to_step(4)
 
-    render_step_footer(curr_idx)
+    render_bottom_teleport_bar(curr_idx)
 
 
 # ==============================================================================
 # STAGE 04: ZERO-DELETE SQLITE VAULT
 # ==============================================================================
 elif curr_idx == 4:
-    st.markdown("### 🗄️ Stage 04 · Zero-Delete SQLite Persistence Vault")
-    st.caption("Every pulled record is permanently preserved in SQLite. Duplicate copies are flagged as **Hidden Duplicate** rather than deleted.")
-
     conn = get_connection()
     rows = conn.execute("""
-    SELECT
-        r.record_id, r.source, r.pmid, r.doi, r.title, r.authors,
-        r.pub_year, r.journal, r.language, r.pub_types, r.is_hidden_duplicate,
-        GROUP_CONCAT('v' || qr.version_id, ', ') AS found_in_queries
-    FROM records r
-    LEFT JOIN query_records qr ON r.record_id = qr.record_id
-    GROUP BY r.record_id
-    ORDER BY r.record_id ASC;
+    SELECT r.record_id, r.source, r.pmid, r.doi, r.title, r.authors, r.pub_year, r.journal, r.is_hidden_duplicate,
+           GROUP_CONCAT('v' || qr.version_id, ', ') AS found_in_queries
+    FROM records r LEFT JOIN query_records qr ON r.record_id = qr.record_id
+    GROUP BY r.record_id ORDER BY r.record_id ASC;
     """).fetchall()
     conn.close()
 
     if not rows:
-        st.info("Vault is empty. Ingest records in Stage 02/03 first.")
+        st.info("SQLite Vault is empty. Pull records in Stage 02/03.")
     else:
         f1, f2 = st.columns([2, 1])
-        q_filter = f1.text_input("🔎 Filter Vault by Title, Author, or DOI:", "")
-        vis_mode = f2.selectbox("Visibility State:", ["All Records (Zero Deletion)", "Active Unique Papers Only", "Hidden Duplicates Only"])
-
+        q_filter = f1.text_input("🔎 Search Vault:", "")
+        vis_mode = f2.selectbox("Partition:", ["All Stored Records (Zero Deletion)", "Active Unique Only", "Hidden Duplicates Only"])
         items = [dict(r) for r in rows]
-        if vis_mode == "Active Unique Papers Only":
+        if vis_mode == "Active Unique Only":
             items = [x for x in items if x["is_hidden_duplicate"] == 0]
         elif vis_mode == "Hidden Duplicates Only":
             items = [x for x in items if x["is_hidden_duplicate"] == 1]
-
         if q_filter.strip():
             q = q_filter.lower()
-            items = [x for x in items if q in (x["title"] or "").lower() or q in (x["authors"] or "").lower() or q in (x["doi"] or "").lower()]
+            items = [x for x in items if q in (x["title"] or "").lower() or q in (x["authors"] or "").lower()]
 
-        df_vault = pd.DataFrame([{
+        st.dataframe(pd.DataFrame([{
             "ID": f"#{x['record_id']}",
-            "Vault State": "🙈 Hidden Duplicate" if x["is_hidden_duplicate"] else "✅ Active Unique",
+            "Vault State": "🙈 HIDDEN DUPLICATE" if x["is_hidden_duplicate"] else "✅ ACTIVE UNIQUE",
             "Queries": x["found_in_queries"] or "v1",
             "Source": x["source"],
             "Year": x["pub_year"],
             "Title": x["title"],
-            "Authors": x["authors"],
             "Journal": x["journal"],
             "DOI": x["doi"] or "—",
-            "PMID": x["pmid"] or "—",
-        } for x in items])
-        st.dataframe(df_vault, use_container_width=True, hide_index=True)
+        } for x in items]), use_container_width=True, hide_index=True)
 
-    render_step_footer(curr_idx)
+    render_bottom_teleport_bar(curr_idx)
 
 
 # ==============================================================================
-# STAGE 05: DUPLICATE RESOLVER
+# STAGE 05: DUPLICATE CLUSTERS & UNCERTAIN PAIR RESOLVER
 # ==============================================================================
 elif curr_idx == 5:
-    st.markdown("### 🔗 Stage 05 · Multi-Field Deduplication & Uncertain Pair Resolver")
     conn = get_connection()
     groups = conn.execute("""
     SELECT dg.*, COUNT(r.record_id) AS member_count
-    FROM duplicate_groups dg
-    JOIN records r ON r.duplicate_group_id = dg.group_id
+    FROM duplicate_groups dg JOIN records r ON r.duplicate_group_id = dg.group_id
     GROUP BY dg.group_id
     HAVING COUNT(r.record_id) > 1 OR dg.status IN ('uncertain', 'human_split')
     ORDER BY CASE WHEN dg.status = 'uncertain' THEN 0 ELSE 1 END, dg.group_id ASC;
     """).fetchall()
 
     if not groups:
-        st.info("No duplicate clusters detected yet.")
+        st.info("No duplicate clusters found. Click '⚡ 1-CLICK DEMO DATASET' in the top bar to load duplicate & uncertain pairs!")
     else:
         for g in groups:
             gid = g["group_id"]
-            members = conn.execute(
-                "SELECT * FROM records WHERE duplicate_group_id = ? ORDER BY is_hidden_duplicate ASC;",
-                (gid,)
-            ).fetchall()
-
+            members = conn.execute("SELECT * FROM records WHERE duplicate_group_id = ? ORDER BY is_hidden_duplicate ASC;", (gid,)).fetchall()
             is_unc = (g["status"] == "uncertain")
-            header_icon = "⚠️ UNCERTAIN PAIR (Conference vs. Journal — Needs Human Decision)" if is_unc else f"✅ {g['status'].upper()}"
             with st.container(border=True):
-                st.markdown(f"#### Cluster #{gid} — {header_icon}")
-                st.caption(f"🔍 **Detection Method:** {g['match_method']}")
-
+                st.markdown(f"#### Cluster #{gid} // {'⚠️ UNCERTAIN PAIR — HUMAN VERIFICATION REQUIRED' if is_unc else g['status'].upper()}")
+                st.caption(f"🔍 **Match Telemetry:** {g['match_method']}")
                 m_cols = st.columns(len(members))
                 for idx_m, m in enumerate(members):
                     with m_cols[idx_m]:
                         with st.container(border=True):
-                            role_txt = "🙈 Hidden Copy" if m["is_hidden_duplicate"] else "✅ Representative"
-                            st.markdown(f"**Record #{m['record_id']}** ({role_txt})")
+                            st.markdown(f"**Record #{m['record_id']}** ({'🙈 Hidden' if m['is_hidden_duplicate'] else '✅ Representative'})")
                             st.markdown(f"**{m['title']}**")
-                            st.caption(f"📚 {m['source']} ({m['pub_year']}) • {m['journal']}")
-                            st.caption(f"🏷️ Type: `{m['pub_types']}` | DOI: `{m['doi'] or 'Missing'}`")
-
+                            st.caption(f"{m['source']} ({m['pub_year']}) • `{m['pub_types']}` • DOI: `{m['doi'] or 'None'}`")
                 b1, b2 = st.columns(2)
-                if b1.button(f"✅ Confirm Duplicate Cluster (Keep #{g['representative_record_id']} Visible)", key=f"conf_dup_{gid}", type="primary", use_container_width=True):
+                if b1.button(f"✅ CONFIRM DUPLICATES (KEEP #{g['representative_record_id']})", key=f"c_dup_{gid}", type="primary", use_container_width=True):
                     conn.execute("UPDATE duplicate_groups SET status = 'human_confirmed' WHERE group_id = ?;", (gid,))
-                    conn.execute(
-                        "UPDATE records SET is_hidden_duplicate = CASE WHEN record_id = ? THEN 0 ELSE 1 END WHERE duplicate_group_id = ?;",
-                        (g["representative_record_id"], gid)
-                    )
+                    conn.execute("UPDATE records SET is_hidden_duplicate = CASE WHEN record_id = ? THEN 0 ELSE 1 END WHERE duplicate_group_id = ?;", (g["representative_record_id"], gid))
                     conn.commit()
                     log_human_audit(reviewer_name, "duplicate_override", gid, g["status"], "human_confirmed", "Confirmed duplicate cluster")
                     st.rerun()
-
-                if b2.button(f"✂️ Split into Distinct Studies (Keep Both Visible)", key=f"split_dup_{gid}", use_container_width=True):
+                if b2.button(f"✂️ SPLIT INTO SEPARATE STUDIES", key=f"s_dup_{gid}", use_container_width=True):
                     conn.execute("UPDATE duplicate_groups SET status = 'human_split' WHERE group_id = ?;", (gid,))
                     for m in members:
                         if m["record_id"] != g["representative_record_id"]:
                             cur = conn.cursor()
-                            cur.execute(
-                                "INSERT INTO duplicate_groups (representative_record_id, status, match_method, updated_at) VALUES (?, 'human_split', 'Human split separate study report', ?);",
-                                (m["record_id"], datetime.now().isoformat(timespec="seconds"))
-                            )
-                            new_gid = cur.lastrowid
-                            conn.execute("UPDATE records SET duplicate_group_id = ?, is_hidden_duplicate = 0 WHERE record_id = ?;", (new_gid, m["record_id"]))
+                            cur.execute("INSERT INTO duplicate_groups (representative_record_id, status, match_method, updated_at) VALUES (?, 'human_split', 'Human split separate study', ?);", (m["record_id"], datetime.now().isoformat(timespec="seconds")))
+                            conn.execute("UPDATE records SET duplicate_group_id = ?, is_hidden_duplicate = 0 WHERE record_id = ?;", (cur.lastrowid, m["record_id"]))
                     conn.execute("UPDATE records SET is_hidden_duplicate = 0 WHERE record_id = ?;", (g["representative_record_id"],))
                     conn.commit()
-                    log_human_audit(reviewer_name, "duplicate_override", gid, g["status"], "human_split", "Split cluster into separate studies")
+                    log_human_audit(reviewer_name, "duplicate_override", gid, g["status"], "human_split", "Split cluster")
                     st.rerun()
     conn.close()
-    render_step_footer(curr_idx)
+    render_bottom_teleport_bar(curr_idx)
 
 
 # ==============================================================================
-# STAGE 06: SPLIT-SCREEN INTERACTIVE PAPER SCREENER (WITH DEDICATED EXCLUDED BOX)
+# STAGE 06: SPLIT-SCREEN INTERACTIVE PAPER BOXES & ISOLATED EXCLUDED BOX
 # ==============================================================================
 elif curr_idx == 6:
-    st.markdown("### ⚖️ Stage 06 · Split-Screen Paper Boxes & Isolated Exclusion Buckets")
     conn = get_connection()
     rows = conn.execute("""
-    SELECT
-        r.*,
-        ms.decision AS machine_decision,
-        ms.exclusion_reasons AS machine_reason,
-        ms.detection_source,
-        rd.screening_decision AS human_decision,
-        rd.exclusion_reason AS human_reason,
-        rd.reviewer_notes,
-        rd.reviewer_name AS last_reviewer,
-        mp.population_span, mp.intervention_span, mp.comparator_span, mp.outcome_span,
-        rd.pico_p, rd.pico_i, rd.pico_c, rd.pico_o
+    SELECT r.*, ms.decision AS machine_decision, ms.exclusion_reasons AS machine_reason,
+           rd.screening_decision AS human_decision, rd.exclusion_reason AS human_reason, rd.reviewer_notes,
+           mp.population_span, mp.intervention_span, mp.comparator_span, mp.outcome_span,
+           rd.pico_p, rd.pico_i, rd.pico_c, rd.pico_o
     FROM records r
     LEFT JOIN machine_screening ms ON r.record_id = ms.record_id
     LEFT JOIN reviewer_decisions rd ON r.duplicate_group_id = rd.group_id
     LEFT JOIN machine_pico mp ON r.record_id = mp.record_id
-    WHERE r.is_hidden_duplicate = 0
-    ORDER BY r.record_id ASC;
+    WHERE r.is_hidden_duplicate = 0 ORDER BY r.record_id ASC;
     """).fetchall()
     conn.close()
 
@@ -1237,195 +1137,128 @@ elif curr_idx == 6:
     may_list = [r for r in all_recs if r["effective_decision"] == "Maybe"]
 
     bucket_choice = st.radio(
-        "📂 Select Screening Bucket:",
+        "📂 SELECT ISOLATED SCREENING PARTITION:",
         [
-            f"📚 All Unique Papers ({len(all_recs)})",
-            f"✅ Included Box ({len(inc_list)})",
-            f"❌ Excluded Box ({len(exc_list)})",
-            f"🤔 Maybe Queue ({len(may_list)})",
+            f"📚 ALL UNIQUE ({len(all_recs)})",
+            f"✅ INCLUDED BOX ({len(inc_list)})",
+            f"❌ EXCLUDED BOX ({len(exc_list)})",
+            f"🤔 MAYBE QUEUE ({len(may_list)})",
         ],
         horizontal=True
     )
 
-    if "Included Box" in bucket_choice:
-        filtered_recs = inc_list
-    elif "Excluded Box" in bucket_choice:
-        filtered_recs = exc_list
-    elif "Maybe Queue" in bucket_choice:
-        filtered_recs = may_list
-    else:
-        filtered_recs = all_recs
+    filtered_recs = inc_list if "INCLUDED" in bucket_choice else (exc_list if "EXCLUDED" in bucket_choice else (may_list if "MAYBE" in bucket_choice else all_recs))
 
     if not filtered_recs:
-        st.info("No papers in this bucket yet.")
+        st.info("No records in this partition.")
     else:
         if "selected_paper_id" not in st.session_state or st.session_state["selected_paper_id"] not in [r["record_id"] for r in filtered_recs]:
             st.session_state["selected_paper_id"] = filtered_recs[0]["record_id"]
 
-        left_list_col, right_detail_col = st.columns([1.15, 1.85])
-
-        with left_list_col:
-            st.markdown("#### 🗂️ Interactive Paper Cards")
+        col_cards, col_inspector = st.columns([1.15, 1.85])
+        with col_cards:
             for r in filtered_recs:
                 is_sel = (r["record_id"] == st.session_state["selected_paper_id"])
                 dec = r["effective_decision"]
-                badge_icon = "✅ INCLUDE" if dec == "Include" else ("❌ EXCLUDE" if dec == "Exclude" else "🤔 MAYBE")
-                short_context = (r["abstract"] or "")[:115] + "..." if r["abstract"] else "No abstract available."
-
                 with st.container(border=True):
-                    st.markdown(f"**#{r['record_id']} • {r['title']}**")
-                    st.caption(f"**{badge_icon}** | {r['source']} ({r['pub_year']}) • *{r['effective_reason']}*")
-                    st.caption(f"📄 {short_context}")
-                    btn_lbl = "⚡ Active in Inspector ➡️" if is_sel else f"🔍 Inspect Paper #{r['record_id']}"
-                    if st.button(btn_lbl, key=f"open_card_{r['record_id']}", type="primary" if is_sel else "secondary", use_container_width=True):
+                    st.markdown(f"**#{r['record_id']} // {r['title']}**")
+                    st.caption(f"**[{dec.upper()}]** • {r['source']} ({r['pub_year']}) • *{r['effective_reason']}*")
+                    if st.button("⚡ ACTIVE IN INSPECTOR ➡️" if is_sel else f"🔍 OPEN PAPER #{r['record_id']}", key=f"box_{r['record_id']}", type="primary" if is_sel else "secondary", use_container_width=True):
                         st.session_state["selected_paper_id"] = r["record_id"]
                         st.rerun()
 
-        with right_detail_col:
+        with col_inspector:
             sel_rec = next((x for x in filtered_recs if x["record_id"] == st.session_state["selected_paper_id"]), filtered_recs[0])
-            dec = sel_rec["effective_decision"]
             p_val = sel_rec["pico_p"] or sel_rec["population_span"] or ""
             i_val = sel_rec["pico_i"] or sel_rec["intervention_span"] or ""
             c_val = sel_rec["pico_c"] or sel_rec["comparator_span"] or ""
             o_val = sel_rec["pico_o"] or sel_rec["outcome_span"] or ""
 
-            st.markdown(f"""
-            <div class="cult-shell">
-                <div style="margin-bottom:8px;">
-                    <span class="pico-chip chip-p">RECORD #{sel_rec['record_id']}</span>
-                    <span class="pico-chip chip-i">VERDICT // {dec.upper()}</span>
-                    <span class="pico-chip chip-c">{sel_rec['source']} ({sel_rec['pub_year']})</span>
-                    <span class="pico-chip chip-o">{sel_rec['pub_types']}</span>
-                </div>
-                <h3 style="margin-top:4px; margin-bottom:8px;">{sel_rec['title']}</h3>
-                <div style="font-size:0.85rem; opacity:0.8; margin-bottom:10px;">
-                    👤 <b>Authors:</b> {sel_rec['authors']} &nbsp;|&nbsp; 🏛️ <b>Journal:</b> {sel_rec['journal']} &nbsp;|&nbsp; 🌐 <b>Lang:</b> {sel_rec['language']}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-            st.markdown("##### 🖍️ Highlighted Abstract & PICO Spans")
-            st.markdown(highlight_pico_html(sel_rec["abstract"], p_val, i_val, c_val, o_val), unsafe_allow_html=True)
-
-            st.write("")
             with st.container(border=True):
-                st.markdown("##### ⚡ Extracted PICO Evidence Context")
-                st.markdown(
-                    f"- 🟦 **Population (P):** {p_val or '*Not detected*'}\n"
-                    f"- 🟩 **Intervention (I):** {i_val or '*Not detected*'}\n"
-                    f"- 🟧 **Comparator (C):** {c_val or '*Not detected*'}\n"
-                    f"- 🟪 **Outcome (O):** {o_val or '*Not detected*'}"
-                )
-                custom_reas = st.text_input("Decision / Exclusion Reason:", value=sel_rec["effective_reason"], key=f"reas_box_{sel_rec['record_id']}")
-
-                act1, act2, act3 = st.columns(3)
-                if act1.button("✅ INCLUDE STUDY", type="primary", use_container_width=True, key=f"inc_btn_{sel_rec['record_id']}"):
-                    save_human_decision(
-                        sel_rec["duplicate_group_id"], sel_rec["record_id"], reviewer_name, "Include",
-                        "Eligible clinical trial matching PICO", sel_rec["reviewer_notes"] or "", p_val, i_val, c_val, o_val, "screen_include"
-                    )
+                st.markdown(f"### #{sel_rec['record_id']} — {sel_rec['title']}")
+                st.caption(f"👤 {sel_rec['authors']} | 🏛️ {sel_rec['journal']} ({sel_rec['pub_year']}) | 🌐 `{sel_rec['language']}` | 🏷️ `{sel_rec['pub_types']}`")
+                st.markdown(highlight_pico_html(sel_rec["abstract"], p_val, i_val, c_val, o_val), unsafe_allow_html=True)
+                st.write("")
+                custom_reas = st.text_input("Decision / Exclusion Reason:", value=sel_rec["effective_reason"], key=f"reas_in_{sel_rec['record_id']}")
+                a1, a2, a3 = st.columns(3)
+                if a1.button("✅ INCLUDE", type="primary", use_container_width=True):
+                    save_human_decision(sel_rec["duplicate_group_id"], sel_rec["record_id"], reviewer_name, "Include", "Meets PICO criteria", "", p_val, i_val, c_val, o_val, "screen_include")
+                    st.rerun()
+                if a2.button("🤔 MAYBE", use_container_width=True):
+                    save_human_decision(sel_rec["duplicate_group_id"], sel_rec["record_id"], reviewer_name, "Maybe", custom_reas or "Needs full-text check", "", p_val, i_val, c_val, o_val, "screen_maybe")
+                    st.rerun()
+                if a3.button("❌ MOVE TO EXCLUDED BOX", use_container_width=True):
+                    save_human_decision(sel_rec["duplicate_group_id"], sel_rec["record_id"], reviewer_name, "Exclude", custom_reas.strip() or "Excluded by operator", "", p_val, i_val, c_val, o_val, "screen_exclude")
                     st.rerun()
 
-                if act2.button("🤔 MARK MAYBE", use_container_width=True, key=f"may_btn_{sel_rec['record_id']}"):
-                    save_human_decision(
-                        sel_rec["duplicate_group_id"], sel_rec["record_id"], reviewer_name, "Maybe",
-                        custom_reas or "Needs full-text check", sel_rec["reviewer_notes"] or "", p_val, i_val, c_val, o_val, "screen_maybe"
-                    )
-                    st.rerun()
-
-                if act3.button("❌ EXCLUDE (TO EXCLUDED BOX)", use_container_width=True, key=f"exc_btn_{sel_rec['record_id']}"):
-                    save_human_decision(
-                        sel_rec["duplicate_group_id"], sel_rec["record_id"], reviewer_name, "Exclude",
-                        custom_reas.strip() or "Excluded by operator", sel_rec["reviewer_notes"] or "", p_val, i_val, c_val, o_val, "screen_exclude"
-                    )
-                    st.rerun()
-
-    render_step_footer(curr_idx)
+    render_bottom_teleport_bar(curr_idx)
 
 
 # ==============================================================================
 # STAGE 07: PICO SPAN INSPECTOR
 # ==============================================================================
 elif curr_idx == 7:
-    st.markdown("### 🧬 Stage 07 · PICO Span Inspector & Human Verification")
     conn = get_connection()
     rows = conn.execute("""
-    SELECT
-        r.*,
-        COALESCE(rd.screening_decision, ms.decision, 'Maybe') AS final_decision,
-        COALESCE(rd.exclusion_reason, ms.exclusion_reasons, '') AS final_reason,
-        rd.reviewer_notes,
-        mp.population_span, mp.intervention_span, mp.comparator_span, mp.outcome_span,
-        rd.pico_p, rd.pico_i, rd.pico_c, rd.pico_o
+    SELECT r.*, COALESCE(rd.screening_decision, ms.decision, 'Maybe') AS final_decision,
+           COALESCE(rd.exclusion_reason, ms.exclusion_reasons, '') AS final_reason, rd.reviewer_notes,
+           mp.population_span, mp.intervention_span, mp.comparator_span, mp.outcome_span,
+           rd.pico_p, rd.pico_i, rd.pico_c, rd.pico_o
     FROM records r
     LEFT JOIN machine_screening ms ON r.record_id = ms.record_id
     LEFT JOIN reviewer_decisions rd ON r.duplicate_group_id = rd.group_id
     LEFT JOIN machine_pico mp ON r.record_id = mp.record_id
-    WHERE r.is_hidden_duplicate = 0
-    ORDER BY r.record_id ASC;
+    WHERE r.is_hidden_duplicate = 0 ORDER BY r.record_id ASC;
     """).fetchall()
     conn.close()
 
     eligible_recs = [dict(r) for r in rows if r["final_decision"] in ("Include", "Maybe")]
-
     if not eligible_recs:
-        st.info("No Included or Maybe studies yet.")
+        st.info("No Included/Maybe studies yet.")
     else:
         for r in eligible_recs:
             p_val = r["pico_p"] if r["pico_p"] is not None else (r["population_span"] or "")
             i_val = r["pico_i"] if r["pico_i"] is not None else (r["intervention_span"] or "")
             c_val = r["pico_c"] if r["pico_c"] is not None else (r["comparator_span"] or "")
             o_val = r["pico_o"] if r["pico_o"] is not None else (r["outcome_span"] or "")
-
-            with st.expander(f"[{r['final_decision'].upper()}] Record #{r['record_id']}: {r['title']} ({r['pub_year']})", expanded=True):
+            with st.container(border=True):
+                st.markdown(f"#### [{r['final_decision'].upper()}] #{r['record_id']} // {r['title']}")
                 st.markdown(highlight_pico_html(r["abstract"], p_val, i_val, c_val, o_val), unsafe_allow_html=True)
-                with st.form(f"pico_edit_{r['record_id']}"):
+                with st.form(f"pico_f_{r['record_id']}"):
                     pc1, pc2 = st.columns(2)
-                    new_p = pc1.text_input("🟦 Population (P)", value=p_val)
-                    new_i = pc2.text_input("🟩 Intervention (I)", value=i_val)
-                    new_c = pc1.text_input("🟧 Comparator (C)", value=c_val)
-                    new_o = pc2.text_input("🟪 Outcome (O)", value=o_val)
-                    if st.form_submit_button("💾 Save Verified PICO Spans", type="primary"):
-                        save_human_decision(
-                            r["duplicate_group_id"], r["record_id"], reviewer_name,
-                            r["final_decision"], r["final_reason"], r["reviewer_notes"] or "",
-                            new_p, new_i, new_c, new_o, "pico_edit"
-                        )
-                        st.success("Verified PICO spans committed!")
+                    np = pc1.text_input("🟦 Population [P]", value=p_val)
+                    ni = pc2.text_input("🟩 Intervention [I]", value=i_val)
+                    nc = pc1.text_input("🟧 Comparator [C]", value=c_val)
+                    no = pc2.text_input("🟪 Outcome [O]", value=o_val)
+                    if st.form_submit_button("💾 COMMIT PICO SPANS", type="primary"):
+                        save_human_decision(r["duplicate_group_id"], r["record_id"], reviewer_name, r["final_decision"], r["final_reason"], r["reviewer_notes"] or "", np, ni, nc, no, "pico_edit")
                         st.rerun()
 
-    render_step_footer(curr_idx)
+    render_bottom_teleport_bar(curr_idx)
 
 
 # ==============================================================================
-# STAGE 08: LEVEL-2 DIFF & CONFLICT QUEUE
+# STAGE 08: LEVEL-2 VERSION DIFF & LOOP
 # ==============================================================================
 elif curr_idx == 8:
-    st.markdown("### 🔄 Stage 08 · Level-2 Query Diff & Conflict Resolution Queue")
     conn = get_connection()
     queries = conn.execute("SELECT * FROM query_versions ORDER BY version_id DESC;").fetchall()
     conflicts = conn.execute("SELECT * FROM duplicate_groups WHERE has_conflict = 1;").fetchall()
     conn.close()
 
     if conflicts:
-        st.error(f"⚠️ Detected {len(conflicts)} merged duplicate cluster(s) with opposing human screening decisions!")
         for c in conflicts:
             with st.container(border=True):
-                st.write(f"**Cluster #{c['group_id']}:** {c['conflict_details']}")
-                if st.button(f"✅ Resolve Conflict for Cluster #{c['group_id']}", key=f"res_{c['group_id']}"):
+                st.error(f"⚠️ Conflict in Cluster #{c['group_id']}: {c['conflict_details']}")
+                if st.button(f"✅ RESOLVE CLUSTER #{c['group_id']}", key=f"res_{c['group_id']}"):
                     resolve_duplicate_conflict(c["group_id"], c["representative_record_id"], reviewer_name)
                     st.rerun()
     else:
         st.success("✅ Zero merge conflicts across active duplicate clusters.")
 
     if len(queries) < 2:
-        st.info("Load **Expanded Query v2** below to test the Level-2 Diff Engine immediately!")
-        if st.button("⚡ Load Expanded Query v2 (+2 New RCTs) Now", type="primary"):
-            vid = create_query_version(
-                "Benchmark v2 (Expanded Query)",
-                '("type 2 diabetes") AND metformin AND (placebo OR sulfonylurea OR sitagliptin)',
-                2015, 2025, ["PubMed", "Europe PMC"], 9, 5
-            )
+        if st.button("⚡ INJECT EXPANDED QUERY v2 (+2 NEW RCTs) TO DEMO DIFF ENGINE", type="primary"):
+            vid = create_query_version("Benchmark v2 (Expanded)", '("type 2 diabetes") AND metformin AND (placebo OR sulfonylurea)', 2015, 2025, ["PubMed", "Europe PMC"], 9, 5)
             store_fetched_records(vid, get_benchmark_papers("v2"))
             run_deduplication(vid)
             run_screening(vid)
@@ -1435,40 +1268,27 @@ elif curr_idx == 8:
         q_options = {f"v{q['version_id']}: {q['version_name']} ({q['boolean_query']})": q["version_id"] for q in queries}
         labels = list(q_options.keys())
         c1, c2 = st.columns(2)
-        old_lbl = c1.selectbox("Baseline Query Version:", labels, index=min(1, len(labels) - 1))
-        new_lbl = c2.selectbox("Updated Query Version:", labels, index=0)
-
+        old_lbl = c1.selectbox("Baseline Version:", labels, index=min(1, len(labels) - 1))
+        new_lbl = c2.selectbox("Updated Version:", labels, index=0)
         diff = compute_query_diff(q_options[old_lbl], q_options[new_lbl])
         m1, m2 = st.columns(2)
-        m1.metric("➕ Newly Added Papers", diff["added_count"])
-        m2.metric("➖ Papers No Longer Returned", diff["removed_count"])
-
+        m1.metric("➕ Added Records", diff["added_count"])
+        m2.metric("➖ Removed Records (Preserved in Vault)", diff["removed_count"])
         if diff["added_records"]:
-            st.markdown("#### 🟢 Newly Added Papers in Updated Search")
-            st.dataframe(pd.DataFrame(diff["added_records"])[["record_id", "source", "pub_year", "title", "authors", "journal"]], use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(diff["added_records"])[["record_id", "source", "pub_year", "title", "journal"]], use_container_width=True, hide_index=True)
 
-    render_step_footer(curr_idx)
+    render_bottom_teleport_bar(curr_idx)
 
 
 # ==============================================================================
-# STAGE 09: AI WHITE-SPACE & EVIDENCE GAP DISCOVERY ENGINE
+# STAGE 09: AI WHITE-SPACE & EVIDENCE GAP DISCOVERY LAB
 # ==============================================================================
 elif curr_idx == 9:
-    st.markdown("## 🧠 Stage 09 · 'The Unasked Question' — AI Evidence Gap & White-Space Lab")
-    st.caption(
-        "Cross-maps **Patient Sub-Cohorts × Clinical Outcomes** across your eligible studies to pinpoint **0-Study Scientific Blind Spots** "
-        "— and synthesizes Phase III clinical trial blueprints + Level-2 search mutations!"
-    )
-
     conn = get_connection()
     rows = conn.execute("""
-    SELECT
-        r.*,
-        COALESCE(rd.screening_decision, ms.decision, 'Maybe') AS final_decision,
-        COALESCE(rd.pico_p, mp.population_span, '') AS pico_p,
-        COALESCE(rd.pico_i, mp.intervention_span, '') AS pico_i,
-        COALESCE(rd.pico_c, mp.comparator_span, '') AS pico_c,
-        COALESCE(rd.pico_o, mp.outcome_span, '') AS pico_o
+    SELECT r.*, COALESCE(rd.screening_decision, ms.decision, 'Maybe') AS final_decision,
+           COALESCE(rd.pico_p, mp.population_span, '') AS pico_p,
+           COALESCE(rd.pico_o, mp.outcome_span, '') AS pico_o
     FROM records r
     LEFT JOIN machine_screening ms ON r.record_id = ms.record_id
     LEFT JOIN reviewer_decisions rd ON r.duplicate_group_id = rd.group_id
@@ -1478,145 +1298,83 @@ elif curr_idx == 9:
     conn.close()
 
     eligible_studies = [dict(r) for r in rows if r["final_decision"] in ("Include", "Maybe")]
-
     if not eligible_studies:
-        st.warning("No eligible studies in Vault yet! Click below to load the 12-Paper Benchmark Dataset and launch the AI Gap Engine.")
-        if st.button("⚡ Load Benchmark Dataset & Run AI White-Space Engine", type="primary"):
-            vid = create_query_version(
-                "Benchmark v1 (Metformin vs Placebo)",
-                '("type 2 diabetes") AND metformin AND placebo',
-                2015, 2025, ["PubMed", "Europe PMC"], 8, 4
-            )
-            store_fetched_records(vid, get_benchmark_papers("v1"))
-            run_deduplication(vid)
-            run_screening(vid)
-            run_pico_extraction(vid)
-            st.rerun()
+        st.info("Click '⚡ 1-CLICK DEMO DATASET' in the top bar to populate studies for the AI White-Space Matrix!")
     else:
         gap_data = compute_ai_evidence_gap_matrix(eligible_studies, config)
-
-        g1, g2, g3, g4 = st.columns(4)
-        g1.metric("🧬 Eligible Studies Mapped", len(eligible_studies))
-        g2.metric("🟢 Dense Evidence Cells (2+ RCTs)", gap_data["dense_count"])
-        g3.metric("🟡 Sparse Evidence Cells (1 RCT)", gap_data["sparse_count"])
-        g4.metric("🔥 White-Space Blind Spots (0 RCTs)", gap_data["zero_count"])
-
-        st.markdown("### 🗺️ 1. 2D PICO Evidence Density Heatmap (`Patient Sub-Cohorts` × `Clinical Outcomes`)")
         hdr_cols = st.columns([1.3, 1, 1, 1, 1])
-        hdr_cols[0].markdown("**Cohort \\ Endpoint**")
+        hdr_cols[0].markdown("**COHORT \\ ENDPOINT**")
         for c_idx, out_name in enumerate(gap_data["outcomes"]):
             hdr_cols[c_idx + 1].markdown(f"<div style='text-align:center; font-weight:700; font-size:0.82rem;'>{out_name}</div>", unsafe_allow_html=True)
 
         for sg_name in gap_data["subgroups"]:
             r_cols = st.columns([1.3, 1, 1, 1, 1])
-            r_cols[0].markdown(f"<div style='padding-top:18px; font-weight:700; font-size:0.86rem;'>👥 {sg_name}</div>", unsafe_allow_html=True)
+            r_cols[0].markdown(f"<div style='padding-top:18px; font-weight:700;'>👥 {sg_name}</div>", unsafe_allow_html=True)
             for c_idx, out_name in enumerate(gap_data["outcomes"]):
                 cell = gap_data["matrix"][sg_name][out_name]
                 cnt = cell["count"]
                 pids = ", ".join(f"#{i}" for i in cell["paper_ids"])
                 if cnt >= 2:
-                    r_cols[c_idx + 1].markdown(
-                        f"<div class='gap-cell-dense'><div style='font-size:1.2rem; font-weight:800; color:#34d399;'>🟢 {cnt} Studies</div><div style='font-size:0.70rem; opacity:0.85;'>IDs: {pids}</div></div>",
-                        unsafe_allow_html=True
-                    )
+                    r_cols[c_idx + 1].markdown(f"<div class='gap-dense'><div style='font-size:1.25rem; font-weight:800; color:#10b981;'>🟢 {cnt} RCTs</div><div style='font-size:0.72rem;'>{pids}</div></div>", unsafe_allow_html=True)
                 elif cnt == 1:
-                    r_cols[c_idx + 1].markdown(
-                        f"<div class='gap-cell-sparse'><div style='font-size:1.2rem; font-weight:800; color:#fbbf24;'>🟡 1 Study</div><div style='font-size:0.70rem; opacity:0.85;'>ID: {pids}</div></div>",
-                        unsafe_allow_html=True
-                    )
+                    r_cols[c_idx + 1].markdown(f"<div class='gap-sparse'><div style='font-size:1.25rem; font-weight:800; color:#fbbf24;'>🟡 1 RCT</div><div style='font-size:0.72rem;'>{pids}</div></div>", unsafe_allow_html=True)
                 else:
-                    r_cols[c_idx + 1].markdown(
-                        f"<div class='gap-cell-zero'><div style='font-size:1.15rem; font-weight:800; color:#fb7185;'>🔥 0 STUDIES</div><div style='font-size:0.68rem; color:#fda4af; font-weight:700;'>WHITE-SPACE GAP</div></div>",
-                        unsafe_allow_html=True
-                    )
+                    r_cols[c_idx + 1].markdown("<div class='gap-zero'><div style='font-size:1.15rem; font-weight:800; color:#ff3366;'>🔥 0 STUDIES</div><div style='font-size:0.68rem; font-weight:700;'>WHITE-SPACE GAP</div></div>", unsafe_allow_html=True)
             st.write("")
 
-        st.markdown("---")
-        st.markdown("### 🚀 2. Autonomous Trial Protocol & Level-2 Query Mutator")
         if gap_data["gaps"]:
-            gap_labels = [f"🔥 WHITE-SPACE #{idx+1}: {g['subgroup']} × {g['outcome']} (0 RCTs)" for idx, g in enumerate(gap_data["gaps"])]
-            chosen_idx = st.selectbox("Select a Discovered White-Space Blind Spot:", range(len(gap_labels)), format_func=lambda i: gap_labels[i])
+            st.write("")
+            gap_labels = [f"🔥 BLIND SPOT #{i+1}: {g['subgroup']} × {g['outcome']} (0 RCTs)" for i, g in enumerate(gap_data["gaps"])]
+            chosen_idx = st.selectbox("Select Discovered White-Space to Synthesize Trial Blueprint:", range(len(gap_labels)), format_func=lambda i: gap_labels[i])
             sel_gap = gap_data["gaps"][chosen_idx]
-
             with st.container(border=True):
-                st.markdown("#### 💡 AI-Formulated 'Unasked Research Question'")
-                st.markdown(f"<div class='manus-terminal'>❓ \"{sel_gap['unasked_question']}\"</div>", unsafe_allow_html=True)
-
-                col_a, col_b = st.columns(2)
-                with col_a:
-                    st.markdown("##### 🕵️ Root Cause of Literature Gap")
-                    st.write(sel_gap["why_missed"])
-                with col_b:
-                    st.markdown("##### 🧪 Proposed Phase III RCT Blueprint")
-                    st.write(sel_gap["trial_design"])
-
-                st.markdown("##### 🔄 Level-2 Active Learning: Auto-Mutate Search Expression")
-                st.code(sel_gap["mutated_query"], language="text")
-
-                if st.button("⚡ Inject Gap Query into Stage 02 (Query Composer) & Run Level-2 Search ➡️", type="primary", use_container_width=True):
+                st.markdown(f"#### 💡 Unasked Research Question: *\"{sel_gap['unasked_question']}\"*")
+                c1, c2 = st.columns(2)
+                c1.write(f"**🕵️ Why Missed:** {sel_gap['why_missed']}")
+                c2.write(f"**🧪 Phase III Blueprint:** {sel_gap['trial_design']}")
+                st.code(sel_gap["mutated_query"], language="sql")
+                if st.button("⚡ INJECT GAP QUERY INTO [02·COMPOSER] & RUN LEVEL-2 LOOP ➡️", type="primary", use_container_width=True):
                     st.session_state["custom_query_box"] = sel_gap["mutated_query"]
                     go_to_step(2)
 
-    render_step_footer(curr_idx)
+    render_bottom_teleport_bar(curr_idx)
 
 
 # ==============================================================================
-# STAGE 10: EXPORT CSV & AUDIT LEDGER
+# STAGE 10: EXPORT CSV & IMMUTABLE AUDIT LEDGER
 # ==============================================================================
 elif curr_idx == 10:
-    st.markdown("### 📊 Stage 10 · Export CSV & Immutable Audit Ledger")
     conn = get_connection()
     export_rows = conn.execute("""
-    SELECT
-        r.record_id, r.duplicate_group_id, r.source, r.pmid, r.doi,
-        r.title, r.authors, r.pub_year, r.journal,
-        COALESCE(rd.screening_decision, ms.decision, 'Maybe') AS final_decision,
-        CASE WHEN rd.screening_decision IS NOT NULL THEN 'Human Override' ELSE 'Machine Rule' END AS decision_source,
-        COALESCE(rd.exclusion_reason, ms.exclusion_reasons, '') AS reason,
-        COALESCE(rd.pico_p, mp.population_span, '') AS population_P,
-        COALESCE(rd.pico_i, mp.intervention_span, '') AS intervention_I,
-        COALESCE(rd.pico_c, mp.comparator_span, '') AS comparator_C,
-        COALESCE(rd.pico_o, mp.outcome_span, '') AS outcome_O,
-        rd.reviewer_name, rd.updated_at AS last_reviewed_at
+    SELECT r.record_id, r.duplicate_group_id, r.source, r.pmid, r.doi, r.title, r.authors, r.pub_year, r.journal,
+           COALESCE(rd.screening_decision, ms.decision, 'Maybe') AS final_decision,
+           COALESCE(rd.exclusion_reason, ms.exclusion_reasons, '') AS reason,
+           COALESCE(rd.pico_p, mp.population_span, '') AS population_P,
+           COALESCE(rd.pico_i, mp.intervention_span, '') AS intervention_I,
+           COALESCE(rd.pico_c, mp.comparator_span, '') AS comparator_C,
+           COALESCE(rd.pico_o, mp.outcome_span, '') AS outcome_O
     FROM records r
     LEFT JOIN machine_screening ms ON r.record_id = ms.record_id
     LEFT JOIN reviewer_decisions rd ON r.duplicate_group_id = rd.group_id
     LEFT JOIN machine_pico mp ON r.record_id = mp.record_id
-    WHERE r.is_hidden_duplicate = 0
-    ORDER BY r.record_id ASC;
+    WHERE r.is_hidden_duplicate = 0 ORDER BY r.record_id ASC;
     """).fetchall()
 
     df_all = pd.DataFrame([dict(r) for r in export_rows])
-    export_Bucket = st.radio("Select Export Partition:", ["✅ Only Included Studies", "❌ Only Excluded Studies", "📚 All Unique Studies"], horizontal=True)
-
     if not df_all.empty:
-        if "Included" in export_Bucket:
-            df_exp = df_all[df_all["final_decision"] == "Include"]
-        elif "Excluded" in export_Bucket:
-            df_exp = df_all[df_all["final_decision"] == "Exclude"]
-        else:
-            df_exp = df_all
+        st.dataframe(df_all, use_container_width=True, hide_index=True)
+        st.download_button("📥 DOWNLOAD FULL SYNTHESIS CSV", df_all.to_csv(index=False).encode("utf-8"), "rayyan_kinetic_export.csv", "text/csv", type="primary")
 
-        st.dataframe(df_exp, use_container_width=True, hide_index=True)
-        st.download_button(
-            label=f"📥 Download CSV ({len(df_exp)} Records)",
-            data=df_exp.to_csv(index=False).encode("utf-8"),
-            file_name="mini_rayyan_synthesis_export.csv",
-            mime="text/csv",
-            type="primary"
-        )
-
-    st.markdown("---")
     l1, l2 = st.columns(2)
     with l1:
-        st.markdown("#### ✍️ Human Override Audit Log")
+        st.markdown("#### ✍️ Human Override Audit Ledger")
         audits = conn.execute("SELECT * FROM audit_log ORDER BY log_id DESC;").fetchall()
         if audits:
             st.dataframe(pd.DataFrame([dict(a) for a in audits]), use_container_width=True, hide_index=True)
     with l2:
-        st.markdown("#### ⚙️ Pipeline Execution Log")
+        st.markdown("#### ⚙️ Pipeline Execution Telemetry")
         runs = conn.execute("SELECT * FROM run_log ORDER BY run_id DESC;").fetchall()
         if runs:
             st.dataframe(pd.DataFrame([dict(r) for r in runs]), use_container_width=True, hide_index=True)
     conn.close()
-    render_step_footer(curr_idx)
+    render_bottom_teleport_bar(curr_idx)
