@@ -1,14 +1,11 @@
 """
-MINI-RAYYAN AI // Vercel Workbench + AI Evidence Gap & White-Space Discovery Engine (app.py)
-Includes:
-- 🎓 Beginner Guide & PICO Academy
-- 🎨 Multi-Theme Engine (Vercel Dark, Daylight White, Cyberpunk Neon, BioTech Emerald)
-- ⏭️ Auto-Redirects across all steps
-- 🧹 Clean Blank Start in Step 0 with 1-Click Topic Cards
-- 📊 6 Separate KPI Boxes (Dedicated Excluded & Duplicates Boxes)
-- 🗂️ Split-Screen Interactive Paper Boxes (Step 5)
-- 🧠 BONUS AI APPLICATION: "The Unasked Question" — 2D Evidence Gap Matrix,
-  White-Space Finder, Auto-Trial Protocol Generator & 1-Click Level-2 Gap Search Mutator!
+MINI-RAYYAN AI // WATERMELON × MANUS × CULT-UI × GSAP EDITION (app.py)
+Engineered for Hackathon Jury Impact:
+1. Watermelon UI: Tactile Bento grids, specular top-edge inner borders & deep layered shadows
+2. Manus.im: Editorial agentic workspace, live autonomous telemetry bar & clean split-screen focus
+3. Cult UI: Recessed double-border shells (outer chassis + inner surface) & pill micro-craft
+4. GSAP Motion: Cubic-bezier staggered card entrances, spring hover physics & kinetic gradient text
+5. Full Pipeline + Theme Switcher + Auto-Redirects + Blank Step 0 + AI White-Space Gap Lab
 """
 
 import os
@@ -40,7 +37,7 @@ from pico_extractor import run_pico_extraction, highlight_pico_html
 from level2_loop import compute_query_diff, resolve_duplicate_conflict
 
 st.set_page_config(
-    page_title="Mini-Rayyan AI // Evidence Workbench",
+    page_title="Mini-Rayyan // Agentic Evidence Studio",
     page_icon="⚡",
     layout="wide",
 )
@@ -51,17 +48,17 @@ init_db()
 # NAVIGATION STEPS & AUTO-REDIRECT ENGINE
 # ==============================================================================
 PAGES = [
-    "🎓 Guide · PICO & Site Academy",
-    "00 · Define Topic & PICO",
-    "01 · Query Builder Studio",
-    "02 · Approve & Pull Papers",
-    "03 · Saved Paper Vault",
-    "04 · Duplicate Resolution",
-    "05 · Interactive Screening",
-    "06 · PICO Inspector & Edit",
-    "07 · Level 2 Diff & Conflicts",
-    "🧠 08 · AI White-Space & Gap Lab",
-    "📥 09 · Export CSV & Audit Trail",
+    "🎓 00 · Academy & PICO Guide",
+    "🎯 01 · Topic & PICO Studio",
+    "🎛️ 02 · Query Composer",
+    "📥 03 · Pull & Ingest Stream",
+    "🗄️ 04 · Zero-Delete Vault",
+    "🔗 05 · Duplicate Resolver",
+    "⚖️ 06 · Split-Screen Screener",
+    "🧬 07 · PICO Span Inspector",
+    "🔄 08 · Level-2 Diff & Loop",
+    "🧠 09 · AI White-Space Lab",
+    "📊 10 · Export & Audit Ledger",
 ]
 
 if "current_step_idx" not in st.session_state:
@@ -88,116 +85,135 @@ if "topic_initialized" not in st.session_state:
 
 
 def go_to_step(step_index: int):
-    """Redirect immediately to target pipeline page index."""
     st.session_state["current_step_idx"] = max(0, min(step_index, len(PAGES) - 1))
     st.rerun()
 
 
 def render_step_footer(curr_idx: int):
-    """Renders smooth Back / Continue navigation buttons at the bottom of every page."""
     st.markdown("<br>", unsafe_allow_html=True)
-    with st.container(border=True):
-        f1, f2, f3 = st.columns([1.3, 2.4, 1.3])
-        with f1:
-            if curr_idx > 0:
-                prev_label = "🎓 Back to Guide" if curr_idx == 1 else f"⬅️ Previous ({PAGES[curr_idx - 1].split('·')[0].strip()})"
-                if st.button(prev_label, use_container_width=True, key=f"prev_btn_{curr_idx}"):
-                    go_to_step(curr_idx - 1)
-        with f2:
-            st.markdown(
-                f"<div style='text-align:center; padding-top:6px; font-size:0.85rem; opacity:0.85;'>"
-                f"⚡ <b>Active Stage:</b> {PAGES[curr_idx]}</div>",
-                unsafe_allow_html=True
-            )
-        with f3:
-            if curr_idx < len(PAGES) - 1:
-                next_label = "🚀 Start Step 0 ➡️" if curr_idx == 0 else f"Next ({PAGES[curr_idx + 1].split('·')[0].strip()}) ➡️"
-                if st.button(next_label, type="primary", use_container_width=True, key=f"next_btn_{curr_idx}"):
-                    go_to_step(curr_idx + 1)
+    st.markdown('<div class="cult-shell">', unsafe_allow_html=True)
+    f1, f2, f3 = st.columns([1.3, 2.4, 1.3])
+    with f1:
+        if curr_idx > 0:
+            prev_lbl = "⬅️ Back to Academy" if curr_idx == 1 else f"⬅️ {PAGES[curr_idx - 1].split('·')[1].strip()}"
+            if st.button(prev_lbl, use_container_width=True, key=f"prev_btn_{curr_idx}"):
+                go_to_step(curr_idx - 1)
+    with f2:
+        st.markdown(
+            f"<div style='text-align:center; padding-top:8px; font-size:0.82rem; font-family:JetBrains Mono, monospace; opacity:0.8;'>"
+            f"STAGE [{curr_idx:02d}/{len(PAGES)-1:02d}] // {PAGES[curr_idx].upper()}</div>",
+            unsafe_allow_html=True
+        )
+    with f3:
+        if curr_idx < len(PAGES) - 1:
+            next_lbl = "Launch Topic Studio ➡️" if curr_idx == 0 else f"Next: {PAGES[curr_idx + 1].split('·')[1].strip()} ➡️"
+            if st.button(next_lbl, type="primary", use_container_width=True, key=f"next_btn_{curr_idx}"):
+                go_to_step(curr_idx + 1)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ==============================================================================
-# MULTI-THEME ENGINE (BLACK / WHITE / CYBERPUNK / BIOTECH EMERALD)
+# 4 DESIGN-SYSTEM THEMES (MANUS / WATERMELON / GSAP / DAYLIGHT)
 # ==============================================================================
 THEMES = {
-    "🌑 Vercel Obsidian (Dark)": {
-        "bg": "radial-gradient(ellipse 80% 45% at 50% -10%, rgba(99, 102, 241, 0.18), transparent), #09090b",
-        "sidebar_bg": "#0c0c10",
-        "card_bg": "rgba(24, 24, 27, 0.85)",
-        "text": "#fafafa",
-        "muted": "#a1a1aa",
-        "border": "rgba(255, 255, 255, 0.10)",
-        "accent": "#6366f1",
-        "accent_glow": "rgba(99, 102, 241, 0.30)",
+    "🖤 Cult × Manus Obsidian (Signature Dark)": {
+        "bg": "radial-gradient(120% 80% at 50% -15%, rgba(120, 119, 198, 0.22), transparent 55%), radial-gradient(80% 60% at 95% 95%, rgba(16, 185, 129, 0.10), transparent 50%), #060608",
+        "sidebar_bg": "#08080b",
+        "shell_bg": "rgba(18, 18, 22, 0.72)",
+        "card_bg": "linear-gradient(180deg, rgba(28, 28, 34, 0.88) 0%, rgba(16, 16, 20, 0.94) 100%)",
+        "text": "#f4f4f6",
+        "muted": "#8e8e98",
+        "border": "rgba(255, 255, 255, 0.08)",
+        "specular": "inset 0 1px 0 0 rgba(255, 255, 255, 0.16)",
+        "accent": "#818cf8",
+        "accent2": "#34d399",
+        "accent_glow": "rgba(129, 140, 248, 0.35)",
+        "grad_text": "linear-gradient(135deg, #ffffff 0%, #c7d2fe 45%, #6ee7b7 100%)",
     },
-    "☀️ Alabaster Daylight (White)": {
-        "bg": "radial-gradient(ellipse 80% 45% at 50% -10%, rgba(79, 70, 229, 0.10), transparent), #f8fafc",
-        "sidebar_bg": "#ffffff",
-        "card_bg": "#ffffff",
-        "text": "#0f172a",
-        "muted": "#475569",
-        "border": "#e2e8f0",
+    "🟢 GSAP Kinetic Neon (High-Craft Cyber)": {
+        "bg": "radial-gradient(100% 70% at 50% -10%, rgba(14, 246, 118, 0.18), transparent 55%), radial-gradient(70% 60% at 10% 90%, rgba(168, 85, 247, 0.14), transparent 50%), #050806",
+        "sidebar_bg": "#070b08",
+        "shell_bg": "rgba(12, 20, 15, 0.78)",
+        "card_bg": "linear-gradient(180deg, rgba(19, 32, 24, 0.90) 0%, rgba(10, 17, 13, 0.96) 100%)",
+        "text": "#f0fdf4",
+        "muted": "#86efac",
+        "border": "rgba(14, 246, 118, 0.22)",
+        "specular": "inset 0 1px 0 0 rgba(14, 246, 118, 0.30)",
+        "accent": "#0ef676",
+        "accent2": "#38bdf8",
+        "accent_glow": "rgba(14, 246, 118, 0.38)",
+        "grad_text": "linear-gradient(135deg, #ffffff 0%, #0ef676 50%, #38bdf8 100%)",
+    },
+    "🍉 Watermelon Coral Pop (Vibrant Sunset)": {
+        "bg": "radial-gradient(110% 75% at 50% -10%, rgba(255, 77, 121, 0.22), transparent 55%), radial-gradient(80% 50% at 90% 90%, rgba(56, 189, 248, 0.15), transparent 50%), #090508",
+        "sidebar_bg": "#0e070c",
+        "shell_bg": "rgba(28, 14, 24, 0.75)",
+        "card_bg": "linear-gradient(180deg, rgba(40, 19, 33, 0.88) 0%, rgba(20, 10, 17, 0.95) 100%)",
+        "text": "#fff1f2",
+        "muted": "#fda4af",
+        "border": "rgba(255, 107, 139, 0.24)",
+        "specular": "inset 0 1px 0 0 rgba(255, 150, 175, 0.25)",
+        "accent": "#ff4d79",
+        "accent2": "#38bdf8",
+        "accent_glow": "rgba(255, 77, 121, 0.40)",
+        "grad_text": "linear-gradient(135deg, #ffffff 0%, #ff7597 50%, #38bdf8 100%)",
+    },
+    "☀️ Manus Paper Daylight (Editorial Light)": {
+        "bg": "radial-gradient(100% 60% at 50% -10%, rgba(99, 102, 241, 0.10), transparent 55%), #f7f6f2",
+        "sidebar_bg": "#efede7",
+        "shell_bg": "rgba(255, 255, 255, 0.85)",
+        "card_bg": "linear-gradient(180deg, #ffffff 0%, #faf9f5 100%)",
+        "text": "#18181b",
+        "muted": "#52525b",
+        "border": "rgba(24, 24, 27, 0.10)",
+        "specular": "inset 0 1px 0 0 rgba(255, 255, 255, 0.9)",
         "accent": "#4f46e5",
-        "accent_glow": "rgba(79, 70, 229, 0.18)",
-    },
-    "🌌 Cyberpunk Neon (Vibrant Purple)": {
-        "bg": "radial-gradient(circle at 15% 15%, rgba(236, 72, 153, 0.16), transparent 40%), radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.16), transparent 40%), #070412",
-        "sidebar_bg": "#0b061a",
-        "card_bg": "rgba(22, 13, 46, 0.85)",
-        "text": "#fdf4ff",
-        "muted": "#d8b4fe",
-        "border": "rgba(232, 121, 249, 0.24)",
-        "accent": "#ec4899",
-        "accent_glow": "rgba(236, 72, 153, 0.35)",
-    },
-    "🌲 Emerald BioTech (Vibrant Teal)": {
-        "bg": "radial-gradient(ellipse 75% 45% at 50% -10%, rgba(16, 185, 129, 0.18), transparent), #041311",
-        "sidebar_bg": "#061c19",
-        "card_bg": "rgba(10, 38, 34, 0.85)",
-        "text": "#ecfdf5",
-        "muted": "#6ee7b7",
-        "border": "rgba(16, 185, 129, 0.25)",
-        "accent": "#10b981",
-        "accent_glow": "rgba(16, 185, 129, 0.32)",
+        "accent2": "#059669",
+        "accent_glow": "rgba(79, 70, 229, 0.20)",
+        "grad_text": "linear-gradient(135deg, #18181b 0%, #4f46e5 55%, #059669 100%)",
     },
 }
 
 # ==============================================================================
-# SIDEBAR: THEME SWITCHER & ANIMATED STEP COMMAND DOCK
+# SIDEBAR: WATERMELON × CULT-UI FLOATING DOCK
 # ==============================================================================
-st.sidebar.markdown("### ⚡ Mini-Rayyan AI")
+st.sidebar.markdown("""
+<div style="padding: 4px 2px 10px 2px;">
+    <div style="font-size:1.18rem; font-weight:800; letter-spacing:-0.5px;">⚡ MINI-RAYYAN <span style="font-size:0.68rem; padding:2px 7px; border-radius:99px; background:rgba(129,140,248,0.2); color:#818cf8; vertical-align:middle;">OS v3.0</span></div>
+    <div style="font-size:0.74rem; opacity:0.65; font-family:'JetBrains Mono', monospace;">AGENTIC SYNTHESIS ENGINE</div>
+</div>
+""", unsafe_allow_html=True)
+
 selected_theme_name = st.sidebar.selectbox(
-    "🎨 UI Theme Mode:",
+    "🎨 Design System Theme:",
     list(THEMES.keys()),
     index=0,
-    help="Switch between Dark, White, Cyberpunk Neon, or BioTech Emerald themes!"
 )
 th = THEMES[selected_theme_name]
 
-reviewer_name = st.sidebar.text_input("👤 Reviewer Name", value="Lead Reviewer (UG3)")
+reviewer_name = st.sidebar.text_input("👤 Operator Identity", value="Dhruv Kothari (Lead)")
 
 curr_idx = st.session_state["current_step_idx"]
 prog_pct = int(((curr_idx + 1) / len(PAGES)) * 100)
 
 st.sidebar.markdown(f"""
-<div style="display:flex; justify-content:space-between; align-items:center; margin: 10px 2px 6px 2px;">
-    <span style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:{th['muted']};">Navigation Dock</span>
-    <span style="font-size:0.72rem; font-weight:700; color:{th['accent']};">{curr_idx}/{len(PAGES)-1}</span>
+<div style="display:flex; justify-content:space-between; align-items:center; margin: 8px 2px 5px 2px;">
+    <span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:{th['muted']}; font-family:'JetBrains Mono', monospace;">WORKFLOW TELEMETRY</span>
+    <span style="font-size:0.70rem; font-weight:800; color:{th['accent']}; font-family:'JetBrains Mono', monospace;">{prog_pct}%</span>
 </div>
-<div style="width:100%; height:6px; background:rgba(128,128,128,0.2); border-radius:999px; overflow:hidden; margin-bottom:12px;">
-    <div style="width:{prog_pct}%; height:100%; background:linear-gradient(90deg, {th['accent']}, #38bdf8, #10b981); border-radius:999px; transition:width 0.35s ease;"></div>
+<div style="width:100%; height:5px; background:rgba(128,128,128,0.18); border-radius:999px; overflow:hidden; margin-bottom:12px;">
+    <div style="width:{prog_pct}%; height:100%; background:linear-gradient(90deg, {th['accent']}, {th['accent2']}); border-radius:999px; transition:width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
 </div>
 """, unsafe_allow_html=True)
 
 for i, label in enumerate(PAGES):
     is_active = (i == curr_idx)
     btn_type = "primary" if is_active else "secondary"
-    prefix = "⚡ " if is_active else ("📘 " if i == 0 else ("🧠 " if i == 9 else "○ "))
-    if st.sidebar.button(f"{prefix}{label}", key=f"side_nav_{i}", use_container_width=True, type=btn_type):
+    if st.sidebar.button(label, key=f"side_nav_{i}", use_container_width=True, type=btn_type):
         go_to_step(i)
 
 st.sidebar.markdown("---")
-if st.sidebar.button("🗑️ Reset All Data & Start Fresh", use_container_width=True):
+if st.sidebar.button("🗑️ Reset Workspace Vault", use_container_width=True):
     if os.path.exists(DB_PATH):
         os.remove(DB_PATH)
     init_db()
@@ -210,20 +226,34 @@ if st.sidebar.button("🗑️ Reset All Data & Start Fresh", use_container_width
     st.rerun()
 
 # ==============================================================================
-# DYNAMIC CSS INJECTION BASED ON SELECTED THEME
+# MASTER CSS ENGINE: WATERMELON + MANUS + CULT-UI + GSAP MOTION
 # ==============================================================================
 st.markdown(f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-    @keyframes pulseGap {{
-        0%, 100% {{ box-shadow: 0 0 12px rgba(244, 63, 94, 0.25); border-color: rgba(244, 63, 94, 0.55); }}
-        50% {{ box-shadow: 0 0 24px rgba(244, 63, 94, 0.55); border-color: rgba(244, 63, 94, 0.95); }}
+    /* GSAP-Inspired Keyframe Physics */
+    @keyframes gsapRevealUp {{
+        0% {{ opacity: 0; transform: translateY(22px) scale(0.985); filter: blur(4px); }}
+        100% {{ opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }}
+    }}
+    @keyframes gsapPulseDot {{
+        0%, 100% {{ transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 {th['accent_glow']}; }}
+        50% {{ transform: scale(1.15); opacity: 0.85; box-shadow: 0 0 0 8px transparent; }}
+    }}
+    @keyframes borderBeam {{
+        0%, 100% {{ border-color: {th['border']}; }}
+        50% {{ border-color: {th['accent']}; }}
+    }}
+    @keyframes pulseGapRed {{
+        0%, 100% {{ box-shadow: 0 0 15px rgba(244, 63, 94, 0.25), inset 0 1px 0 0 rgba(255,255,255,0.2); border-color: rgba(244, 63, 94, 0.55); }}
+        50% {{ box-shadow: 0 0 28px rgba(244, 63, 94, 0.60), inset 0 1px 0 0 rgba(255,255,255,0.35); border-color: rgba(244, 63, 94, 1); }}
     }}
 
     html, body, [class*="css"] {{
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
         color: {th['text']} !important;
+        -webkit-font-smoothing: antialiased;
     }}
     code, pre {{
         font-family: 'JetBrains Mono', monospace !important;
@@ -243,69 +273,150 @@ st.markdown(f"""
         color: {th['text']};
     }}
 
-    .workbench-header {{
+    /* ==========================================================================
+       MANUS.IM + CULT-UI HERO & AUTONOMOUS AGENT STATUS BAR
+       ========================================================================== */
+    .manus-hero-shell {{
+        animation: gsapRevealUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        background: {th['shell_bg']};
+        border: 1px solid {th['border']};
+        box-shadow: {th['specular']}, 0 20px 45px -20px rgba(0, 0, 0, 0.55);
+        border-radius: 22px;
+        padding: 6px;
+        margin-bottom: 16px;
+        backdrop-filter: blur(24px);
+    }}
+    .manus-hero-inner {{
         background: {th['card_bg']};
         border: 1px solid {th['border']};
-        border-radius: 16px;
+        border-radius: 17px;
         padding: 18px 24px;
-        margin-bottom: 14px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.25);
-        backdrop-filter: blur(16px);
     }}
-    .workbench-title {{
-        font-size: 1.45rem;
+    .gsap-hero-title {{
+        font-size: 1.65rem;
         font-weight: 800;
-        background: linear-gradient(90deg, {th['accent']}, #38bdf8, #ec4899);
+        letter-spacing: -0.6px;
+        background: {th['grad_text']};
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }}
-    .workbench-sub {{
-        font-size: 0.88rem;
+    .editorial-serif {{
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: 1.85rem;
+        color: {th['accent']};
+        -webkit-text-fill-color: {th['accent']};
+    }}
+    .manus-agent-bar {{
+        background: rgba(128, 128, 128, 0.07);
+        border-top: 1px solid {th['border']};
+        border-radius: 0 0 16px 16px;
+        padding: 8px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.74rem;
         color: {th['muted']};
-        margin-top: 4px;
+    }}
+    .agent-pulse-dot {{
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: {th['accent2']};
+        margin-right: 8px;
+        animation: gsapPulseDot 2s infinite;
     }}
 
-    /* 6-Box Vibrant KPI Grid */
-    .kpi-6-grid {{
+    /* ==========================================================================
+       WATERMELON UI BENTO 6-CARD TELEMETRY GRID (WITH DEDICATED EXCLUDED BOX)
+       ========================================================================== */
+    .watermelon-bento-6 {{
         display: grid;
         grid-template-columns: repeat(6, 1fr);
         gap: 12px;
-        margin-bottom: 18px;
+        margin-bottom: 22px;
     }}
-    .kpi-card-v2 {{
+    .wm-card {{
+        animation: gsapRevealUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) backwards;
         background: {th['card_bg']};
         border: 1px solid {th['border']};
-        border-radius: 14px;
-        padding: 14px 16px;
-        transition: all 0.22s ease;
+        box-shadow: {th['specular']}, 0 10px 28px -12px rgba(0, 0, 0, 0.45);
+        border-radius: 18px;
+        padding: 15px 16px;
+        transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
     }}
-    .kpi-card-v2:hover {{
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px -8px {th['accent_glow']};
+    .wm-card:nth-child(1) {{ animation-delay: 0.04s; }}
+    .wm-card:nth-child(2) {{ animation-delay: 0.08s; }}
+    .wm-card:nth-child(3) {{ animation-delay: 0.12s; }}
+    .wm-card:nth-child(4) {{ animation-delay: 0.16s; }}
+    .wm-card:nth-child(5) {{ animation-delay: 0.20s; }}
+    .wm-card:nth-child(6) {{ animation-delay: 0.24s; }}
+
+    .wm-card:hover {{
+        transform: translateY(-5px) scale(1.015);
         border-color: {th['accent']};
+        box-shadow: {th['specular']}, 0 16px 36px -10px {th['accent_glow']};
     }}
-    .kpi-lbl-v2 {{
-        font-size: 0.72rem;
+    .wm-tag {{
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.67rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.6px;
+        letter-spacing: 0.8px;
         color: {th['muted']};
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }}
-    .kpi-val-v2 {{
-        font-size: 1.75rem;
+    .wm-num {{
+        font-size: 1.85rem;
         font-weight: 800;
-        margin: 4px 0 2px 0;
-        line-height: 1.1;
+        letter-spacing: -0.8px;
+        margin: 6px 0 3px 0;
+        line-height: 1.05;
     }}
-    .kpi-foot-v2 {{
+    .wm-sub {{
         font-size: 0.73rem;
         color: {th['muted']};
     }}
 
-    /* Academy & PICO Visual Cards */
+    /* ==========================================================================
+       CULT-UI DOUBLE-BORDER RECESSED SHELLS & CARDS
+       ========================================================================== */
+    .cult-shell {{
+        animation: gsapRevealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        background: {th['shell_bg']};
+        border: 1px solid {th['border']};
+        box-shadow: {th['specular']}, 0 18px 40px -18px rgba(0,0,0,0.45);
+        border-radius: 20px;
+        padding: 18px 22px;
+        margin-bottom: 16px;
+        backdrop-filter: blur(20px);
+    }}
+    div[data-testid="stVerticalBlockBorderWrapper"] {{
+        background: {th['card_bg']} !important;
+        border: 1px solid {th['border']} !important;
+        box-shadow: {th['specular']}, 0 10px 26px -12px rgba(0, 0, 0, 0.35) !important;
+        border-radius: 18px !important;
+        padding: 16px !important;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }}
+    div[data-testid="stVerticalBlockBorderWrapper"]:hover {{
+        border-color: rgba(129, 140, 248, 0.35) !important;
+    }}
+
+    /* Academy PICO 4-Card Grid */
     .academy-grid {{
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -315,90 +426,93 @@ st.markdown(f"""
     .academy-card {{
         background: {th['card_bg']};
         border: 1px solid {th['border']};
-        border-radius: 16px;
-        padding: 18px;
-        transition: all 0.25s ease;
+        box-shadow: {th['specular']}, 0 12px 30px -14px rgba(0,0,0,0.4);
+        border-radius: 18px;
+        padding: 20px;
+        transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }}
     .academy-card:hover {{
-        transform: translateY(-4px);
-        box-shadow: 0 12px 28px -10px {th['accent_glow']};
-    }}
-    .academy-letter {{
-        font-size: 1.5rem;
-        font-weight: 800;
-        margin-bottom: 6px;
-    }}
-    .academy-body {{
-        font-size: 0.85rem;
-        color: {th['muted']};
-        line-height: 1.5;
+        transform: translateY(-5px);
+        border-color: {th['accent']};
+        box-shadow: {th['specular']}, 0 16px 35px -10px {th['accent_glow']};
     }}
 
     /* Evidence Gap Heatmap Matrix Cells */
     .gap-cell-dense {{
-        background: rgba(16, 185, 129, 0.16);
+        background: linear-gradient(180deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 100%);
         border: 1px solid rgba(16, 185, 129, 0.45);
-        border-radius: 12px;
+        box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.2);
+        border-radius: 14px;
         padding: 14px 10px;
         text-align: center;
+        transition: transform 0.2s ease;
     }}
+    .gap-cell-dense:hover {{ transform: scale(1.03); }}
     .gap-cell-sparse {{
-        background: rgba(245, 158, 11, 0.16);
+        background: linear-gradient(180deg, rgba(245, 158, 11, 0.22) 0%, rgba(245, 158, 11, 0.08) 100%);
         border: 1px solid rgba(245, 158, 11, 0.45);
-        border-radius: 12px;
+        box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.2);
+        border-radius: 14px;
         padding: 14px 10px;
         text-align: center;
+        transition: transform 0.2s ease;
     }}
+    .gap-cell-sparse:hover {{ transform: scale(1.03); }}
     .gap-cell-zero {{
-        background: rgba(244, 63, 94, 0.16);
-        border: 1px solid rgba(244, 63, 94, 0.65);
-        border-radius: 12px;
+        background: linear-gradient(180deg, rgba(244, 63, 94, 0.25) 0%, rgba(244, 63, 94, 0.10) 100%);
+        border: 1px solid rgba(244, 63, 94, 0.70);
+        border-radius: 14px;
         padding: 14px 10px;
         text-align: center;
-        animation: pulseGap 2.6s infinite ease-in-out;
+        animation: pulseGapRed 2.5s infinite ease-in-out;
+        transition: transform 0.2s ease;
+    }}
+    .gap-cell-zero:hover {{ transform: scale(1.05); }}
+
+    /* Manus Terminal Box */
+    .manus-terminal {{
+        background: #09090d;
+        border: 1px solid {th['accent']};
+        box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.12), 0 0 28px {th['accent_glow']};
+        border-radius: 16px;
+        padding: 16px 20px;
+        font-family: 'JetBrains Mono', monospace;
+        color: #a5b4fc;
+        font-size: 0.92rem;
+        margin: 12px 0;
     }}
 
-    .paper-detail-box {{
-        background: {th['card_bg']};
-        border: 1px solid {th['border']};
-        border-top: 4px solid {th['accent']};
-        border-radius: 16px;
-        padding: 22px 24px;
-        box-shadow: 0 14px 34px -12px rgba(0,0,0,0.35);
-    }}
-    .query-terminal {{
-        background: rgba(15, 23, 42, 0.92);
-        border: 1px solid #38bdf8;
-        border-radius: 14px;
-        padding: 18px 20px;
-        font-family: 'JetBrains Mono', monospace;
-        color: #7dd3fc;
-        font-size: 0.95rem;
-        margin: 12px 0;
-        box-shadow: 0 0 24px rgba(56, 189, 248, 0.15);
-    }}
+    /* Cult-UI Tactile Pills */
     .pico-chip {{
         display: inline-block;
         padding: 4px 12px;
         border-radius: 999px;
-        font-size: 0.76rem;
+        font-size: 0.74rem;
         font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
         margin-right: 6px;
         margin-bottom: 6px;
+        box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.2);
     }}
-    .chip-p {{ background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid #38bdf8; }}
-    .chip-i {{ background: rgba(16, 185, 129, 0.18); color: #10b981; border: 1px solid #10b981; }}
-    .chip-c {{ background: rgba(245, 158, 11, 0.18); color: #f59e0b; border: 1px solid #f59e0b; }}
-    .chip-o {{ background: rgba(192, 132, 252, 0.18); color: #c084fc; border: 1px solid #c084fc; }}
+    .chip-p {{ background: rgba(56, 189, 248, 0.16); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.45); }}
+    .chip-i {{ background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); }}
+    .chip-c {{ background: rgba(245, 158, 11, 0.16); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.45); }}
+    .chip-o {{ background: rgba(192, 132, 252, 0.16); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.45); }}
 
+    /* Tactile Spring Buttons (Watermelon / Cult UI style) */
     div.stButton > button {{
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.1px !important;
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+        transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }}
     div.stButton > button:hover {{
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 18px -4px {th['accent_glow']} !important;
+        transform: translateY(-2px) scale(1.01) !important;
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.35), 0 8px 22px -4px {th['accent_glow']} !important;
+    }}
+    div.stButton > button:active {{
+        transform: translateY(1px) scale(0.99) !important;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -408,7 +522,7 @@ st.markdown(f"""
 # ==============================================================================
 TOPIC_CARDS = {
     "🫀 Cardiology: Apixaban vs. Warfarin": {
-        "badge": "Cardiology • Stroke Prevention",
+        "badge": "CARDIOLOGY // STROKE PREVENTION",
         "plain_english": "Patients with an irregular heartbeat (Atrial Fibrillation) have a high risk of blood clots causing a stroke. Doctors compare a newer blood thinner pill (**Apixaban**) against an older blood thinner (**Warfarin**) to see which prevents more strokes with less internal bleeding.",
         "question": "In adults with atrial fibrillation, does apixaban, compared with warfarin, reduce the risk of stroke and major bleeding?",
         "P": "Adults with atrial fibrillation, nonvalvular atrial fibrillation, AF patients",
@@ -417,7 +531,7 @@ TOPIC_CARDS = {
         "O": "Stroke, systemic embolism, major bleeding, intracranial hemorrhage, mortality",
     },
     "🩸 Endocrinology: Metformin in Type 2 Diabetes": {
-        "badge": "Endocrinology • Glycemic Control",
+        "badge": "ENDOCRINOLOGY // GLYCEMIC CONTROL",
         "plain_english": "People with **Type 2 Diabetes** have high blood sugar levels. Doctors test whether the first-line medicine **Metformin** lowers 3-month average blood sugar (**HbA1c**) better than a dummy pill (**Placebo**) or older diabetes drugs (**Sulfonylureas**).",
         "question": "In adults with type 2 diabetes, does metformin, compared with placebo or sulfonylurea, lower HbA1c?",
         "P": "Adults with type 2 diabetes, T2DM, diabetic patients",
@@ -426,7 +540,7 @@ TOPIC_CARDS = {
         "O": "HbA1c, glycated haemoglobin, fasting blood glucose, weight change",
     },
     "🎗️ Oncology: Pembrolizumab in Lung Cancer": {
-        "badge": "Oncology • Immunotherapy",
+        "badge": "ONCOLOGY // IMMUNOTHERAPY",
         "plain_english": "In advanced **Lung Cancer (NSCLC)**, traditional **Chemotherapy** attacks both cancer and healthy cells. This topic checks if **Pembrolizumab** (an immunotherapy drug that trains the body's own immune system to fight cancer) helps patients live longer (**Overall Survival**).",
         "question": "In adult patients with metastatic non-small-cell lung cancer (NSCLC), does pembrolizumab, compared with chemotherapy, improve overall survival?",
         "P": "Adults with metastatic non-small-cell lung cancer, NSCLC, advanced lung carcinoma",
@@ -435,7 +549,7 @@ TOPIC_CARDS = {
         "O": "Overall survival, progression-free survival, PFS, objective response rate",
     },
     "🧠 Neurology: Escitalopram in Major Depression": {
-        "badge": "Psychiatry • Mood Disorders",
+        "badge": "PSYCHIATRY // MOOD DISORDERS",
         "plain_english": "In **Major Depressive Disorder (MDD)**, doctors compare a daily antidepressant pill (**Escitalopram**) against a sugar pill (**Placebo**) or talk therapy (**CBT**) to see if patients' depression questionnaire scores (**MADRS / HAM-D**) improve.",
         "question": "In adults with major depressive disorder (MDD), does escitalopram, compared with placebo or CBT, reduce depression severity scores?",
         "P": "Adults with major depressive disorder, MDD, unipolar depression",
@@ -526,15 +640,7 @@ def save_human_decision(
     )
 
 
-# ==============================================================================
-# AI WHITE-SPACE & EVIDENCE GAP MATRIX ENGINE (STEP 8 BONUS AI LAB)
-# ==============================================================================
 def compute_ai_evidence_gap_matrix(records: list, config: dict) -> dict:
-    """
-    Analyzes all Included/Maybe studies across 4 Clinical Sub-Populations (Rows)
-    and 4 Clinical Outcome Domains (Columns) to discover populated areas vs.
-    0-Study Scientific White-Spaces ("The Unasked Questions").
-    """
     main_drug = (config.get("intervention_text") or "Metformin").split(",")[0].strip()
     main_cond = (config.get("population_text") or "Type 2 Diabetes").split(",")[0].strip()
 
@@ -554,10 +660,7 @@ def compute_ai_evidence_gap_matrix(records: list, config: dict) -> dict:
 
     matrix = {}
     gaps = []
-    total_cells = len(subgroups) * len(outcomes)
-    zero_count = 0
-    sparse_count = 0
-    dense_count = 0
+    zero_count, sparse_count, dense_count = 0, 0, 0
 
     for sg_label, sg_kw, sg_query_term in subgroups:
         matrix[sg_label] = {}
@@ -565,9 +668,7 @@ def compute_ai_evidence_gap_matrix(records: list, config: dict) -> dict:
             matched_ids = []
             for r in records:
                 blob = f"{r.get('title', '')} {r.get('abstract', '')} {r.get('pico_p', '')} {r.get('pico_o', '')}".lower()
-                has_sg = any(k.lower() in blob for k in sg_kw)
-                has_out = any(k.lower() in blob for k in out_kw)
-                if has_sg and has_out:
+                if any(k.lower() in blob for k in sg_kw) and any(k.lower() in blob for k in out_kw):
                     matched_ids.append(r["record_id"])
 
             cnt = len(matched_ids)
@@ -586,155 +687,147 @@ def compute_ai_evidence_gap_matrix(records: list, config: dict) -> dict:
             else:
                 dense_count += 1
 
-            matrix[sg_label][out_label] = {
-                "count": cnt,
-                "paper_ids": matched_ids,
-            }
+            matrix[sg_label][out_label] = {"count": cnt, "paper_ids": matched_ids}
 
     return {
         "subgroups": [s[0] for s in subgroups],
         "outcomes": [o[0] for o in outcomes],
         "matrix": matrix,
         "gaps": gaps,
-        "total_cells": total_cells,
         "zero_count": zero_count,
         "sparse_count": sparse_count,
         "dense_count": dense_count,
-        "main_drug": main_drug,
-        "main_cond": main_cond,
     }
 
 
 # ==============================================================================
-# TOP HEADER & 6-BOX DEDICATED KPI DASHBOARD
+# TOP MANUS × CULT-UI HERO & WATERMELON 6-BENTO TELEMETRY
 # ==============================================================================
 stats = get_dashboard_stats()
 config = get_project_config()
-active_q_display = st.session_state.get("rq_val") or "No topic selected yet — check the Beginner Guide or pick a Topic Card in Step 0!"
+active_q_display = st.session_state.get("rq_val") or "Awaiting clinical topic initialization — select a Topic Card in Step 01 or open the Academy Guide."
 
 st.markdown(f"""
-<div class="workbench-header">
-    <div>
-        <div class="workbench-title">⚡ Mini-Rayyan AI // Systematic Review Workbench</div>
-        <div class="workbench-sub">🎯 <b>Active Research Question:</b> {active_q_display}</div>
+<div class="manus-hero-shell">
+    <div class="manus-hero-inner">
+        <div>
+            <div class="gsap-hero-title">
+                ⚡ Mini-Rayyan <span class="editorial-serif">Synthesis Studio</span>
+            </div>
+            <div style="font-size:0.88rem; color:{th['muted']}; margin-top:4px;">
+                🎯 <b>Active Protocol:</b> {active_q_display}
+            </div>
+        </div>
+        <div style="text-align:right;">
+            <span class="pico-chip chip-p">OPERATOR // {reviewer_name.upper()}</span><br>
+            <span class="pico-chip chip-i">SQLITE VAULT // {stats['query_count']} QUERY VERSIONS</span>
+        </div>
     </div>
-    <div style="text-align:right;">
-        <span class="pico-chip chip-p">👤 {reviewer_name}</span>
-        <span class="pico-chip chip-i">⚡ {stats['query_count']} Query Versions</span>
+    <div class="manus-agent-bar">
+        <div><span class="agent-pulse-dot"></span><b>MANUS-CORE TELEMETRY:</b> STAGE {curr_idx:02d} ACTIVE ({PAGES[curr_idx].upper()})</div>
+        <div>ZERO-DELETION LEDGER: <b>ENABLED</b> &nbsp;|&nbsp; LEVEL-2 LOOP: <b>SYNCED</b></div>
     </div>
 </div>
 
-<div class="kpi-6-grid">
-    <div class="kpi-card-v2" style="border-top: 3px solid #38bdf8;">
-        <div class="kpi-lbl-v2">📥 1. Total Pulled</div>
-        <div class="kpi-val-v2" style="color:#38bdf8;">{stats['total_records']}</div>
-        <div class="kpi-foot-v2">Stored in SQLite Vault</div>
+<div class="watermelon-bento-6">
+    <div class="wm-card">
+        <div class="wm-tag"><span>01 // VAULT</span><span>📥</span></div>
+        <div class="wm-num" style="color:#38bdf8;">{stats['total_records']}</div>
+        <div class="wm-sub">Total Pulled Records</div>
     </div>
-    <div class="kpi-card-v2" style="border-top: 3px solid #818cf8;">
-        <div class="kpi-lbl-v2">📄 2. Unique Papers</div>
-        <div class="kpi-val-v2" style="color:#818cf8;">{stats['unique_visible']}</div>
-        <div class="kpi-foot-v2">Active for screening</div>
+    <div class="wm-card">
+        <div class="wm-tag"><span>02 // UNIQUE</span><span>📄</span></div>
+        <div class="wm-num" style="color:#818cf8;">{stats['unique_visible']}</div>
+        <div class="wm-sub">Active Representatives</div>
     </div>
-    <div class="kpi-card-v2" style="border-top: 3px solid #ec4899;">
-        <div class="kpi-lbl-v2">🔗 3. Duplicates Box</div>
-        <div class="kpi-val-v2" style="color:#ec4899;">{stats['hidden_dups']}</div>
-        <div class="kpi-foot-v2">{stats['uncertain_dups']} uncertain pair(s)</div>
+    <div class="wm-card">
+        <div class="wm-tag"><span>03 // DUPLICATES</span><span>🔗</span></div>
+        <div class="wm-num" style="color:#f472b6;">{stats['hidden_dups']}</div>
+        <div class="wm-sub">{stats['uncertain_dups']} Uncertain Pair(s)</div>
     </div>
-    <div class="kpi-card-v2" style="border-top: 3px solid #10b981;">
-        <div class="kpi-lbl-v2">✅ 4. Included Box</div>
-        <div class="kpi-val-v2" style="color:#10b981;">{stats['included']}</div>
-        <div class="kpi-foot-v2">Eligible clinical trials</div>
+    <div class="wm-card">
+        <div class="wm-tag"><span>04 // INCLUDED</span><span>✅</span></div>
+        <div class="wm-num" style="color:#34d399;">{stats['included']}</div>
+        <div class="wm-sub">Accepted Clinical Trials</div>
     </div>
-    <div class="kpi-card-v2" style="border-top: 3px solid #f43f5e;">
-        <div class="kpi-lbl-v2">❌ 5. Excluded Box</div>
-        <div class="kpi-val-v2" style="color:#f43f5e;">{stats['excluded']}</div>
-        <div class="kpi-foot-v2">Rejected with reasons</div>
+    <div class="wm-card">
+        <div class="wm-tag"><span>05 // EXCLUDED</span><span>❌</span></div>
+        <div class="wm-num" style="color:#fb7185;">{stats['excluded']}</div>
+        <div class="wm-sub">Isolated w/ Reasons</div>
     </div>
-    <div class="kpi-card-v2" style="border-top: 3px solid #f59e0b;">
-        <div class="kpi-lbl-v2">🤔 6. Maybe / Queue</div>
-        <div class="kpi-val-v2" style="color:#f59e0b;">{stats['maybe']}</div>
-        <div class="kpi-foot-v2">{stats['overrides']} human overrides</div>
+    <div class="wm-card">
+        <div class="wm-tag"><span>06 // MAYBE QUEUE</span><span>🤔</span></div>
+        <div class="wm-num" style="color:#fbbf24;">{stats['maybe']}</div>
+        <div class="wm-sub">{stats['overrides']} Human Overrides</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 if curr_idx != 0:
-    with st.expander("📘 New User? Click here anytime for a Quick PICO & Topic Cheat-Sheet"):
+    with st.expander("📘 Instant PICO & Workflow Cheat-Sheet (Click to Expand Anytime)"):
         q_col1, q_col2 = st.columns([1.3, 1.7])
         with q_col1:
             st.markdown("""
-            **🧬 What does PICO mean?**
-            - 🟦 **P — Population:** Who are the patients? *(e.g., Adults with Type 2 Diabetes)*
-            - 🟩 **I — Intervention:** What treatment/drug is being tested? *(e.g., Metformin)*
-            - 🟧 **C — Comparator:** What is it compared against? *(e.g., Placebo or another drug)*
-            - 🟪 **O — Outcome:** What health result is measured? *(e.g., Lower HbA1c blood sugar)*
+            **🧬 PICO Framework Reference**
+            - 🟦 **P — Population:** Patient cohort *(e.g., Adults with Type 2 Diabetes)*
+            - 🟩 **I — Intervention:** Primary drug/therapy *(e.g., Metformin)*
+            - 🟧 **C — Comparator:** Control/alternative *(e.g., Placebo or Sulfonylurea)*
+            - 🟪 **O — Outcome:** Clinical endpoint *(e.g., HbA1c reduction)*
             """)
         with q_col2:
             st.markdown("""
-            **🗺️ How does this website work?**
-            1. **Step 0:** Pick a medical topic & define P, I, C, O.
-            2. **Steps 1–3:** Search PubMed/Europe PMC and save papers in SQLite (nothing is ever deleted).
-            3. **Step 4:** Hide duplicate copies & resolve Conference vs. Journal pairs.
-            4. **Steps 5–7:** Screen papers into **Included / Excluded / Maybe** boxes, highlight PICO, and compare searches.
-            5. **Step 8 (AI Lab):** Discover **0-Study Scientific White-Spaces** with the AI Evidence Gap Matrix!
+            **⚡ Architecture Highlights**
+            - **Zero-Deletion Vault:** Excluded & duplicate records are never deleted from SQLite.
+            - **Dedicated Excluded Box:** Rejected studies move to their own isolated bucket.
+            - **AI White-Space Lab (Stage 09):** Cross-maps PICO cohorts vs. outcomes to discover **0-Study Research Blind Spots**.
             """)
 
 
 # ==============================================================================
-# PAGE 0 (INDEX 0): DEDICATED BEGINNER GUIDE & PICO ACADEMY HUB
+# STAGE 00: ACADEMY & PICO GUIDE
 # ==============================================================================
 if curr_idx == 0:
-    st.markdown("## 🎓 Welcome to Mini-Rayyan AI — Beginner Guide & PICO Academy")
-    st.caption("Never done a medical literature review before? Read this 60-second visual guide to understand **what this site does**, **what PICO means**, and **what each sample medical topic is about**!")
+    st.markdown("## 🎓 Welcome to the Agentic Evidence Synthesis Academy")
+    st.caption("New to systematic reviews or PICO? Explore this interactive 60-second briefing or click any medical topic card below to launch straight into the pipeline.")
 
-    with st.container(border=True):
-        st.markdown("### 💡 1. What is Mini-Rayyan AI? (In Plain English)")
-        st.write(
-            "Imagine a doctor wants to know: **'Does Drug A work better than Drug B for Heart Patients?'** "
-            "If they search Google or PubMed, thousands of papers come up—including duplicate copies, tests done on rats, computer simulations, and irrelevant articles. "
-            "**Mini-Rayyan AI** is an automated research workbench that pulls papers from global medical libraries, removes duplicates, filters out rat/simulation studies, "
-            "highlights PICO answers, and uses **AI White-Space Discovery** to find brand-new research gaps!"
-        )
-
-    st.markdown("### 🧬 2. What is PICO? (The 4 Building Blocks of Every Medical Question)")
     st.markdown("""
     <div class="academy-grid">
-        <div class="academy-card" style="border-top: 4px solid #38bdf8;">
-            <div class="academy-letter" style="color:#38bdf8;">🟦 P — Population</div>
+        <div class="academy-card" style="border-top: 3px solid #38bdf8;">
+            <div style="font-size:1.45rem; font-weight:800; color:#38bdf8; margin-bottom:6px;">🟦 P — Population</div>
             <div style="font-weight:700; margin-bottom:6px;">Who are the patients?</div>
-            <div class="academy-body">
-                The specific group of patients or medical condition being studied.<br><br>
-                <b>Examples:</b><br>• Adults with Type 2 Diabetes<br>• Patients with Lung Cancer<br>• Adults with Depression
+            <div style="font-size:0.84rem; opacity:0.8; line-height:1.5;">
+                The specific patient group or disease condition under investigation.<br><br>
+                <b>Examples:</b><br>• Adults with Type 2 Diabetes<br>• Nonvalvular Atrial Fibrillation<br>• Metastatic Lung Cancer
             </div>
         </div>
-        <div class="academy-card" style="border-top: 4px solid #10b981;">
-            <div class="academy-letter" style="color:#10b981;">🟩 I — Intervention</div>
-            <div style="font-weight:700; margin-bottom:6px;">What is the main treatment?</div>
-            <div class="academy-body">
-                The main drug, surgery, or therapy being tested by the researchers.<br><br>
-                <b>Examples:</b><br>• Metformin pill<br>• Apixaban blood thinner<br>• Immunotherapy
+        <div class="academy-card" style="border-top: 3px solid #34d399;">
+            <div style="font-size:1.45rem; font-weight:800; color:#34d399; margin-bottom:6px;">🟩 I — Intervention</div>
+            <div style="font-weight:700; margin-bottom:6px;">What treatment is tested?</div>
+            <div style="font-size:0.84rem; opacity:0.8; line-height:1.5;">
+                The primary drug, clinical procedure, or therapy being evaluated.<br><br>
+                <b>Examples:</b><br>• Metformin<br>• Apixaban (Factor Xa inhibitor)<br>• Pembrolizumab Immunotherapy
             </div>
         </div>
-        <div class="academy-card" style="border-top: 4px solid #f59e0b;">
-            <div class="academy-letter" style="color:#f59e0b;">🟧 C — Comparator</div>
+        <div class="academy-card" style="border-top: 3px solid #fbbf24;">
+            <div style="font-size:1.45rem; font-weight:800; color:#fbbf24; margin-bottom:6px;">🟧 C — Comparator</div>
             <div style="font-weight:700; margin-bottom:6px;">What is it compared against?</div>
-            <div class="academy-body">
-                To prove a drug works, you must compare it against an alternative or a dummy pill (Placebo).<br><br>
-                <b>Examples:</b><br>• Placebo (sugar pill)<br>• Warfarin<br>• Standard Chemotherapy
+            <div style="font-size:0.84rem; opacity:0.8; line-height:1.5;">
+                The control group—either a dummy pill (Placebo) or current standard-of-care drug.<br><br>
+                <b>Examples:</b><br>• Placebo<br>• Warfarin<br>• Platinum Chemotherapy
             </div>
         </div>
-        <div class="academy-card" style="border-top: 4px solid #c084fc;">
-            <div class="academy-letter" style="color:#c084fc;">🟪 O — Outcome</div>
-            <div style="font-weight:700; margin-bottom:6px;">What result is measured?</div>
-            <div class="academy-body">
-                The measurable health improvement or side-effect doctors check at the end.<br><br>
-                <b>Examples:</b><br>• Lower HbA1c blood sugar<br>• Stroke reduction<br>• Overall survival
+        <div class="academy-card" style="border-top: 3px solid #c084fc;">
+            <div style="font-size:1.45rem; font-weight:800; color:#c084fc; margin-bottom:6px;">🟪 O — Outcome</div>
+            <div style="font-weight:700; margin-bottom:6px;">What endpoint is measured?</div>
+            <div style="font-size:0.84rem; opacity:0.8; line-height:1.5;">
+                The measurable clinical result or safety event tracked by researchers.<br><br>
+                <b>Examples:</b><br>• HbA1c Blood Sugar Drop<br>• Stroke & Major Bleeding<br>• Overall Survival
             </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("### 🏥 3. Plain-English Guide to Our 4 Ready-Made Medical Topics")
+    st.markdown("### 🏥 Plain-English Briefing on the 4 Clinical Preset Topics")
     topic_cols = st.columns(2)
     for idx, (t_title, t_data) in enumerate(TOPIC_CARDS.items()):
         with topic_cols[idx % 2]:
@@ -749,7 +842,7 @@ if curr_idx == 0:
                     f"<span class='pico-chip chip-o'>O: {t_data['O'].split(',')[0]}</span>",
                     unsafe_allow_html=True
                 )
-                if st.button(f"🚀 Load '{t_title.split(':')[0]}' & Jump to Step 0 ➡️", key=f"acad_load_{idx}", type="primary", use_container_width=True):
+                if st.button(f"🚀 Initialize '{t_title.split(':')[0]}' & Enter Studio ➡️", key=f"acad_load_{idx}", type="primary", use_container_width=True):
                     st.session_state["rq_val"] = t_data["question"]
                     st.session_state["p_val"] = t_data["P"]
                     st.session_state["i_val"] = t_data["I"]
@@ -762,19 +855,19 @@ if curr_idx == 0:
 
 
 # ==============================================================================
-# STEP 00 (INDEX 1): DEFINE TOPIC & PICO
+# STAGE 01: DEFINE TOPIC & PICO (STARTS BLANK + 1-CLICK CARDS)
 # ==============================================================================
 elif curr_idx == 1:
-    st.markdown("### 🎯 Step 0: Select a Clinical Research Topic or Type Your Own")
-    st.caption("Click any topic card below to auto-fill its PICO framework, or type your own custom topic from scratch.")
+    st.markdown("### 🎯 Stage 01 · Topic & PICO Protocol Studio")
+    st.caption("Select a clinical preset card below to populate PICO parameters, or compose a custom research protocol from scratch.")
 
     t_cols = st.columns(4)
     for idx, (t_title, t_data) in enumerate(TOPIC_CARDS.items()):
         with t_cols[idx]:
             with st.container(border=True):
-                st.caption(f"✨ {t_data['badge']}")
+                st.caption(f"⚡ {t_data['badge']}")
                 st.markdown(f"**{t_title}**")
-                if st.button("Load This Topic ➔", key=f"tpl_btn_{idx}", use_container_width=True):
+                if st.button("Load Preset ➔", key=f"tpl_btn_{idx}", use_container_width=True):
                     st.session_state["rq_val"] = t_data["question"]
                     st.session_state["p_val"] = t_data["P"]
                     st.session_state["i_val"] = t_data["I"]
@@ -783,7 +876,7 @@ elif curr_idx == 1:
                     st.session_state["custom_query_box"] = build_boolean_query_from_pico(t_data["P"], t_data["I"], t_data["C"])
                     st.rerun()
 
-    if st.button("🧹 Clear Fields (Start Completely Blank)"):
+    if st.button("🧹 Clear Protocol Fields (Blank Slate)"):
         st.session_state["rq_val"] = ""
         st.session_state["p_val"] = ""
         st.session_state["i_val"] = ""
@@ -792,39 +885,22 @@ elif curr_idx == 1:
         st.rerun()
 
     with st.container(border=True):
-        st.markdown("#### 🧬 PICO Framework Builder")
         rq = st.text_area(
-            "Clinical Research Question",
+            "Primary Clinical Research Question",
             value=st.session_state.get("rq_val", ""),
             placeholder="e.g., In adults with atrial fibrillation, does apixaban compared with warfarin reduce stroke risk?",
-            height=70
+            height=68
         )
         c1, c2 = st.columns(2)
         with c1:
-            pop = st.text_input(
-                "🟦 P — Population (Patients / Condition)",
-                value=st.session_state.get("p_val", ""),
-                placeholder="e.g., Adults with atrial fibrillation, AF patients"
-            )
-            inter = st.text_input(
-                "🟩 I — Intervention (Drug / Procedure)",
-                value=st.session_state.get("i_val", ""),
-                placeholder="e.g., Apixaban, Eliquis, factor Xa inhibitor"
-            )
+            pop = st.text_input("🟦 P — Population (Cohort / Condition)", value=st.session_state.get("p_val", ""), placeholder="e.g., Adults with atrial fibrillation")
+            inter = st.text_input("🟩 I — Intervention (Drug / Therapy)", value=st.session_state.get("i_val", ""), placeholder="e.g., Apixaban, factor Xa inhibitor")
         with c2:
-            comp = st.text_input(
-                "🟧 C — Comparator (Control / Alternative)",
-                value=st.session_state.get("c_val", ""),
-                placeholder="e.g., Warfarin, placebo, standard care"
-            )
-            out = st.text_input(
-                "🟪 O — Outcome (Measured Clinical Endpoint)",
-                value=st.session_state.get("o_val", ""),
-                placeholder="e.g., Stroke, major bleeding, mortality"
-            )
+            comp = st.text_input("🟧 C — Comparator (Control / Standard Care)", value=st.session_state.get("c_val", ""), placeholder="e.g., Warfarin, placebo")
+            out = st.text_input("🟪 O — Outcome (Measured Endpoint)", value=st.session_state.get("o_val", ""), placeholder="e.g., Stroke, major bleeding")
 
         criteria = config["criteria"]
-        with st.expander("⚙️ Configure Automatic Exclusion Filters (Animal, Simulation, Non-English, Case Reports)"):
+        with st.expander("⚙️ Automated Exclusion Rule Matrix (Animal, Simulation, Non-English, Case Reports)"):
             for key, item in criteria.items():
                 cc1, cc2, cc3 = st.columns([1.2, 2.2, 2.2])
                 item["active"] = cc1.checkbox(item["label"], value=item["active"], key=f"act_{key}")
@@ -833,9 +909,9 @@ elif curr_idx == 1:
                 new_kw = cc3.text_input("Keywords", value=kw_str, key=f"kw_{key}", label_visibility="collapsed")
                 item["keywords"] = [k.strip() for k in new_kw.split(",") if k.strip()]
 
-        if st.button("💾 Save PICO & Continue to Step 1 (Query Studio) ➡️", type="primary", use_container_width=True):
+        if st.button("💾 Commit PICO Protocol & Launch Query Composer ➡️", type="primary", use_container_width=True):
             if not rq.strip() or not pop.strip() or not inter.strip():
-                st.warning("Please pick a Topic Card above or fill in at least the Research Question, Population (P), and Intervention (I)!")
+                st.warning("Please select a Preset Card above or enter the Research Question, Population (P), and Intervention (I).")
             else:
                 st.session_state["rq_val"] = rq
                 st.session_state["p_val"] = pop
@@ -852,12 +928,10 @@ elif curr_idx == 1:
 
 
 # ==============================================================================
-# STEP 01 (INDEX 2): VISUAL QUERY BUILDER STUDIO
+# STAGE 02: QUERY COMPOSER STUDIO
 # ==============================================================================
 elif curr_idx == 2:
-    st.markdown("### 🔍 Step 1: Interactive Query Builder Studio")
-    st.caption("Your PICO terms from Step 0 are converted into a live Boolean search formula. Edit tokens or test hit counts across PubMed & Europe PMC.")
-
+    st.markdown("### 🎛️ Stage 02 · Visual Boolean Query Composer")
     p_curr = st.session_state.get("p_val") or config["population_text"]
     i_curr = st.session_state.get("i_val") or config["intervention_text"]
     c_curr = st.session_state.get("c_val") or config["comparator_text"]
@@ -865,43 +939,41 @@ elif curr_idx == 2:
 
     st.markdown(f"""
     <div style="margin-bottom:12px;">
-        <span class="pico-chip chip-p">🟦 P: {p_curr or 'Not set'}</span>
-        <span class="pico-chip chip-i">🟩 I: {i_curr or 'Not set'}</span>
-        <span class="pico-chip chip-c">🟧 C: {c_curr or 'Not set'}</span>
-        <span class="pico-chip chip-o">🟪 O: {o_curr or 'Not set'}</span>
+        <span class="pico-chip chip-p">🟦 P: {p_curr or 'Unset'}</span>
+        <span class="pico-chip chip-i">🟩 I: {i_curr or 'Unset'}</span>
+        <span class="pico-chip chip-c">🟧 C: {c_curr or 'Unset'}</span>
+        <span class="pico-chip chip-o">🟪 O: {o_curr or 'Unset'}</span>
     </div>
     """, unsafe_allow_html=True)
 
     col_studio, col_quick = st.columns([2.1, 1.1])
-
     with col_studio:
         with st.container(border=True):
-            st.markdown("#### 🎛️ Live Boolean Query Terminal")
             default_q = st.session_state.get("custom_query_box") or build_boolean_query_from_pico(p_curr, i_curr, c_curr) or '("type 2 diabetes") AND metformin AND placebo'
 
-            with st.expander("🧩 Want to build or tweak the query visually without typing AND/OR?"):
+            with st.expander("🧩 Interactive Token Builder (No Boolean Syntax Required)"):
                 b1, b2, b3 = st.columns(3)
                 t_cond = b1.text_input("Condition (AND)", value=p_curr.split(",")[0].strip() if p_curr else "type 2 diabetes")
                 t_drug = b2.text_input("Intervention (AND)", value=i_curr.split(",")[0].strip() if i_curr else "metformin")
                 t_comp = b3.text_input("Comparator (AND/OR)", value=c_curr.split(",")[0].strip() if c_curr else "placebo")
-                if st.button("✨ Generate Formula from Boxes"):
+                if st.button("✨ Synthesize Boolean String"):
                     default_q = f'("{t_cond}") AND ("{t_drug}") AND ("{t_comp}")'
                     st.session_state["custom_query_box"] = default_q
                     st.rerun()
 
-            q_str = st.text_input("Active Search Formula:", value=default_q)
-            st.markdown(f'<div class="query-terminal">⚡ QUERY PREVIEW: {q_str}</div>', unsafe_allow_html=True)
+            q_str = st.text_input("Compiled Search Expression:", value=default_q)
+            st.markdown(f'<div class="manus-terminal">⚡ MANUS-QUERY // {q_str}</div>', unsafe_allow_html=True)
 
             k1, k2, k3, k4 = st.columns(4)
             date_from = k1.number_input("Start Year", 1990, 2026, 2016)
             date_to = k2.number_input("End Year", 1990, 2026, 2026)
-            max_fetch = k3.slider("Max Papers", 10, 100, 30, 10)
-            v_label = k4.text_input("Version Name", value=f"Search v{stats['query_count'] + 1}")
+            max_fetch = k3.slider("Max Records", 10, 100, 30, 10)
+            v_label = k4.text_input("Version Tag", value=f"v{stats['query_count'] + 1}.0-search")
 
-            sources = st.multiselect("Databases to Query:", ["PubMed", "Europe PMC"], default=["PubMed", "Europe PMC"])
+            sources = st.multiselect("Target Literature APIs:", ["PubMed", "Europe PMC"], default=["PubMed", "Europe PMC"])
 
-            if st.button("🚀 Run Step 1 Hit Count & Proceed to Step 2 ➡️", type="primary", use_container_width=True):
-                with st.spinner("Checking hit counts on PubMed & Europe PMC..."):
+            if st.button("🚀 Execute Hit-Count Probe & Advance to Stage 03 ➡️", type="primary", use_container_width=True):
+                with st.spinner("Probing PubMed E-Utilities & Europe PMC REST APIs..."):
                     pm_hits, pm_ids, err1 = (0, [], "")
                     ep_hits, err2 = (0, "")
                     if "PubMed" in sources:
@@ -917,9 +989,9 @@ elif curr_idx == 2:
 
     with col_quick:
         with st.container(border=True):
-            st.markdown("#### ⚡ 1-Click Jury Demo Packs")
-            st.caption("Want instant papers with **guaranteed duplicates, uncertain pairs, animal studies, and AI White-Space gaps**? Click below!")
-            if st.button("📦 Load Benchmark v1 (12 Papers) & Jump to Step 4 ➡️", type="primary", use_container_width=True):
+            st.markdown("#### ⚡ Instant Jury Benchmark Packs")
+            st.caption("Pre-engineered clinical datasets containing **exact DOI duplicates, missing-DOI fuzzy matches, conference vs. journal pairs, animal/simulation exclusions, and AI White-Space gaps**.")
+            if st.button("📦 Load Benchmark v1 (12 Papers) ➔ Duplicate Resolver ➡️", type="primary", use_container_width=True):
                 vid = create_query_version(
                     "Benchmark v1 (Metformin vs Placebo)",
                     '("type 2 diabetes") AND metformin AND placebo',
@@ -932,7 +1004,7 @@ elif curr_idx == 2:
                 go_to_step(5)
 
             st.write("")
-            if st.button("🧠 Load Pack & Jump Straight to AI Gap Lab ➡️", use_container_width=True):
+            if st.button("🧠 Load Dataset & Jump to AI White-Space Lab ➡️", use_container_width=True):
                 vid = create_query_version(
                     "Benchmark v1 (AI Gap Analysis)",
                     '("type 2 diabetes") AND metformin AND placebo',
@@ -948,16 +1020,13 @@ elif curr_idx == 2:
 
 
 # ==============================================================================
-# STEP 02 (INDEX 3): APPROVE & PULL PAPERS
+# STAGE 03: APPROVE & PULL PAPERS
 # ==============================================================================
 elif curr_idx == 3:
-    st.markdown("### 📥 Step 2: Approve Hit Counts & Pull Abstracts")
-    st.caption("Review the hit counts from your Step 1 search below and click **Approve & Pull Papers** to ingest records and automatically advance to Step 3.")
-
+    st.markdown("### 📥 Stage 03 · Approve Hit Counts & Ingest Abstracts")
     inject_demo_dups = st.checkbox(
-        "✨ Guarantee Cross-Database Duplicates & Uncertain Pair (Recommended for Jury Demo when Europe PMC is 503)",
+        "✨ Inject Cross-Database Duplicate & Edge-Case Pack alongside live API results (Guarantees rich duplicates & uncertain pairs for Jury Demo)",
         value=True,
-        help="Automatically includes cross-database duplicate pairs and a Conference vs. Journal uncertain pair alongside live PubMed results so Step 4 is never empty!"
     )
 
     conn = get_connection()
@@ -965,15 +1034,15 @@ elif curr_idx == 3:
     conn.close()
 
     if not q_rows:
-        st.info("No query versions created yet. Go back to Step 1 to run a search!")
+        st.info("No query versions registered yet. Run a probe in Stage 02 first.")
     else:
         for q in q_rows:
-            status_badge = "✅ Pulled into Vault" if q["fetched"] else "⏳ Ready for Approval"
+            status_badge = "✅ Ingested into Vault" if q["fetched"] else "⏳ Awaiting Operator Approval"
             with st.container(border=True):
                 c1, c2 = st.columns([3, 1.3])
                 with c1:
-                    st.markdown(f"#### Version #{q['version_id']}: {q['version_name']} ({status_badge})")
-                    st.markdown(f"**Formula:** `{q['boolean_query']}` &nbsp;|&nbsp; **Years:** `{q['date_from']}–{q['date_to']}`")
+                    st.markdown(f"#### Query Version #{q['version_id']}: {q['version_name']} ({status_badge})")
+                    st.markdown(f"**Expression:** `{q['boolean_query']}` &nbsp;|&nbsp; **Window:** `{q['date_from']}–{q['date_to']}`")
                     st.markdown(
                         f"<span class='pico-chip chip-p'>PubMed Hits: {q['pubmed_hits']:,}</span>"
                         f"<span class='pico-chip chip-i'>Europe PMC Hits: {q['epmc_hits']:,}</span>",
@@ -981,11 +1050,11 @@ elif curr_idx == 3:
                     )
                 with c2:
                     st.write("")
-                    if st.button(f"📥 Approve & Pull Version #{q['version_id']} ➡️", key=f"pull_{q['version_id']}", type="primary", use_container_width=True):
+                    if st.button(f"📥 Approve & Ingest v{q['version_id']} ➡️", key=f"pull_{q['version_id']}", type="primary", use_container_width=True):
                         max_f = st.session_state.get("max_per_source", 30)
                         fetched_papers = []
                         src_list = q["sources"].split(",")
-                        with st.spinner("Pulling abstracts and running Deduplication ➔ Screening ➔ PICO Extraction..."):
+                        with st.spinner("Ingesting abstracts & running Deduplication ➔ Screening ➔ PICO Extraction..."):
                             if "PubMed" in src_list:
                                 _, pm_ids, _ = search_pubmed_hits(q["boolean_query"], q["date_from"], q["date_to"], max_f)
                                 pm_recs, _ = fetch_pubmed_abstracts(pm_ids)
@@ -1007,11 +1076,11 @@ elif curr_idx == 3:
 
 
 # ==============================================================================
-# STEP 03 (INDEX 4): SAVED PAPER VAULT
+# STAGE 04: ZERO-DELETE SQLITE VAULT
 # ==============================================================================
 elif curr_idx == 4:
-    st.markdown("### 🗄️ Step 3: Persistent SQLite Paper Vault (Nothing Deleted)")
-    st.caption("All pulled papers are permanently stored in SQLite. Extra duplicate copies are marked as **Hidden Duplicate Copy** rather than deleted.")
+    st.markdown("### 🗄️ Stage 04 · Zero-Delete SQLite Persistence Vault")
+    st.caption("Every pulled record is permanently preserved in SQLite. Duplicate copies are flagged as **Hidden Duplicate** rather than deleted.")
 
     conn = get_connection()
     rows = conn.execute("""
@@ -1027,11 +1096,11 @@ elif curr_idx == 4:
     conn.close()
 
     if not rows:
-        st.info("Vault is currently empty. Go back to Step 1 or Step 2 to pull papers.")
+        st.info("Vault is empty. Ingest records in Stage 02/03 first.")
     else:
         f1, f2 = st.columns([2, 1])
-        q_filter = f1.text_input("🔎 Search Vault by Title, Author, or DOI:", "")
-        vis_mode = f2.selectbox("Filter Records:", ["All Records (Zero Deletion)", "Active Unique Papers Only", "Hidden Duplicates Only"])
+        q_filter = f1.text_input("🔎 Filter Vault by Title, Author, or DOI:", "")
+        vis_mode = f2.selectbox("Visibility State:", ["All Records (Zero Deletion)", "Active Unique Papers Only", "Hidden Duplicates Only"])
 
         items = [dict(r) for r in rows]
         if vis_mode == "Active Unique Papers Only":
@@ -1045,9 +1114,9 @@ elif curr_idx == 4:
 
         df_vault = pd.DataFrame([{
             "ID": f"#{x['record_id']}",
-            "Vault Status": "🙈 Hidden Duplicate" if x["is_hidden_duplicate"] else "✅ Active Unique",
-            "Query Versions": x["found_in_queries"] or "v1",
-            "Database": x["source"],
+            "Vault State": "🙈 Hidden Duplicate" if x["is_hidden_duplicate"] else "✅ Active Unique",
+            "Queries": x["found_in_queries"] or "v1",
+            "Source": x["source"],
             "Year": x["pub_year"],
             "Title": x["title"],
             "Authors": x["authors"],
@@ -1061,12 +1130,10 @@ elif curr_idx == 4:
 
 
 # ==============================================================================
-# STEP 04 (INDEX 5): DUPLICATE RESOLUTION
+# STAGE 05: DUPLICATE RESOLVER
 # ==============================================================================
 elif curr_idx == 5:
-    st.markdown("### 🔗 Step 4: Duplicate Groups & Uncertain Pair Resolution")
-    st.caption("Review auto-detected duplicate groups and resolve **Uncertain Pairs** (such as a Conference Abstract vs. a full Journal Article).")
-
+    st.markdown("### 🔗 Stage 05 · Multi-Field Deduplication & Uncertain Pair Resolver")
     conn = get_connection()
     groups = conn.execute("""
     SELECT dg.*, COUNT(r.record_id) AS member_count
@@ -1078,7 +1145,7 @@ elif curr_idx == 5:
     """).fetchall()
 
     if not groups:
-        st.info("No multi-paper duplicate groups found yet. Load the Benchmark Pack in Step 1 to see exact + uncertain duplicate groups!")
+        st.info("No duplicate clusters detected yet.")
     else:
         for g in groups:
             gid = g["group_id"]
@@ -1088,33 +1155,33 @@ elif curr_idx == 5:
             ).fetchall()
 
             is_unc = (g["status"] == "uncertain")
-            header_icon = "⚠️ UNCERTAIN PAIR (Needs Human Decision)" if is_unc else f"✅ {g['status'].upper()}"
+            header_icon = "⚠️ UNCERTAIN PAIR (Conference vs. Journal — Needs Human Decision)" if is_unc else f"✅ {g['status'].upper()}"
             with st.container(border=True):
-                st.markdown(f"#### Group #{gid} — {header_icon}")
-                st.caption(f"🔍 **Match Method:** {g['match_method']}")
+                st.markdown(f"#### Cluster #{gid} — {header_icon}")
+                st.caption(f"🔍 **Detection Method:** {g['match_method']}")
 
                 m_cols = st.columns(len(members))
                 for idx_m, m in enumerate(members):
                     with m_cols[idx_m]:
                         with st.container(border=True):
                             role_txt = "🙈 Hidden Copy" if m["is_hidden_duplicate"] else "✅ Representative"
-                            st.markdown(f"**Paper #{m['record_id']}** ({role_txt})")
+                            st.markdown(f"**Record #{m['record_id']}** ({role_txt})")
                             st.markdown(f"**{m['title']}**")
                             st.caption(f"📚 {m['source']} ({m['pub_year']}) • {m['journal']}")
                             st.caption(f"🏷️ Type: `{m['pub_types']}` | DOI: `{m['doi'] or 'Missing'}`")
 
                 b1, b2 = st.columns(2)
-                if b1.button(f"✅ Merge as Duplicates (Keep #{g['representative_record_id']} Visible)", key=f"conf_dup_{gid}", type="primary", use_container_width=True):
+                if b1.button(f"✅ Confirm Duplicate Cluster (Keep #{g['representative_record_id']} Visible)", key=f"conf_dup_{gid}", type="primary", use_container_width=True):
                     conn.execute("UPDATE duplicate_groups SET status = 'human_confirmed' WHERE group_id = ?;", (gid,))
                     conn.execute(
                         "UPDATE records SET is_hidden_duplicate = CASE WHEN record_id = ? THEN 0 ELSE 1 END WHERE duplicate_group_id = ?;",
                         (g["representative_record_id"], gid)
                     )
                     conn.commit()
-                    log_human_audit(reviewer_name, "duplicate_override", gid, g["status"], "human_confirmed", "Confirmed duplicate group")
+                    log_human_audit(reviewer_name, "duplicate_override", gid, g["status"], "human_confirmed", "Confirmed duplicate cluster")
                     st.rerun()
 
-                if b2.button(f"✂️ Split into Separate Studies (Keep Both Visible)", key=f"split_dup_{gid}", use_container_width=True):
+                if b2.button(f"✂️ Split into Distinct Studies (Keep Both Visible)", key=f"split_dup_{gid}", use_container_width=True):
                     conn.execute("UPDATE duplicate_groups SET status = 'human_split' WHERE group_id = ?;", (gid,))
                     for m in members:
                         if m["record_id"] != g["representative_record_id"]:
@@ -1127,22 +1194,17 @@ elif curr_idx == 5:
                             conn.execute("UPDATE records SET duplicate_group_id = ?, is_hidden_duplicate = 0 WHERE record_id = ?;", (new_gid, m["record_id"]))
                     conn.execute("UPDATE records SET is_hidden_duplicate = 0 WHERE record_id = ?;", (g["representative_record_id"],))
                     conn.commit()
-                    log_human_audit(reviewer_name, "duplicate_override", gid, g["status"], "human_split", "Split group into separate studies")
+                    log_human_audit(reviewer_name, "duplicate_override", gid, g["status"], "human_split", "Split cluster into separate studies")
                     st.rerun()
     conn.close()
     render_step_footer(curr_idx)
 
 
 # ==============================================================================
-# STEP 05 (INDEX 6): INTERACTIVE PAPER BOXES & SPLIT-SCREEN SCREENING
+# STAGE 06: SPLIT-SCREEN INTERACTIVE PAPER SCREENER (WITH DEDICATED EXCLUDED BOX)
 # ==============================================================================
 elif curr_idx == 6:
-    st.markdown("### ⚖️ Step 5: Interactive Paper Boxes & Split-Screen Screening")
-    st.caption(
-        "Switch between **Included**, **Excluded (Separate Box)**, and **Maybe** buckets below. "
-        "Click **'🔍 Open Paper'** on any paper card on the left to inspect its highlighted context and screen it on the right!"
-    )
-
+    st.markdown("### ⚖️ Stage 06 · Split-Screen Paper Boxes & Isolated Exclusion Buckets")
     conn = get_connection()
     rows = conn.execute("""
     SELECT
@@ -1175,7 +1237,7 @@ elif curr_idx == 6:
     may_list = [r for r in all_recs if r["effective_decision"] == "Maybe"]
 
     bucket_choice = st.radio(
-        "📂 Select Study Bucket:",
+        "📂 Select Screening Bucket:",
         [
             f"📚 All Unique Papers ({len(all_recs)})",
             f"✅ Included Box ({len(inc_list)})",
@@ -1195,7 +1257,7 @@ elif curr_idx == 6:
         filtered_recs = all_recs
 
     if not filtered_recs:
-        st.info("No papers in this bucket right now.")
+        st.info("No papers in this bucket yet.")
     else:
         if "selected_paper_id" not in st.session_state or st.session_state["selected_paper_id"] not in [r["record_id"] for r in filtered_recs]:
             st.session_state["selected_paper_id"] = filtered_recs[0]["record_id"]
@@ -1203,18 +1265,18 @@ elif curr_idx == 6:
         left_list_col, right_detail_col = st.columns([1.15, 1.85])
 
         with left_list_col:
-            st.markdown("#### 🗂️ Research Paper Boxes (Click to Inspect)")
+            st.markdown("#### 🗂️ Interactive Paper Cards")
             for r in filtered_recs:
                 is_sel = (r["record_id"] == st.session_state["selected_paper_id"])
                 dec = r["effective_decision"]
                 badge_icon = "✅ INCLUDE" if dec == "Include" else ("❌ EXCLUDE" if dec == "Exclude" else "🤔 MAYBE")
-                short_context = (r["abstract"] or "")[:120] + "..." if r["abstract"] else "No abstract available."
+                short_context = (r["abstract"] or "")[:115] + "..." if r["abstract"] else "No abstract available."
 
                 with st.container(border=True):
                     st.markdown(f"**#{r['record_id']} • {r['title']}**")
                     st.caption(f"**{badge_icon}** | {r['source']} ({r['pub_year']}) • *{r['effective_reason']}*")
-                    st.caption(f"📄 *Context:* {short_context}")
-                    btn_lbl = "⚡ Currently Viewing in Inspector ➡️" if is_sel else f"🔍 Open Paper #{r['record_id']} Context"
+                    st.caption(f"📄 {short_context}")
+                    btn_lbl = "⚡ Active in Inspector ➡️" if is_sel else f"🔍 Inspect Paper #{r['record_id']}"
                     if st.button(btn_lbl, key=f"open_card_{r['record_id']}", type="primary" if is_sel else "secondary", use_container_width=True):
                         st.session_state["selected_paper_id"] = r["record_id"]
                         st.rerun()
@@ -1228,60 +1290,53 @@ elif curr_idx == 6:
             o_val = sel_rec["pico_o"] or sel_rec["outcome_span"] or ""
 
             st.markdown(f"""
-            <div class="paper-detail-box">
+            <div class="cult-shell">
                 <div style="margin-bottom:8px;">
-                    <span class="pico-chip chip-p">Paper #{sel_rec['record_id']}</span>
-                    <span class="pico-chip chip-i">Status: {dec.upper()}</span>
+                    <span class="pico-chip chip-p">RECORD #{sel_rec['record_id']}</span>
+                    <span class="pico-chip chip-i">VERDICT // {dec.upper()}</span>
                     <span class="pico-chip chip-c">{sel_rec['source']} ({sel_rec['pub_year']})</span>
-                    <span class="pico-chip chip-o">Type: {sel_rec['pub_types']}</span>
+                    <span class="pico-chip chip-o">{sel_rec['pub_types']}</span>
                 </div>
                 <h3 style="margin-top:4px; margin-bottom:8px;">{sel_rec['title']}</h3>
-                <div style="font-size:0.86rem; opacity:0.85; margin-bottom:14px;">
+                <div style="font-size:0.85rem; opacity:0.8; margin-bottom:10px;">
                     👤 <b>Authors:</b> {sel_rec['authors']} &nbsp;|&nbsp; 🏛️ <b>Journal:</b> {sel_rec['journal']} &nbsp;|&nbsp; 🌐 <b>Lang:</b> {sel_rec['language']}
                 </div>
             </div>
             """, unsafe_allow_html=True)
 
-            st.write("")
-            st.markdown("##### 🖍️ Highlighted Abstract & Key Context")
+            st.markdown("##### 🖍️ Highlighted Abstract & PICO Spans")
             st.markdown(highlight_pico_html(sel_rec["abstract"], p_val, i_val, c_val, o_val), unsafe_allow_html=True)
 
             st.write("")
             with st.container(border=True):
-                st.markdown("##### ⚡ Key Extracted PICO Context")
+                st.markdown("##### ⚡ Extracted PICO Evidence Context")
                 st.markdown(
                     f"- 🟦 **Population (P):** {p_val or '*Not detected*'}\n"
                     f"- 🟩 **Intervention (I):** {i_val or '*Not detected*'}\n"
                     f"- 🟧 **Comparator (C):** {c_val or '*Not detected*'}\n"
                     f"- 🟪 **Outcome (O):** {o_val or '*Not detected*'}"
                 )
-                st.caption(f"🤖 **Rule Engine Verdict:** `{sel_rec['machine_decision']}` — *{sel_rec['machine_reason']}*")
-
-                custom_reas = st.text_input(
-                    "Decision / Exclusion Reason:",
-                    value=sel_rec["effective_reason"],
-                    key=f"reas_box_{sel_rec['record_id']}"
-                )
+                custom_reas = st.text_input("Decision / Exclusion Reason:", value=sel_rec["effective_reason"], key=f"reas_box_{sel_rec['record_id']}")
 
                 act1, act2, act3 = st.columns(3)
-                if act1.button("✅ INCLUDE PAPER", type="primary", use_container_width=True, key=f"inc_btn_{sel_rec['record_id']}"):
+                if act1.button("✅ INCLUDE STUDY", type="primary", use_container_width=True, key=f"inc_btn_{sel_rec['record_id']}"):
                     save_human_decision(
                         sel_rec["duplicate_group_id"], sel_rec["record_id"], reviewer_name, "Include",
                         "Eligible clinical trial matching PICO", sel_rec["reviewer_notes"] or "", p_val, i_val, c_val, o_val, "screen_include"
                     )
                     st.rerun()
 
-                if act2.button("🤔 MAYBE / UNSURE", use_container_width=True, key=f"may_btn_{sel_rec['record_id']}"):
+                if act2.button("🤔 MARK MAYBE", use_container_width=True, key=f"may_btn_{sel_rec['record_id']}"):
                     save_human_decision(
                         sel_rec["duplicate_group_id"], sel_rec["record_id"], reviewer_name, "Maybe",
-                        custom_reas or "Needs full-text verification", sel_rec["reviewer_notes"] or "", p_val, i_val, c_val, o_val, "screen_maybe"
+                        custom_reas or "Needs full-text check", sel_rec["reviewer_notes"] or "", p_val, i_val, c_val, o_val, "screen_maybe"
                     )
                     st.rerun()
 
-                if act3.button("❌ EXCLUDE (MOVE TO EXCLUDED BOX)", use_container_width=True, key=f"exc_btn_{sel_rec['record_id']}"):
+                if act3.button("❌ EXCLUDE (TO EXCLUDED BOX)", use_container_width=True, key=f"exc_btn_{sel_rec['record_id']}"):
                     save_human_decision(
                         sel_rec["duplicate_group_id"], sel_rec["record_id"], reviewer_name, "Exclude",
-                        custom_reas.strip() or "Excluded by reviewer", sel_rec["reviewer_notes"] or "", p_val, i_val, c_val, o_val, "screen_exclude"
+                        custom_reas.strip() or "Excluded by operator", sel_rec["reviewer_notes"] or "", p_val, i_val, c_val, o_val, "screen_exclude"
                     )
                     st.rerun()
 
@@ -1289,12 +1344,10 @@ elif curr_idx == 6:
 
 
 # ==============================================================================
-# STEP 06 (INDEX 7): PICO INSPECTOR & EDIT
+# STAGE 07: PICO SPAN INSPECTOR
 # ==============================================================================
 elif curr_idx == 7:
-    st.markdown("### 🧬 Step 6 & 7: PICO Evidence Inspector & Editor")
-    st.caption("Verify and edit extracted P, I, C, O spans for your Included and Maybe studies. Excluded studies are kept separate in the Excluded Box.")
-
+    st.markdown("### 🧬 Stage 07 · PICO Span Inspector & Human Verification")
     conn = get_connection()
     rows = conn.execute("""
     SELECT
@@ -1316,7 +1369,7 @@ elif curr_idx == 7:
     eligible_recs = [dict(r) for r in rows if r["final_decision"] in ("Include", "Maybe")]
 
     if not eligible_recs:
-        st.info("No Included or Maybe studies yet. Pull papers in Step 1/2 or include studies in Step 5!")
+        st.info("No Included or Maybe studies yet.")
     else:
         for r in eligible_recs:
             p_val = r["pico_p"] if r["pico_p"] is not None else (r["population_span"] or "")
@@ -1324,7 +1377,7 @@ elif curr_idx == 7:
             c_val = r["pico_c"] if r["pico_c"] is not None else (r["comparator_span"] or "")
             o_val = r["pico_o"] if r["pico_o"] is not None else (r["outcome_span"] or "")
 
-            with st.expander(f"[{r['final_decision'].upper()}] Paper #{r['record_id']}: {r['title']} ({r['pub_year']})", expanded=True):
+            with st.expander(f"[{r['final_decision'].upper()}] Record #{r['record_id']}: {r['title']} ({r['pub_year']})", expanded=True):
                 st.markdown(highlight_pico_html(r["abstract"], p_val, i_val, c_val, o_val), unsafe_allow_html=True)
                 with st.form(f"pico_edit_{r['record_id']}"):
                     pc1, pc2 = st.columns(2)
@@ -1332,44 +1385,42 @@ elif curr_idx == 7:
                     new_i = pc2.text_input("🟩 Intervention (I)", value=i_val)
                     new_c = pc1.text_input("🟧 Comparator (C)", value=c_val)
                     new_o = pc2.text_input("🟪 Outcome (O)", value=o_val)
-                    if st.form_submit_button("💾 Save Verified PICO Tags", type="primary"):
+                    if st.form_submit_button("💾 Save Verified PICO Spans", type="primary"):
                         save_human_decision(
                             r["duplicate_group_id"], r["record_id"], reviewer_name,
                             r["final_decision"], r["final_reason"], r["reviewer_notes"] or "",
                             new_p, new_i, new_c, new_o, "pico_edit"
                         )
-                        st.success("Saved!")
+                        st.success("Verified PICO spans committed!")
                         st.rerun()
 
     render_step_footer(curr_idx)
 
 
 # ==============================================================================
-# STEP 07 (INDEX 8): LEVEL 2 DIFF & CONFLICT QUEUE
+# STAGE 08: LEVEL-2 DIFF & CONFLICT QUEUE
 # ==============================================================================
 elif curr_idx == 8:
-    st.markdown("### 🔄 Step 7 (Level 2): Query Version Diffs & Merge Conflict Queue")
-    st.caption("Compare any two search versions to inspect Newly Added vs. Removed papers while preserving all human screening decisions.")
-
+    st.markdown("### 🔄 Stage 08 · Level-2 Query Diff & Conflict Resolution Queue")
     conn = get_connection()
     queries = conn.execute("SELECT * FROM query_versions ORDER BY version_id DESC;").fetchall()
     conflicts = conn.execute("SELECT * FROM duplicate_groups WHERE has_conflict = 1;").fetchall()
     conn.close()
 
     if conflicts:
-        st.error(f"⚠️ Found {len(conflicts)} duplicate group merge conflict(s)!")
+        st.error(f"⚠️ Detected {len(conflicts)} merged duplicate cluster(s) with opposing human screening decisions!")
         for c in conflicts:
             with st.container(border=True):
-                st.write(f"**Group #{c['group_id']}:** {c['conflict_details']}")
-                if st.button(f"✅ Resolve Conflict for Group #{c['group_id']}", key=f"res_{c['group_id']}"):
+                st.write(f"**Cluster #{c['group_id']}:** {c['conflict_details']}")
+                if st.button(f"✅ Resolve Conflict for Cluster #{c['group_id']}", key=f"res_{c['group_id']}"):
                     resolve_duplicate_conflict(c["group_id"], c["representative_record_id"], reviewer_name)
                     st.rerun()
     else:
-        st.success("✅ Zero merge conflicts! All human screening decisions across duplicate groups are consistent.")
+        st.success("✅ Zero merge conflicts across active duplicate clusters.")
 
     if len(queries) < 2:
-        st.info("You currently have 1 search version. Click below to load **Expanded Query v2** and test the Level-2 Diff View immediately!")
-        if st.button("⚡ Load Expanded Query v2 (+2 New Papers) Now", type="primary"):
+        st.info("Load **Expanded Query v2** below to test the Level-2 Diff Engine immediately!")
+        if st.button("⚡ Load Expanded Query v2 (+2 New RCTs) Now", type="primary"):
             vid = create_query_version(
                 "Benchmark v2 (Expanded Query)",
                 '("type 2 diabetes") AND metformin AND (placebo OR sulfonylurea OR sitagliptin)',
@@ -1384,8 +1435,8 @@ elif curr_idx == 8:
         q_options = {f"v{q['version_id']}: {q['version_name']} ({q['boolean_query']})": q["version_id"] for q in queries}
         labels = list(q_options.keys())
         c1, c2 = st.columns(2)
-        old_lbl = c1.selectbox("Older Query Version:", labels, index=min(1, len(labels) - 1))
-        new_lbl = c2.selectbox("Newer Query Version:", labels, index=0)
+        old_lbl = c1.selectbox("Baseline Query Version:", labels, index=min(1, len(labels) - 1))
+        new_lbl = c2.selectbox("Updated Query Version:", labels, index=0)
 
         diff = compute_query_diff(q_options[old_lbl], q_options[new_lbl])
         m1, m2 = st.columns(2)
@@ -1393,22 +1444,20 @@ elif curr_idx == 8:
         m2.metric("➖ Papers No Longer Returned", diff["removed_count"])
 
         if diff["added_records"]:
-            st.markdown("#### 🟢 Newly Added Papers in Newer Search")
+            st.markdown("#### 🟢 Newly Added Papers in Updated Search")
             st.dataframe(pd.DataFrame(diff["added_records"])[["record_id", "source", "pub_year", "title", "authors", "journal"]], use_container_width=True, hide_index=True)
 
     render_step_footer(curr_idx)
 
 
 # ==============================================================================
-# STEP 08 (INDEX 9): BONUS AI APPLICATION — "THE UNASKED QUESTION"
-# 2D EVIDENCE GAP MATRIX & WHITE-SPACE DISCOVERY ENGINE
+# STAGE 09: AI WHITE-SPACE & EVIDENCE GAP DISCOVERY ENGINE
 # ==============================================================================
 elif curr_idx == 9:
-    st.markdown("## 🧠 Step 8 (AI Innovation Lab): 'The Unasked Question' — Evidence Gap & White-Space Finder")
+    st.markdown("## 🧠 Stage 09 · 'The Unasked Question' — AI Evidence Gap & White-Space Lab")
     st.caption(
-        "Most literature review tools only show what papers **already exist**. "
-        "Our AI White-Space Engine cross-maps **Patient Sub-Groups × Clinical Outcomes** across your Included & Maybe studies "
-        "to discover **0-Study Scientific Blind Spots**—and auto-designs the next PhD clinical trial protocol + Level-2 search mutation!"
+        "Cross-maps **Patient Sub-Cohorts × Clinical Outcomes** across your eligible studies to pinpoint **0-Study Scientific Blind Spots** "
+        "— and synthesizes Phase III clinical trial blueprints + Level-2 search mutations!"
     )
 
     conn = get_connection()
@@ -1431,8 +1480,8 @@ elif curr_idx == 9:
     eligible_studies = [dict(r) for r in rows if r["final_decision"] in ("Include", "Maybe")]
 
     if not eligible_studies:
-        st.warning("No Included or Maybe studies in the database yet! Click below to load the 12-Paper Benchmark Dataset and see the AI Evidence Gap Matrix live.")
-        if st.button("⚡ Load 12 Benchmark Papers & Run AI White-Space Engine Now", type="primary"):
+        st.warning("No eligible studies in Vault yet! Click below to load the 12-Paper Benchmark Dataset and launch the AI Gap Engine.")
+        if st.button("⚡ Load Benchmark Dataset & Run AI White-Space Engine", type="primary"):
             vid = create_query_version(
                 "Benchmark v1 (Metformin vs Placebo)",
                 '("type 2 diabetes") AND metformin AND placebo',
@@ -1446,81 +1495,65 @@ elif curr_idx == 9:
     else:
         gap_data = compute_ai_evidence_gap_matrix(eligible_studies, config)
 
-        # Summary telemetry for the AI Matrix
         g1, g2, g3, g4 = st.columns(4)
-        g1.metric("🧬 Analyzed Eligible Studies", len(eligible_studies))
+        g1.metric("🧬 Eligible Studies Mapped", len(eligible_studies))
         g2.metric("🟢 Dense Evidence Cells (2+ RCTs)", gap_data["dense_count"])
         g3.metric("🟡 Sparse Evidence Cells (1 RCT)", gap_data["sparse_count"])
-        g4.metric("🔥 Discovered White-Space Gaps (0 RCTs)", gap_data["zero_count"])
+        g4.metric("🔥 White-Space Blind Spots (0 RCTs)", gap_data["zero_count"])
 
-        st.markdown("### 🗺️ 1. Live 2D PICO Evidence Heatmap (`Patient Sub-Cohorts` × `Clinical Outcomes`)")
-        st.caption("🟢 **Green** = Well-studied area &nbsp;|&nbsp; 🟡 **Amber** = Only 1 trial exists &nbsp;|&nbsp; 🔥 **Pulsing Red (0 Studies)** = **Unexplored Research White-Space!**")
-
-        # Render 2D Heatmap Grid Header
+        st.markdown("### 🗺️ 1. 2D PICO Evidence Density Heatmap (`Patient Sub-Cohorts` × `Clinical Outcomes`)")
         hdr_cols = st.columns([1.3, 1, 1, 1, 1])
-        hdr_cols[0].markdown("**Sub-Population \\ Outcome**")
+        hdr_cols[0].markdown("**Cohort \\ Endpoint**")
         for c_idx, out_name in enumerate(gap_data["outcomes"]):
-            hdr_cols[c_idx + 1].markdown(f"<div style='text-align:center; font-weight:700; font-size:0.84rem;'>{out_name}</div>", unsafe_allow_html=True)
+            hdr_cols[c_idx + 1].markdown(f"<div style='text-align:center; font-weight:700; font-size:0.82rem;'>{out_name}</div>", unsafe_allow_html=True)
 
-        # Render each row of the 2D Heatmap
         for sg_name in gap_data["subgroups"]:
             r_cols = st.columns([1.3, 1, 1, 1, 1])
-            r_cols[0].markdown(f"<div style='padding-top:18px; font-weight:700; font-size:0.88rem;'>👥 {sg_name}</div>", unsafe_allow_html=True)
+            r_cols[0].markdown(f"<div style='padding-top:18px; font-weight:700; font-size:0.86rem;'>👥 {sg_name}</div>", unsafe_allow_html=True)
             for c_idx, out_name in enumerate(gap_data["outcomes"]):
                 cell = gap_data["matrix"][sg_name][out_name]
                 cnt = cell["count"]
                 pids = ", ".join(f"#{i}" for i in cell["paper_ids"])
                 if cnt >= 2:
                     r_cols[c_idx + 1].markdown(
-                        f"<div class='gap-cell-dense'>"
-                        f"<div style='font-size:1.25rem; font-weight:800; color:#10b981;'>🟢 {cnt} Studies</div>"
-                        f"<div style='font-size:0.72rem; opacity:0.85;'>Papers: {pids}</div>"
-                        f"</div>",
+                        f"<div class='gap-cell-dense'><div style='font-size:1.2rem; font-weight:800; color:#34d399;'>🟢 {cnt} Studies</div><div style='font-size:0.70rem; opacity:0.85;'>IDs: {pids}</div></div>",
                         unsafe_allow_html=True
                     )
                 elif cnt == 1:
                     r_cols[c_idx + 1].markdown(
-                        f"<div class='gap-cell-sparse'>"
-                        f"<div style='font-size:1.25rem; font-weight:800; color:#f59e0b;'>🟡 1 Study</div>"
-                        f"<div style='font-size:0.72rem; opacity:0.85;'>Paper: {pids}</div>"
-                        f"</div>",
+                        f"<div class='gap-cell-sparse'><div style='font-size:1.2rem; font-weight:800; color:#fbbf24;'>🟡 1 Study</div><div style='font-size:0.70rem; opacity:0.85;'>ID: {pids}</div></div>",
                         unsafe_allow_html=True
                     )
                 else:
                     r_cols[c_idx + 1].markdown(
-                        f"<div class='gap-cell-zero'>"
-                        f"<div style='font-size:1.15rem; font-weight:800; color:#fb7185;'>🔥 0 STUDIES</div>"
-                        f"<div style='font-size:0.70rem; color:#fda4af; font-weight:700;'>WHITE-SPACE GAP</div>"
-                        f"</div>",
+                        f"<div class='gap-cell-zero'><div style='font-size:1.15rem; font-weight:800; color:#fb7185;'>🔥 0 STUDIES</div><div style='font-size:0.68rem; color:#fda4af; font-weight:700;'>WHITE-SPACE GAP</div></div>",
                         unsafe_allow_html=True
                     )
             st.write("")
 
         st.markdown("---")
-        st.markdown("### 🚀 2. AI 'Unasked Question' & Clinical Trial Protocol Generator")
-        st.caption("Select any discovered **🔥 0-Study White-Space Gap** below to generate a ready-to-pitch PhD/Clinical Trial Protocol or auto-mutate your Level 2 search query!")
-
+        st.markdown("### 🚀 2. Autonomous Trial Protocol & Level-2 Query Mutator")
         if gap_data["gaps"]:
-            gap_labels = [f"🔥 GAP #{idx+1}: {g['subgroup']} × {g['outcome']} (0 Clinical Trials Found)" for idx, g in enumerate(gap_data["gaps"])]
-            chosen_idx = st.selectbox("Select a Discovered Scientific White-Space Gap to Inspect:", range(len(gap_labels)), format_func=lambda i: gap_labels[i])
+            gap_labels = [f"🔥 WHITE-SPACE #{idx+1}: {g['subgroup']} × {g['outcome']} (0 RCTs)" for idx, g in enumerate(gap_data["gaps"])]
+            chosen_idx = st.selectbox("Select a Discovered White-Space Blind Spot:", range(len(gap_labels)), format_func=lambda i: gap_labels[i])
             sel_gap = gap_data["gaps"][chosen_idx]
 
             with st.container(border=True):
-                st.markdown(f"#### 💡 AI-Discovered Unasked Research Question")
-                st.markdown(f"<div class='query-terminal'>❓ \"{sel_gap['unasked_question']}\"</div>", unsafe_allow_html=True)
+                st.markdown("#### 💡 AI-Formulated 'Unasked Research Question'")
+                st.markdown(f"<div class='manus-terminal'>❓ \"{sel_gap['unasked_question']}\"</div>", unsafe_allow_html=True)
 
                 col_a, col_b = st.columns(2)
                 with col_a:
-                    st.markdown("##### 🕵️ Why This Blind Spot Exists in Literature")
+                    st.markdown("##### 🕵️ Root Cause of Literature Gap")
                     st.write(sel_gap["why_missed"])
                 with col_b:
-                    st.markdown("##### 🧪 AI-Synthesized Phase III Trial Blueprint")
+                    st.markdown("##### 🧪 Proposed Phase III RCT Blueprint")
                     st.write(sel_gap["trial_design"])
 
-                st.markdown("##### 🔄 Close the Loop: Auto-Mutate Search Query for Level 2")
+                st.markdown("##### 🔄 Level-2 Active Learning: Auto-Mutate Search Expression")
                 st.code(sel_gap["mutated_query"], language="text")
 
-                if st.button("⚡ Inject This Gap Query into Step 1 (Query Studio) & Launch Level-2 Search ➡️", type="primary", use_container_width=True):
+                if st.button("⚡ Inject Gap Query into Stage 02 (Query Composer) & Run Level-2 Search ➡️", type="primary", use_container_width=True):
                     st.session_state["custom_query_box"] = sel_gap["mutated_query"]
                     go_to_step(2)
 
@@ -1528,10 +1561,10 @@ elif curr_idx == 9:
 
 
 # ==============================================================================
-# STEP 09 (INDEX 10): EXPORT CSV & AUDIT TRAIL
+# STAGE 10: EXPORT CSV & AUDIT LEDGER
 # ==============================================================================
 elif curr_idx == 10:
-    st.markdown("### 📥 Step 9: Export Final CSV & Complete Audit Trail")
+    st.markdown("### 📊 Stage 10 · Export CSV & Immutable Audit Ledger")
     conn = get_connection()
     export_rows = conn.execute("""
     SELECT
@@ -1554,7 +1587,7 @@ elif curr_idx == 10:
     """).fetchall()
 
     df_all = pd.DataFrame([dict(r) for r in export_rows])
-    export_Bucket = st.radio("Select Export Bucket:", ["✅ Only Included Studies", "❌ Only Excluded Studies", "📚 All Unique Studies"], horizontal=True)
+    export_Bucket = st.radio("Select Export Partition:", ["✅ Only Included Studies", "❌ Only Excluded Studies", "📚 All Unique Studies"], horizontal=True)
 
     if not df_all.empty:
         if "Included" in export_Bucket:
@@ -1566,9 +1599,9 @@ elif curr_idx == 10:
 
         st.dataframe(df_exp, use_container_width=True, hide_index=True)
         st.download_button(
-            label=f"📥 Download CSV ({len(df_exp)} Studies)",
+            label=f"📥 Download CSV ({len(df_exp)} Records)",
             data=df_exp.to_csv(index=False).encode("utf-8"),
-            file_name="mini_rayyan_export.csv",
+            file_name="mini_rayyan_synthesis_export.csv",
             mime="text/csv",
             type="primary"
         )
