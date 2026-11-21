@@ -1,10 +1,15 @@
 """
-MINI-RAYYAN // SPATIAL OS EDITION (app.py)
-Aesthetic, uncluttered systematic review workbench featuring:
-- Interactive 3D Revolving Orbital Evidence Sphere (drag/touch to rotate)
-- Scroll-to-Load CSS view() reveal animations & 3D tactile glass surfaces
-- Anti-jumble minimalist top bar with Command Popover (Themes, Operator, Demo Pack, Reset)
-- Full Level 1 + Level 2 Pipeline + Bulletproof PICO Highlighter + AI White-Space Gap Lab
+MINI-RAYYAN // SPATIAL OS v6.0 (app.py)
+Includes:
+- Pixel-perfect equal-height CSS Grid cards (Academy PICO + Final Ledger)
+- 4 Glitch-Free Dark Spatial Themes (removed broken light theme, added Amethyst Nebula)
+- 12-Disease Categorized Clinical Preset Vault with Specialty Filter & Search
+- Resilient Live Europe PMC Fetcher (auto-simplifies queries + retries on 503)
+- Smart Adaptive PICO Engine (reacts dynamically to any custom user PICO edits)
+- AI Innovation Lab with 3 Modes:
+    1. 2D Evidence Gap & White-Space Matrix + Expandable Category RCT Reader
+    2. BONUS: 3-Agent AI Courtroom Debate & Spin-Bias Radar
+    3. BONUS: AI Executive Meta-Briefing (Clinician + Patient Plain-English Synthesis)
 """
 
 import os
@@ -12,6 +17,7 @@ import re
 import html
 import math
 import json
+import requests
 from datetime import datetime
 import pandas as pd
 import streamlit as st
@@ -30,8 +36,6 @@ from database import (
 from api_clients import (
     search_pubmed_hits,
     fetch_pubmed_abstracts,
-    search_epmc_hits,
-    fetch_epmc_abstracts,
     get_benchmark_papers,
 )
 from pipeline import run_deduplication, run_screening
@@ -39,7 +43,7 @@ from pico_extractor import run_pico_extraction
 from level2_loop import compute_query_diff, resolve_duplicate_conflict
 
 st.set_page_config(
-    page_title="Mini-Rayyan // Spatial OS",
+    page_title="Mini-Rayyan // Spatial OS v6.0",
     page_icon="✦",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -52,7 +56,7 @@ init_db()
 # ==============================================================================
 STAGES = [
     ("00", "00 · Academy", "PICO & Spatial Guide"),
-    ("01", "01 · Protocol", "Topic & PICO Setup"),
+    ("01", "01 · Protocol", "Disease Vault & PICO"),
     ("02", "02 · Composer", "Boolean Query Studio"),
     ("03", "03 · Ingest", "API Probe & Pull"),
     ("04", "04 · Vault", "Zero-Delete Library"),
@@ -60,7 +64,7 @@ STAGES = [
     ("06", "06 · Screener", "Split-Screen Triage"),
     ("07", "07 · Extractor", "PICO Span Inspector"),
     ("08", "08 · Level-2", "Diff & Conflict Loop"),
-    ("09", "09 · AI Gap Lab", "White-Space Matrix"),
+    ("09", "09 · AI Lab", "Gap Matrix & Courtroom"),
     ("10", "10 · Ledger", "Export & Audit Trail"),
 ]
 
@@ -78,11 +82,8 @@ if "topic_initialized" not in st.session_state:
     rec_cnt = conn_init.execute("SELECT COUNT(*) FROM records;").fetchone()[0]
     conn_init.close()
     if rec_cnt == 0:
-        st.session_state["rq_val"] = ""
-        st.session_state["p_val"] = ""
-        st.session_state["i_val"] = ""
-        st.session_state["c_val"] = ""
-        st.session_state["o_val"] = ""
+        for k in ("rq_val", "p_val", "i_val", "c_val", "o_val"):
+            st.session_state[k] = ""
     else:
         cfg_init = get_project_config()
         st.session_state["rq_val"] = cfg_init["review_question"]
@@ -99,66 +100,65 @@ def go_to_step(step_index: int):
 
 
 # ==============================================================================
-# 4 EDITORIAL SPATIAL THEMES
+# 4 GLITCH-FREE DARK SPATIAL THEMES (PEARL ALABASTER REMOVED)
 # ==============================================================================
 SKINS = {
     "✦ Spatial Obsidian (Dark)": {
         "bg": "#07080c",
         "radial": "radial-gradient(ellipse 80% 50% at 50% -15%, rgba(129, 140, 248, 0.16), transparent)",
-        "surface": "rgba(18, 20, 28, 0.72)",
-        "surface_solid": "#12141c",
+        "surface": "rgba(18, 20, 28, 0.78)",
         "text": "#f4f5f7",
         "muted": "#8e95a8",
         "accent": "#818cf8",
         "accent_rgb": "129, 140, 248",
         "accent2": "#34d399",
         "accent_text": "#07080c",
-        "border": "rgba(255, 255, 255, 0.08)",
-        "border_hover": "rgba(129, 140, 248, 0.45)",
+        "border": "rgba(255, 255, 255, 0.09)",
+        "border_hover": "rgba(129, 140, 248, 0.50)",
+    },
+    "🌌 Amethyst Nebula (Violet × Cyan)": {
+        "bg": "#080510",
+        "radial": "radial-gradient(ellipse 80% 50% at 50% -15%, rgba(192, 132, 252, 0.18), transparent)",
+        "surface": "rgba(24, 15, 42, 0.80)",
+        "text": "#faf5ff",
+        "muted": "#c4b5fd",
+        "accent": "#c084fc",
+        "accent_rgb": "192, 132, 252",
+        "accent2": "#38bdf8",
+        "accent_text": "#080510",
+        "border": "rgba(192, 132, 252, 0.20)",
+        "border_hover": "rgba(56, 189, 248, 0.55)",
     },
     "⚡ Kinetic Volt (Acid Lime)": {
         "bg": "#070809",
         "radial": "radial-gradient(ellipse 80% 50% at 50% -15%, rgba(210, 255, 0, 0.12), transparent)",
-        "surface": "rgba(17, 19, 22, 0.78)",
-        "surface_solid": "#111316",
+        "surface": "rgba(17, 19, 22, 0.82)",
         "text": "#f4f6f8",
         "muted": "#8a94a6",
         "accent": "#d2ff00",
         "accent_rgb": "210, 255, 0",
         "accent2": "#00f0ff",
         "accent_text": "#070809",
-        "border": "rgba(255, 255, 255, 0.08)",
+        "border": "rgba(255, 255, 255, 0.09)",
         "border_hover": "rgba(210, 255, 0, 0.50)",
-    },
-    "🫧 Pearl Alabaster (Editorial Light)": {
-        "bg": "#f5f4f0",
-        "radial": "radial-gradient(ellipse 80% 50% at 50% -15%, rgba(79, 70, 229, 0.08), transparent)",
-        "surface": "rgba(255, 255, 255, 0.85)",
-        "surface_solid": "#ffffff",
-        "text": "#121316",
-        "muted": "#5c6270",
-        "accent": "#4f46e5",
-        "accent_rgb": "79, 70, 229",
-        "accent2": "#059669",
-        "accent_text": "#ffffff",
-        "border": "rgba(18, 19, 22, 0.09)",
-        "border_hover": "rgba(79, 70, 229, 0.40)",
     },
     "🌲 BioTech Emerald (Deep Teal)": {
         "bg": "#040d0c",
         "radial": "radial-gradient(ellipse 80% 50% at 50% -15%, rgba(16, 185, 129, 0.16), transparent)",
-        "surface": "rgba(10, 28, 25, 0.78)",
-        "surface_solid": "#0a1c19",
+        "surface": "rgba(10, 28, 25, 0.82)",
         "text": "#ecfdf5",
         "muted": "#6ee7b7",
         "accent": "#10b981",
         "accent_rgb": "16, 185, 129",
         "accent2": "#38bdf8",
         "accent_text": "#040d0c",
-        "border": "rgba(16, 185, 129, 0.18)",
+        "border": "rgba(16, 185, 129, 0.20)",
         "border_hover": "rgba(16, 185, 129, 0.55)",
     },
 }
+
+if st.session_state["ui_skin"] not in SKINS:
+    st.session_state["ui_skin"] = "✦ Spatial Obsidian (Dark)"
 
 sk = SKINS[st.session_state["ui_skin"]]
 curr_idx = st.session_state["current_step_idx"]
@@ -167,10 +167,213 @@ reviewer_name = st.session_state["reviewer_name"]
 
 
 # ==============================================================================
-# INTERACTIVE 3D REVOLVING ORBITAL SPHERE (DRAG / TOUCH TO ROTATE)
+# RESILIENT LIVE EUROPE PMC FETCHER (FIXES EUROPE PMC FETCHING!)
+# ==============================================================================
+def _clean_epmc_query(raw_q: str) -> str:
+    """Simplifies complex PubMed-style Boolean strings so Europe PMC REST API accepts them cleanly."""
+    q = raw_q.replace("[Title/Abstract]", "").replace("[MeSH Terms]", "")
+    return re.sub(r"\s+", " ", q).strip()
+
+
+def resilient_search_epmc_hits(query: str, date_from: int, date_to: int):
+    url = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+    headers = {"User-Agent": "MiniRayyanStudio/6.0 (SystematicReviewResearch)", "Accept": "application/json"}
+    clean_q = _clean_epmc_query(query)
+    attempts = [
+        f"({clean_q}) AND (PUB_YEAR:[{date_from} TO {date_to}])",
+        f"{clean_q} AND PUB_YEAR:[{date_from} TO {date_to}]",
+        " ".join(re.findall(r"[A-Za-z0-9\-]+", clean_q)[:4]),
+    ]
+    for q_try in attempts:
+        try:
+            r = requests.get(url, params={"query": q_try, "format": "json", "pageSize": 1}, headers=headers, timeout=10)
+            if r.status_code == 200:
+                data = r.json()
+                return int(data.get("hitCount", 0)), ""
+        except Exception:
+            continue
+    return 0, "Europe PMC REST temporarily busy"
+
+
+def resilient_fetch_epmc_abstracts(query: str, date_from: int, date_to: int, max_records: int = 20):
+    url = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+    headers = {"User-Agent": "MiniRayyanStudio/6.0 (SystematicReviewResearch)", "Accept": "application/json"}
+    clean_q = _clean_epmc_query(query)
+    attempts = [
+        f"({clean_q}) AND (PUB_YEAR:[{date_from} TO {date_to}]) AND HAS_ABSTRACT:Y",
+        f"({clean_q}) AND (PUB_YEAR:[{date_from} TO {date_to}])",
+        " ".join(re.findall(r"[A-Za-z0-9\-]+", clean_q)[:4]),
+    ]
+    for q_try in attempts:
+        try:
+            r = requests.get(
+                url,
+                params={"query": q_try, "format": "json", "resultType": "core", "pageSize": min(max_records, 50)},
+                headers=headers,
+                timeout=14,
+            )
+            if r.status_code == 200:
+                results = r.json().get("resultList", {}).get("result", [])
+                parsed = []
+                for item in results:
+                    title = (item.get("title") or "").strip()
+                    if not title:
+                        continue
+                    authors_raw = item.get("authorString") or "Unknown"
+                    first_auth = authors_raw.split(",")[0].strip() if authors_raw else "Unknown"
+                    pub_types_list = item.get("pubTypeList", {}).get("pubType", [])
+                    pub_types = ", ".join(pub_types_list) if isinstance(pub_types_list, list) else str(pub_types_list or "Journal Article")
+                    parsed.append({
+                        "source": "Europe PMC",
+                        "pmid": str(item.get("pmid") or ""),
+                        "doi": str(item.get("doi") or ""),
+                        "title": title,
+                        "abstract": (item.get("abstractText") or "").strip(),
+                        "authors": authors_raw,
+                        "first_author": first_auth,
+                        "pub_year": int(item.get("pubYear")) if str(item.get("pubYear", "")).isdigit() else date_to,
+                        "journal": item.get("journalInfo", {}).get("journal", {}).get("title") or item.get("journalTitle") or "Europe PMC Journal",
+                        "language": item.get("language") or "eng",
+                        "pub_types": pub_types,
+                    })
+                if parsed:
+                    return parsed, ""
+        except Exception:
+            continue
+    return [], "Europe PMC REST unavailable"
+
+
+# ==============================================================================
+# 12-DISEASE SORTED CLINICAL PRESET VAULT (6 SPECIALTIES)
+# ==============================================================================
+DISEASE_VAULT = {
+    "Cardiology": {
+        "🫀 Atrial Fibrillation · Apixaban vs. Warfarin": {
+            "tag": "STROKE PREVENTION",
+            "plain_english": "Compares **Apixaban** (Factor Xa inhibitor) against **Warfarin** in Atrial Fibrillation for stroke prevention and major bleeding.",
+            "question": "In adults with atrial fibrillation, does apixaban, compared with warfarin, reduce the risk of stroke and major bleeding?",
+            "P": "Adults with atrial fibrillation, nonvalvular atrial fibrillation, AF patients",
+            "I": "Apixaban, Eliquis, direct factor Xa inhibitor",
+            "C": "Warfarin, vitamin K antagonist, Coumadin, aspirin",
+            "O": "Stroke, systemic embolism, major bleeding, intracranial hemorrhage, mortality",
+        },
+        "💓 Heart Failure (HFrEF) · Empagliflozin vs. Placebo": {
+            "tag": "CARDIAC HOSPITALIZATION",
+            "plain_english": "Evaluates whether **Empagliflozin** (SGLT2 inhibitor) reduces cardiovascular death and heart failure hospitalization in HFrEF patients.",
+            "question": "In adults with heart failure with reduced ejection fraction (HFrEF), does empagliflozin, compared with placebo, reduce cardiovascular death or hospitalization?",
+            "P": "Adults with heart failure, HFrEF, reduced ejection fraction, chronic heart failure",
+            "I": "Empagliflozin, SGLT2 inhibitor, Jardiance",
+            "C": "Placebo, standard heart failure therapy",
+            "O": "Cardiovascular death, heart failure hospitalization, LVEF, mortality",
+        },
+    },
+    "Endocrinology": {
+        "🩸 Type 2 Diabetes · Metformin vs. Placebo/Sulfonylurea": {
+            "tag": "GLYCEMIC CONTROL",
+            "plain_english": "Tests whether first-line **Metformin** lowers 3-month average blood sugar (**HbA1c**) better than **Placebo** or **Sulfonylureas**.",
+            "question": "In adults with type 2 diabetes, does metformin, compared with placebo or sulfonylurea, lower HbA1c?",
+            "P": "Adults with type 2 diabetes, T2DM, diabetic patients",
+            "I": "Metformin, glucophage, biguanide",
+            "C": "Placebo, sulfonylurea, glimepiride, sitagliptin, standard care",
+            "O": "HbA1c, glycated haemoglobin, fasting blood glucose, weight change",
+        },
+        "⚖️ Obesity · Semaglutide vs. Placebo": {
+            "tag": "METABOLIC WEIGHT LOSS",
+            "plain_english": "Evaluates once-weekly **Semaglutide** (GLP-1 agonist) vs. **Placebo** alongside lifestyle intervention for sustained body weight reduction.",
+            "question": "In adults with obesity or overweight, does semaglutide, compared with placebo, achieve greater percentage body weight reduction?",
+            "P": "Adults with obesity, overweight adults, BMI >= 30",
+            "I": "Semaglutide, Wegovy, GLP-1 receptor agonist",
+            "C": "Placebo, lifestyle intervention, liraglutide",
+            "O": "Body weight reduction, BMI change, waist circumference, cardiometabolic risk",
+        },
+    },
+    "Oncology": {
+        "🎗️ Lung Cancer (NSCLC) · Pembrolizumab vs. Chemotherapy": {
+            "tag": "IMMUNOTHERAPY",
+            "plain_english": "Checks if **Pembrolizumab** (PD-1 immunotherapy) extends **Overall Survival** compared with platinum **Chemotherapy** in metastatic NSCLC.",
+            "question": "In adult patients with metastatic non-small-cell lung cancer (NSCLC), does pembrolizumab, compared with chemotherapy, improve overall survival?",
+            "P": "Adults with metastatic non-small-cell lung cancer, NSCLC, advanced lung carcinoma",
+            "I": "Pembrolizumab, Keytruda, PD-1 inhibitor, immunotherapy",
+            "C": "Platinum-based chemotherapy, docetaxel, carboplatin, placebo",
+            "O": "Overall survival, progression-free survival, PFS, objective response rate",
+        },
+        "🎀 HER2+ Breast Cancer · Trastuzumab Deruxtecan vs. T-DM1": {
+            "tag": "ANTIBODY-DRUG CONJUGATE",
+            "plain_english": "Compares **Trastuzumab Deruxtecan (T-DXd)** against **T-DM1** in HER2-positive metastatic breast cancer for progression-free survival.",
+            "question": "In adults with HER2-positive metastatic breast cancer, does trastuzumab deruxtecan, compared with trastuzumab emtansine (T-DM1), improve progression-free survival?",
+            "P": "HER2-positive breast cancer, metastatic breast cancer, breast carcinoma",
+            "I": "Trastuzumab deruxtecan, T-DXd, Enhertu",
+            "C": "Trastuzumab emtansine, T-DM1, chemotherapy",
+            "O": "Progression-free survival, overall survival, objective response, interstitial lung disease",
+        },
+    },
+    "Neurology & Psychiatry": {
+        "🧠 Major Depression · Escitalopram vs. Placebo/CBT": {
+            "tag": "MOOD THERAPEUTICS",
+            "plain_english": "Compares **Escitalopram** (SSRI) against **Placebo** or **CBT** in Major Depressive Disorder using **MADRS / HAM-D** scores.",
+            "question": "In adults with major depressive disorder (MDD), does escitalopram, compared with placebo or CBT, reduce depression severity scores?",
+            "P": "Adults with major depressive disorder, MDD, unipolar depression",
+            "I": "Escitalopram, Lexapro, selective serotonin reuptake inhibitor, SSRI",
+            "C": "Placebo, cognitive behavioral therapy, sertraline, fluoxetine",
+            "O": "MADRS score, Hamilton Depression Rating Scale, HAM-D, clinical remission",
+        },
+        "🧩 Alzheimer's Disease · Lecanemab vs. Placebo": {
+            "tag": "NEURODEGENERATION",
+            "plain_english": "Evaluates **Lecanemab** (anti-amyloid antibody) vs. **Placebo** for slowing cognitive decline in early Alzheimer's disease.",
+            "question": "In adults with early Alzheimer's disease, does lecanemab, compared with placebo, slow cognitive and functional decline?",
+            "P": "Early Alzheimer's disease, mild cognitive impairment, amyloid-positive adults",
+            "I": "Lecanemab, anti-amyloid monoclonal antibody",
+            "C": "Placebo, standard supportive care",
+            "O": "CDR-SB score, cognitive decline, amyloid plaque reduction, ARIA safety",
+        },
+    },
+    "Pulmonology & Autoimmune": {
+        "🫁 Severe Asthma · Dupilumab vs. Placebo": {
+            "tag": "BIOLOGIC THERAPY",
+            "plain_english": "Tests whether **Dupilumab** reduces severe asthma exacerbations and improves lung function (**FEV1**) compared with **Placebo**.",
+            "question": "In adults with uncontrolled moderate-to-severe asthma, does dupilumab, compared with placebo, reduce annualized exacerbation rates?",
+            "P": "Uncontrolled asthma, severe eosinophilic asthma, asthmatic adults",
+            "I": "Dupilumab, IL-4/IL-13 monoclonal antibody",
+            "C": "Placebo, inhaled corticosteroids, standard care",
+            "O": "Annualized exacerbation rate, FEV1 lung function, asthma control score",
+        },
+        "🦴 Rheumatoid Arthritis · Upadacitinib vs. Adalimumab": {
+            "tag": "AUTOIMMUNE INFLAMMATION",
+            "plain_english": "Compares oral **Upadacitinib** (JAK inhibitor) against injectable **Adalimumab** for achieving ACR20/ACR50 joint remission.",
+            "question": "In adults with active rheumatoid arthritis, does upadacitinib, compared with adalimumab or placebo, achieve higher ACR20 response rates?",
+            "P": "Active rheumatoid arthritis, RA patients, inflammatory arthritis",
+            "I": "Upadacitinib, JAK inhibitor, Rinvoq",
+            "C": "Adalimumab, Humira, methotrexate, placebo",
+            "O": "ACR20 response, DAS28-CRP remission, radiographic joint progression",
+        },
+    },
+    "Renal & Infectious": {
+        "🫘 Chronic Kidney Disease · Dapagliflozin vs. Placebo": {
+            "tag": "RENAL PROTECTION",
+            "plain_english": "Evaluates **Dapagliflozin** vs. **Placebo** in Chronic Kidney Disease for preventing eGFR decline and end-stage kidney failure.",
+            "question": "In adults with chronic kidney disease (CKD), does dapagliflozin, compared with placebo, reduce the risk of sustained eGFR decline or kidney failure?",
+            "P": "Chronic kidney disease, CKD, impaired renal function, albuminuria",
+            "I": "Dapagliflozin, SGLT2 inhibitor, Farxiga",
+            "C": "Placebo, ACE inhibitor, standard renal care",
+            "O": "eGFR decline, end-stage kidney disease, renal death, cardiovascular mortality",
+        },
+        "🦠 Severe Pneumonia · Hydrocortisone vs. Placebo": {
+            "tag": "CRITICAL CARE",
+            "plain_english": "Tests whether early **Hydrocortisone** reduces 28-day ICU mortality in adults with severe community-acquired pneumonia.",
+            "question": "In adults with severe community-acquired pneumonia, does hydrocortisone, compared with placebo, reduce 28-day mortality?",
+            "P": "Severe community-acquired pneumonia, ICU pneumonia patients",
+            "I": "Hydrocortisone, intravenous corticosteroid",
+            "C": "Placebo, standard antibiotic therapy",
+            "O": "28-day mortality, mechanical ventilation, ICU length of stay",
+        },
+    },
+}
+
+
+# ==============================================================================
+# INTERACTIVE 3D REVOLVING ORBITAL HERO CANVAS
 # ==============================================================================
 def render_spatial_3d_orb(stats: dict, skin: dict, stage_code: str, stage_title: str, active_q: str):
-    """Renders a clean, mature 3D revolving geodesic sphere on Canvas that users can drag to rotate."""
     orb_html = f"""
     <!DOCTYPE html>
     <html>
@@ -178,117 +381,39 @@ def render_spatial_3d_orb(stats: dict, skin: dict, stage_code: str, stage_title:
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
         * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-        body {{
-            background: transparent;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: {skin['text']};
-            overflow: hidden;
-        }}
+        body {{ background: transparent; font-family: 'Plus Jakarta Sans', sans-serif; color: {skin['text']}; overflow: hidden; }}
         .spatial-hero {{
-            position: relative;
-            width: 100%;
-            height: 235px;
-            background: {skin['surface']};
-            border: 1px solid {skin['border']};
-            border-radius: 24px;
-            display: grid;
-            grid-template-columns: 1.35fr 0.65fr;
-            align-items: center;
-            padding: 24px 32px;
-            overflow: hidden;
+            position: relative; width: 100%; height: 230px;
+            background: {skin['surface']}; border: 1px solid {skin['border']};
+            border-radius: 24px; display: grid; grid-template-columns: 1.38fr 0.62fr;
+            align-items: center; padding: 22px 32px; overflow: hidden;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 20px 44px -20px rgba(0,0,0,0.45);
-            backdrop-filter: blur(20px);
-        }}
-        .hero-left {{
-            z-index: 2;
-            padding-right: 16px;
         }}
         .stage-pill {{
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1.4px;
-            text-transform: uppercase;
-            color: {skin['accent']};
-            background: rgba({skin['accent_rgb']}, 0.12);
-            border: 1px solid rgba({skin['accent_rgb']}, 0.30);
-            padding: 4px 12px;
-            border-radius: 999px;
-            margin-bottom: 12px;
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+            letter-spacing: 1.4px; text-transform: uppercase; color: {skin['accent']};
+            background: rgba({skin['accent_rgb']}, 0.12); border: 1px solid rgba({skin['accent_rgb']}, 0.30);
+            padding: 4px 12px; border-radius: 999px; margin-bottom: 10px;
         }}
-        .pulse-dot {{
-            width: 7px; height: 7px; border-radius: 50%;
-            background: {skin['accent']};
-            box-shadow: 0 0 10px {skin['accent']};
-        }}
-        .hero-title {{
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: -0.9px;
-            line-height: 1.1;
-            margin-bottom: 8px;
-        }}
-        .serif {{
-            font-family: 'Instrument Serif', serif;
-            font-style: italic;
-            font-weight: 400;
-            font-size: 37px;
-            color: {skin['accent']};
-        }}
+        .pulse-dot {{ width: 7px; height: 7px; border-radius: 50%; background: {skin['accent']}; box-shadow: 0 0 10px {skin['accent']}; }}
+        .hero-title {{ font-size: 31px; font-weight: 800; letter-spacing: -0.9px; line-height: 1.1; margin-bottom: 8px; }}
+        .serif {{ font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; font-size: 36px; color: {skin['accent']}; }}
         .hero-q {{
-            font-size: 13.5px;
-            color: {skin['muted']};
-            line-height: 1.5;
-            max-width: 680px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            margin-bottom: 14px;
+            font-size: 13.5px; color: {skin['muted']}; line-height: 1.48; max-width: 680px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 14px;
         }}
-        .mini-telemetry {{
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11.5px;
-        }}
-        .t-chip {{
-            background: rgba(128,128,128,0.08);
-            border: 1px solid {skin['border']};
-            padding: 5px 11px;
-            border-radius: 10px;
-            color: {skin['text']};
-        }}
+        .mini-telemetry {{ display: flex; flex-wrap: wrap; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; }}
+        .t-chip {{ background: rgba(128,128,128,0.08); border: 1px solid {skin['border']}; padding: 5px 11px; border-radius: 10px; color: {skin['text']}; }}
         .t-chip b {{ color: {skin['accent']}; }}
-        .orb-stage {{
-            position: relative;
-            width: 100%;
-            height: 210px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: grab;
-        }}
+        .orb-stage {{ position: relative; width: 100%; height: 205px; display: flex; align-items: center; justify-content: center; cursor: grab; }}
         .orb-stage:active {{ cursor: grabbing; }}
-        .drag-hint {{
-            position: absolute;
-            bottom: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 1px;
-            color: {skin['muted']};
-            opacity: 0.7;
-            pointer-events: none;
-        }}
+        .drag-hint {{ position: absolute; bottom: 2px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; color: {skin['muted']}; opacity: 0.7; pointer-events: none; }}
     </style>
     </head>
     <body>
     <div class="spatial-hero">
-        <div class="hero-left">
+        <div>
             <div class="stage-pill"><span class="pulse-dot"></span> STAGE {stage_code} // SPATIAL WORKBENCH</div>
             <div class="hero-title">{stage_title} <span class="serif">Engine</span></div>
             <div class="hero-q">{html.escape(active_q)}</div>
@@ -301,113 +426,59 @@ def render_spatial_3d_orb(stats: dict, skin: dict, stage_code: str, stage_title:
             </div>
         </div>
         <div class="orb-stage" id="orbWrap">
-            <canvas id="orbCanvas" width="260" height="205"></canvas>
+            <canvas id="orbCanvas" width="250" height="200"></canvas>
             <div class="drag-hint">✦ DRAG TO ORBIT</div>
         </div>
     </div>
-
     <script>
         const canvas = document.getElementById('orbCanvas');
         const ctx = canvas.getContext('2d');
-        const W = canvas.width, H = canvas.height;
-        const cx = W / 2, cy = H / 2 - 4;
-        const R = 74;
-
-        // Generate Fibonacci sphere points for a clean geometric orbital lattice
-        const N = 46;
-        const pts = [];
-        const golden = Math.PI * (3 - Math.sqrt(5));
+        const W = canvas.width, H = canvas.height, cx = W / 2, cy = H / 2 - 4, R = 72;
+        const N = 46, pts = [], golden = Math.PI * (3 - Math.sqrt(5));
         for (let i = 0; i < N; i++) {{
-            const y = 1 - (i / (N - 1)) * 2;
-            const radius = Math.sqrt(1 - y * y);
-            const theta = golden * i;
+            const y = 1 - (i / (N - 1)) * 2, radius = Math.sqrt(1 - y * y), theta = golden * i;
             pts.push({{ x: Math.cos(theta) * radius, y: y, z: Math.sin(theta) * radius }});
         }}
-
-        let rotX = 0.35, rotY = 0.0;
-        let velX = 0.002, velY = 0.0065;
-        let dragging = false, lastX = 0, lastY = 0;
-
+        let rotX = 0.35, rotY = 0.0, velX = 0.002, velY = 0.006, dragging = false, lastX = 0, lastY = 0;
         const wrap = document.getElementById('orbWrap');
-        wrap.addEventListener('pointerdown', (e) => {{
-            dragging = true; lastX = e.clientX; lastY = e.clientY;
-        }});
+        wrap.addEventListener('pointerdown', (e) => {{ dragging = true; lastX = e.clientX; lastY = e.clientY; }});
         window.addEventListener('pointerup', () => {{ dragging = false; }});
         window.addEventListener('pointermove', (e) => {{
             if (!dragging) return;
-            const dx = e.clientX - lastX;
-            const dy = e.clientY - lastY;
-            rotY += dx * 0.012;
-            rotX += dy * 0.012;
-            velY = dx * 0.0012;
-            velX = dy * 0.0012;
+            const dx = e.clientX - lastX, dy = e.clientY - lastY;
+            rotY += dx * 0.012; rotX += dy * 0.012; velY = dx * 0.0012; velX = dy * 0.0012;
             lastX = e.clientX; lastY = e.clientY;
         }});
-
         function project(p) {{
-            // Rotate Y
             let x1 = p.x * Math.cos(rotY) - p.z * Math.sin(rotY);
             let z1 = p.x * Math.sin(rotY) + p.z * Math.cos(rotY);
-            // Rotate X
             let y2 = p.y * Math.cos(rotX) - z1 * Math.sin(rotX);
             let z2 = p.y * Math.sin(rotX) + z1 * Math.cos(rotX);
             const scale = 240 / (240 + z2 * R);
-            return {{
-                x: cx + x1 * R * scale,
-                y: cy + y2 * R * scale,
-                z: z2,
-                s: scale
-            }};
+            return {{ x: cx + x1 * R * scale, y: cy + y2 * R * scale, z: z2 }};
         }}
-
         function draw() {{
             ctx.clearRect(0, 0, W, H);
-            if (!dragging) {{
-                rotY += velY;
-                rotX += velX;
-                velY = velY * 0.985 + 0.0055 * 0.015;
-                velX = velX * 0.985 + 0.0015 * 0.015;
-            }}
-
-            // Outer subtle orbital ring
-            ctx.beginPath();
-            ctx.ellipse(cx, cy, R * 1.18, R * 0.36, 0.32, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba({skin["accent_rgb"]}, 0.25)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-
+            if (!dragging) {{ rotY += velY; rotX += velX; velY = velY * 0.985 + 0.0055 * 0.015; velX = velX * 0.985 + 0.0015 * 0.015; }}
+            ctx.beginPath(); ctx.ellipse(cx, cy, R * 1.18, R * 0.36, 0.32, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba({skin["accent_rgb"]}, 0.25)'; ctx.lineWidth = 1; ctx.stroke();
             const proj = pts.map(project);
-
-            // Connect nearby nodes
             for (let i = 0; i < N; i++) {{
                 for (let j = i + 1; j < N; j++) {{
-                    const dx = pts[i].x - pts[j].x;
-                    const dy = pts[i].y - pts[j].y;
-                    const dz = pts[i].z - pts[j].z;
-                    const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
-                    if (dist < 0.62) {{
+                    const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y, dz = pts[i].z - pts[j].z;
+                    if (Math.sqrt(dx*dx + dy*dy + dz*dz) < 0.62) {{
                         const alpha = Math.max(0.06, ((proj[i].z + proj[j].z) / 2 + 1.1) * 0.22);
-                        ctx.beginPath();
-                        ctx.moveTo(proj[i].x, proj[i].y);
-                        ctx.lineTo(proj[j].x, proj[j].y);
-                        ctx.strokeStyle = `rgba({skin["accent_rgb"]}, ${{alpha.toFixed(3)}})`;
-                        ctx.lineWidth = 0.9;
-                        ctx.stroke();
+                        ctx.beginPath(); ctx.moveTo(proj[i].x, proj[i].y); ctx.lineTo(proj[j].x, proj[j].y);
+                        ctx.strokeStyle = `rgba({skin["accent_rgb"]}, ${{alpha.toFixed(3)}})`; ctx.lineWidth = 0.9; ctx.stroke();
                     }}
                 }}
             }}
-
-            // Draw glowing nodes
             for (let i = 0; i < N; i++) {{
-                const p = proj[i];
-                const alpha = Math.max(0.2, (p.z + 1.2) * 0.48);
-                const r = Math.max(1.4, (p.z + 1.4) * 1.7);
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+                const p = proj[i], alpha = Math.max(0.2, (p.z + 1.2) * 0.48), r = Math.max(1.4, (p.z + 1.4) * 1.7);
+                ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
                 ctx.fillStyle = (i % 7 === 0) ? '{skin["accent2"]}' : `rgba({skin["accent_rgb"]}, ${{alpha.toFixed(3)}})`;
                 ctx.fill();
             }}
-
             requestAnimationFrame(draw);
         }}
         draw();
@@ -415,11 +486,11 @@ def render_spatial_3d_orb(stats: dict, skin: dict, stage_code: str, stage_title:
     </body>
     </html>
     """
-    components.html(orb_html, height=245, scrolling=False)
+    components.html(orb_html, height=240, scrolling=False)
 
 
 # ==============================================================================
-# MASTER SPATIAL CSS (SCROLL-TO-LOAD REVEAL + TOUCHABLE SURFACES + CLEAN WHITESPACE)
+# MASTER SPATIAL CSS (EQUAL-HEIGHT GRIDS + SCROLL REVEAL + TOUCHABLE SURFACES)
 # ==============================================================================
 st.markdown(f"""
 <style>
@@ -429,19 +500,18 @@ st.markdown(f"""
     section[data-testid="stSidebar"], div[data-testid="collapsedControl"] {{ display: none !important; }}
 
     .block-container {{
-        padding-top: 1.4rem !important;
+        padding-top: 1.3rem !important;
         padding-bottom: 4.5rem !important;
         max-width: 1380px !important;
     }}
 
-    /* Scroll-to-load reveal animation (modern CSS view() with graceful fallback) */
     @keyframes spatialReveal {{
-        from {{ opacity: 0; transform: translateY(24px) scale(0.985); filter: blur(4px); }}
+        from {{ opacity: 0; transform: translateY(20px) scale(0.985); filter: blur(3px); }}
         to {{ opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }}
     }}
     @keyframes redGapPulse {{
         0%, 100% {{ box-shadow: 0 0 16px rgba(244, 63, 94, 0.30); border-color: rgba(244, 63, 94, 0.65); }}
-        50% {{ box-shadow: 0 0 32px rgba(244, 63, 94, 0.75); border-color: #f43f5e; }}
+        50% {{ box-shadow: 0 0 32px rgba(244, 63, 94, 0.78); border-color: #f43f5e; }}
     }}
 
     .stApp {{
@@ -455,7 +525,61 @@ st.markdown(f"""
     }}
     code, pre {{ font-family: 'JetBrains Mono', monospace !important; }}
 
-    /* Touchable Spatial Glass Cards with Scroll Reveal */
+    /* FIX 1: Equal-Height 4-Column PICO Grid */
+    .pico-equal-grid {{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin: 12px 0 24px 0;
+        align-items: stretch;
+    }}
+    .pico-equal-card {{
+        background: {sk['surface']};
+        border: 1px solid {sk['border']};
+        border-radius: 20px;
+        padding: 22px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 185px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 12px 28px -14px rgba(0,0,0,0.45);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+    }}
+    .pico-equal-card:hover {{
+        transform: translateY(-5px);
+        border-color: {sk['border_hover']};
+    }}
+
+    /* FIX 3: Equal-Height 2-Column Ledger Grid */
+    .ledger-equal-grid {{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        align-items: stretch;
+    }}
+    .ledger-equal-card {{
+        background: {sk['surface']};
+        border: 1px solid {sk['border']};
+        border-radius: 16px;
+        padding: 18px 20px;
+        min-height: 148px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.22s ease, border-color 0.22s ease;
+    }}
+    .ledger-equal-card:hover {{
+        transform: translateY(-3px);
+        border-color: {sk['border_hover']};
+    }}
+    .clamp-2 {{
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }}
+
+    /* Touchable Glass Containers */
     div[data-testid="stVerticalBlockBorderWrapper"] {{
         background: {sk['surface']} !important;
         border: 1px solid {sk['border']} !important;
@@ -463,23 +587,13 @@ st.markdown(f"""
         padding: 20px !important;
         box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 12px 30px -16px rgba(0,0,0,0.40) !important;
         backdrop-filter: blur(18px);
-        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease, box-shadow 0.28s ease !important;
-        animation: spatialReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }}
-    @supports (animation-timeline: view()) {{
-        .scroll-card {{
-            animation: spatialReveal linear both;
-            animation-timeline: view();
-            animation-range: entry 0% cover 24%;
-        }}
+        transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.26s ease !important;
+        animation: spatialReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
     }}
     div[data-testid="stVerticalBlockBorderWrapper"]:hover {{
-        transform: translateY(-4px) scale(1.005);
         border-color: {sk['border_hover']} !important;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 18px 36px -14px rgba({sk['accent_rgb']}, 0.22) !important;
     }}
 
-    /* Tactile Buttons (Untruncated, Smooth Spring) */
     div.stButton > button {{
         border-radius: 999px !important;
         font-weight: 600 !important;
@@ -506,7 +620,6 @@ st.markdown(f"""
         border-color: {sk['accent']} !important;
     }}
 
-    /* Spatial Vault & Timeline Cards */
     .spatial-card {{
         background: {sk['surface']};
         border: 1px solid {sk['border']};
@@ -514,76 +627,47 @@ st.markdown(f"""
         border-radius: 16px;
         padding: 16px 20px;
         margin-bottom: 12px;
-        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+        transition: transform 0.22s ease, border-color 0.22s ease;
     }}
     .spatial-card:hover {{
-        transform: translateX(5px);
+        transform: translateX(4px);
         border-color: {sk['border_hover']};
     }}
 
     /* AI Gap Matrix Cells */
     .gap-dense {{
-        background: rgba(16, 185, 129, 0.14);
-        border: 1px solid rgba(16, 185, 129, 0.42);
-        border-radius: 18px;
-        padding: 18px 14px;
-        text-align: center;
-        min-height: 132px;
-        display: flex; flex-direction: column; justify-content: center;
-        transition: transform 0.22s ease;
+        background: rgba(16, 185, 129, 0.14); border: 1px solid rgba(16, 185, 129, 0.42);
+        border-radius: 18px; padding: 18px 14px; text-align: center; min-height: 132px;
+        display: flex; flex-direction: column; justify-content: center; transition: transform 0.22s ease;
     }}
     .gap-dense:hover {{ transform: translateY(-4px); }}
     .gap-sparse {{
-        background: rgba(245, 158, 11, 0.14);
-        border: 1px solid rgba(245, 158, 11, 0.42);
-        border-radius: 18px;
-        padding: 18px 14px;
-        text-align: center;
-        min-height: 132px;
+        background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.42);
+        border-radius: 18px; padding: 18px 14px; text-align: center; min-height: 132px;
         display: flex; flex-direction: column; justify-content: center;
     }}
     .gap-zero {{
-        background: rgba(244, 63, 94, 0.18);
-        border: 2px solid #f43f5e;
-        border-radius: 18px;
-        padding: 18px 14px;
-        text-align: center;
-        min-height: 132px;
+        background: rgba(244, 63, 94, 0.18); border: 2px solid #f43f5e;
+        border-radius: 18px; padding: 18px 14px; text-align: center; min-height: 132px;
         display: flex; flex-direction: column; justify-content: center;
-        animation: redGapPulse 2.4s infinite ease-in-out;
-        transition: transform 0.22s ease;
+        animation: redGapPulse 2.4s infinite ease-in-out; transition: transform 0.22s ease;
     }}
     .gap-zero:hover {{ transform: scale(1.03); }}
 
     .id-pill {{
-        display: inline-block;
-        background: rgba(255, 255, 255, 0.09);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.76rem;
-        font-weight: 700;
-        padding: 3px 9px;
-        border-radius: 8px;
-        margin: 3px 2px;
+        display: inline-block; background: rgba(255, 255, 255, 0.09); border: 1px solid rgba(255, 255, 255, 0.18);
+        font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; font-weight: 700; padding: 3px 9px; border-radius: 8px; margin: 3px 2px;
     }}
     .k-chip {{
-        display: inline-block;
-        padding: 4px 11px;
-        border-radius: 999px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.72rem;
-        font-weight: 600;
-        margin-right: 6px;
-        margin-bottom: 6px;
-        border: 1px solid {sk['border']};
-        background: rgba(128,128,128,0.08);
+        display: inline-block; padding: 4px 11px; border-radius: 999px; font-family: 'JetBrains Mono', monospace;
+        font-size: 0.72rem; font-weight: 600; margin-right: 6px; margin-bottom: 6px; border: 1px solid {sk['border']}; background: rgba(128,128,128,0.08);
     }}
 </style>
 """, unsafe_allow_html=True)
 
 
 # ==============================================================================
-# BULLETPROOF MULTI-LAYER PICO HIGHLIGHTER
+# SMART ADAPTIVE PICO HIGHLIGHTER & QUERY BUILDER
 # ==============================================================================
 def smart_highlight_pico_html(abstract: str, p_span: str, i_span: str, c_span: str, o_span: str, config: dict = None) -> str:
     if not abstract:
@@ -617,21 +701,23 @@ def smart_highlight_pico_html(abstract: str, p_span: str, i_span: str, c_span: s
                 text, count=1
             )
 
+    # Smart Adaptive Keyword Fallback: splits both commas AND user-edited phrases into root medical tokens
+    stop_words = {"adults", "with", "patients", "therapy", "treatment", "compared", "versus", "using", "study", "clinical", "trial", "score", "rate", "change"}
     kw_groups = [
-        ("P", cfg.get("population_text", "")),
-        ("I", cfg.get("intervention_text", "")),
-        ("C", cfg.get("comparator_text", "")),
-        ("O", cfg.get("outcome_text", "")),
+        ("P", st.session_state.get("p_val") or cfg.get("population_text", "")),
+        ("I", st.session_state.get("i_val") or cfg.get("intervention_text", "")),
+        ("C", st.session_state.get("c_val") or cfg.get("comparator_text", "")),
+        ("O", st.session_state.get("o_val") or cfg.get("outcome_text", "")),
     ]
     for tag, csv_kw in kw_groups:
         bg, border, lbl = styles[tag]
         if f"[{lbl}]" in text:
             continue
-        terms = [t.strip() for t in csv_kw.split(",") if len(t.strip()) >= 3]
-        for chunk in re.split(r"[,;()]", clean_span(dict(span_map).get(tag, ""))):
-            if len(chunk.strip()) >= 4:
-                terms.insert(0, chunk.strip())
-        for term in terms:
+        raw_phrases = [t.strip() for t in re.split(r"[,;/]", csv_kw) if len(t.strip()) >= 3]
+        # Also extract individual meaningful words if user edited a phrase
+        extra_words = [w for ph in raw_phrases for w in re.findall(r"[A-Za-z0-9\-]{4,}", ph) if w.lower() not in stop_words]
+        candidates = raw_phrases + extra_words
+        for term in candidates:
             pat = re.compile(rf"(?<!>)\b({re.escape(html.escape(term))})\b(?!</mark>)", re.IGNORECASE)
             if pat.search(text):
                 text = pat.sub(
@@ -656,49 +742,20 @@ def smart_highlight_pico_html(abstract: str, p_span: str, i_span: str, c_span: s
     """
 
 
-# ==============================================================================
-# DATA & HELPER FUNCTIONS
-# ==============================================================================
-TOPIC_CARDS = {
-    "🫀 Cardiology · Apixaban vs. Warfarin": {
-        "tag": "STROKE PREVENTION",
-        "plain_english": "Compares **Apixaban** (Factor Xa blood thinner) against **Warfarin** in adults with Atrial Fibrillation to evaluate stroke prevention and major bleeding.",
-        "question": "In adults with atrial fibrillation, does apixaban, compared with warfarin, reduce the risk of stroke and major bleeding?",
-        "P": "Adults with atrial fibrillation, nonvalvular atrial fibrillation, AF patients",
-        "I": "Apixaban, Eliquis, direct factor Xa inhibitor",
-        "C": "Warfarin, vitamin K antagonist, Coumadin, aspirin",
-        "O": "Stroke, systemic embolism, major bleeding, intracranial hemorrhage, mortality",
-    },
-    "🩸 Endocrinology · Metformin in T2DM": {
-        "tag": "GLYCEMIC CONTROL",
-        "plain_english": "Evaluates whether **Metformin** lowers 3-month average blood sugar (**HbA1c**) in adults with Type 2 Diabetes compared with **Placebo** or **Sulfonylureas**.",
-        "question": "In adults with type 2 diabetes, does metformin, compared with placebo or sulfonylurea, lower HbA1c?",
-        "P": "Adults with type 2 diabetes, T2DM, diabetic patients",
-        "I": "Metformin, glucophage, biguanide",
-        "C": "Placebo, sulfonylurea, glimepiride, sitagliptin, standard care",
-        "O": "HbA1c, glycated haemoglobin, fasting blood glucose, weight change",
-    },
-    "🎗️ Oncology · Pembrolizumab in NSCLC": {
-        "tag": "IMMUNOTHERAPY",
-        "plain_english": "Evaluates whether **Pembrolizumab** (PD-1 immunotherapy) improves **Overall Survival** compared with **Chemotherapy** in metastatic Lung Cancer (NSCLC).",
-        "question": "In adult patients with metastatic non-small-cell lung cancer (NSCLC), does pembrolizumab, compared with chemotherapy, improve overall survival?",
-        "P": "Adults with metastatic non-small-cell lung cancer, NSCLC, advanced lung carcinoma",
-        "I": "Pembrolizumab, Keytruda, PD-1 inhibitor, immunotherapy",
-        "C": "Platinum-based chemotherapy, docetaxel, carboplatin, placebo",
-        "O": "Overall survival, progression-free survival, PFS, objective response rate",
-    },
-    "🧠 Psychiatry · Escitalopram in MDD": {
-        "tag": "MOOD THERAPEUTICS",
-        "plain_english": "Compares **Escitalopram** (SSRI) against **Placebo** or **CBT** in Major Depressive Disorder using standardized clinical depression scores (**MADRS / HAM-D**).",
-        "question": "In adults with major depressive disorder (MDD), does escitalopram, compared with placebo or CBT, reduce depression severity scores?",
-        "P": "Adults with major depressive disorder, MDD, unipolar depression",
-        "I": "Escitalopram, Lexapro, selective serotonin reuptake inhibitor, SSRI",
-        "C": "Placebo, cognitive behavioral therapy, sertraline, fluoxetine",
-        "O": "MADRS score, Hamilton Depression Rating Scale, HAM-D, clinical remission",
-    },
-}
+def build_boolean_query_from_pico(p_txt: str, i_txt: str, c_txt: str) -> str:
+    def fmt(csv_text: str, limit: int = 2) -> str:
+        terms = [t.strip() for t in re.split(r"[,;/]", csv_text) if t.strip()][:limit]
+        if not terms:
+            return ""
+        q_terms = [f'"{t}"' if " " in t else t for t in terms]
+        return f"({' OR '.join(q_terms)})" if len(q_terms) > 1 else q_terms[0]
+    parts = [x for x in (fmt(p_txt, 2), fmt(i_txt, 1), fmt(c_txt, 2)) if x]
+    return " AND ".join(parts) if parts else ""
 
 
+# ==============================================================================
+# DATABASE & AI ANALYTICS ENGINES
+# ==============================================================================
 def get_dashboard_stats():
     conn = get_connection()
     tot = conn.execute("SELECT COUNT(*) FROM records;").fetchone()[0]
@@ -723,17 +780,6 @@ def get_dashboard_stats():
         "maybe": sum(1 for r in rows if r["fd"] == "Maybe"),
         "overrides": sum(1 for r in rows if r["hd"] is not None),
     }
-
-
-def build_boolean_query_from_pico(p_txt: str, i_txt: str, c_txt: str) -> str:
-    def fmt(csv_text: str, limit: int = 2) -> str:
-        terms = [t.strip() for t in csv_text.split(",") if t.strip()][:limit]
-        if not terms:
-            return ""
-        q_terms = [f'"{t}"' if " " in t else t for t in terms]
-        return f"({' OR '.join(q_terms)})" if len(q_terms) > 1 else q_terms[0]
-    parts = [x for x in (fmt(p_txt, 2), fmt(i_txt, 1), fmt(c_txt, 2)) if x]
-    return " AND ".join(parts) if parts else ""
 
 
 def save_human_decision(
@@ -766,39 +812,98 @@ def save_human_decision(
 
 
 def compute_ai_evidence_gap_matrix(records: list, config: dict) -> dict:
-    main_drug = (config.get("intervention_text") or "Metformin").split(",")[0].strip()
-    main_cond = (config.get("population_text") or "Type 2 Diabetes").split(",")[0].strip()
+    main_drug = (st.session_state.get("i_val") or config.get("intervention_text") or "Metformin").split(",")[0].strip()
+    main_cond = (st.session_state.get("p_val") or config.get("population_text") or "Type 2 Diabetes").split(",")[0].strip()
+    comp_terms = [t.strip().lower() for t in (st.session_state.get("c_val") or config.get("comparator_text") or "warfarin, sulfonylurea, placebo").split(",") if t.strip()]
+    out_terms = [t.strip().lower() for t in (st.session_state.get("o_val") or config.get("outcome_text") or "hba1c, stroke, survival").split(",") if t.strip()]
+
     subgroups = [
-        ("General Adult Cohort", ["adult", "patient", "men and women", "type 2", "atrial", "cancer", "depress"], "general adults"),
+        ("General Adult Cohort", ["adult", "patient", "men and women", main_cond.lower().split()[0]], "general adults"),
         ("Elderly / Geriatric (>65 yrs)", ["elderly", "older", "geriatric", "aged", "65 years", "75 years"], "elderly patients aged >65"),
-        ("Renal / Hepatic Comorbidity", ["renal", "kidney", "ckd", "nephropathy", "GFR", "hepatic"], "patients with chronic kidney disease"),
-        ("Active Drug Head-to-Head", ["glimepiride", "sulfonylurea", "sitagliptin", "warfarin", "docetaxel", "sertraline"], "active head-to-head comparator arm"),
+        ("Renal / Hepatic Comorbidity", ["renal", "kidney", "ckd", "nephropathy", "egfr", "dialysis", "hepatic"], "patients with chronic kidney disease"),
+        ("Active Drug Head-to-Head", comp_terms + ["glimepiride", "sulfonylurea", "warfarin", "chemotherapy"], "active head-to-head comparator arm"),
     ]
     outcomes = [
-        ("Primary Biomarker / HbA1c", ["hba1c", "glycated", "glucose", "fasting", "response rate", "madrs", "inr"], "primary biomarker reduction"),
+        ("Primary Efficacy Endpoint", out_terms + ["hba1c", "glycated", "response", "remission", "fev1"], "primary efficacy endpoint"),
         ("Cardiovascular / Stroke Events", ["stroke", "cardiovascular", "embolism", "myocardial", "heart failure", "mace"], "major adverse cardiovascular events"),
-        ("Safety / Hypoglycemia / Bleed", ["hypoglycemia", "bleeding", "adverse", "safety", "tolerability", "hemorrhage", "toxicity"], "severe adverse event rate"),
-        ("Long-Term Mortality & QoL (>2 yr)", ["mortality", "survival", "quality of life", "qol", "5-year", "long-term death"], "long-term all-cause mortality & QoL"),
+        ("Safety / Adverse Events", ["hypoglycemia", "bleeding", "adverse", "safety", "tolerability", "hemorrhage", "toxicity"], "severe adverse event rate"),
+        ("Long-Term Mortality & QoL (>2 yr)", ["mortality", "survival", "quality of life", "qol", "5-year", "death"], "long-term all-cause mortality & QoL"),
     ]
     matrix, gaps = {}, []
     for sg_label, sg_kw, sg_query_term in subgroups:
         matrix[sg_label] = {}
         for out_label, out_kw, out_query_term in outcomes:
-            matched_ids = [
-                r["record_id"] for r in records
-                if any(k.lower() in f"{r.get('title', '')} {r.get('abstract', '')} {r.get('pico_p', '')} {r.get('pico_o', '')}".lower() for k in sg_kw)
-                and any(k.lower() in f"{r.get('title', '')} {r.get('abstract', '')} {r.get('pico_p', '')} {r.get('pico_o', '')}".lower() for k in out_kw)
-            ]
-            if len(matched_ids) == 0:
+            matched_recs = []
+            for r in records:
+                blob = f"{r.get('title', '')} {r.get('abstract', '')} {r.get('pico_p', '')} {r.get('pico_o', '')}".lower()
+                if any(k in blob for k in sg_kw if k) and any(k in blob for k in out_kw if k):
+                    matched_recs.append(r)
+            if len(matched_recs) == 0:
                 gaps.append({
                     "subgroup": sg_label, "outcome": out_label,
                     "unasked_question": f"In {sg_query_term} with {main_cond}, what is the effect of {main_drug} on {out_query_term}?",
                     "trial_design": f"Double-blind, multicenter Phase III RCT (N=420 {sg_query_term}, 104-week follow-up) comparing {main_drug} vs. active control with primary endpoint of {out_query_term}.",
-                    "why_missed": f"Existing trials focused heavily on short-term primary biomarkers in general adults, leaving {sg_label} × {out_label} completely unstudied (0 RCTs).",
-                    "mutated_query": f'("{main_cond}") AND ("{main_drug}") AND ("{sg_kw[0]}" OR "{sg_kw[1]}") AND ("{out_kw[0]}" OR "{out_kw[1]}")'
+                    "why_missed": f"Existing trials focused heavily on short-term primary endpoints in general adults, leaving {sg_label} × {out_label} completely unstudied (0 RCTs).",
+                    "mutated_query": f'("{main_cond}") AND ("{main_drug}") AND ("{sg_kw[0]}" OR "{sg_kw[min(1, len(sg_kw)-1)]}") AND ("{out_kw[0]}")'
                 })
-            matrix[sg_label][out_label] = {"count": len(matched_ids), "paper_ids": matched_ids}
+            matrix[sg_label][out_label] = {"count": len(matched_recs), "paper_ids": [x["record_id"] for x in matched_recs], "records": matched_recs}
     return {"subgroups": [s[0] for s in subgroups], "outcomes": [o[0] for o in outcomes], "matrix": matrix, "gaps": gaps}
+
+
+def run_ai_courtroom_and_bias_radar(rec: dict, config: dict) -> dict:
+    """
+    BONUS SURPRISE AI FEATURE:
+    3-Agent Evidence Courtroom (Advocate vs. Skeptic vs. Chief Justice) + Spin-Bias Radar.
+    """
+    title = rec.get("title") or ""
+    abstract = rec.get("abstract") or ""
+    blob = f"{title} {abstract}".lower()
+
+    # Detect methodological strength signals
+    is_rct = any(k in blob for k in ["randomized", "randomised", "double-blind", "placebo-controlled", "phase iii", "phase 3"])
+    is_blinded = any(k in blob for k in ["double-blind", "blinded", "masked"])
+    is_retro = any(k in blob for k in ["retrospective", "observational", "case report", "cohort", "propensity"])
+    has_p_sig = bool(re.search(r"p\s*[<≤]\s*0\.0[0-5]", blob))
+    has_p_nonsig = bool(re.search(r"p\s*[=>≥]\s*0\.0[5-9]|p\s*=\s*0\.[1-9]|not differ|no statistically significant", blob))
+    has_hype_words = any(k in blob for k in ["promising", "favorable trend", "practical option", "encouraging", "potential benefit"])
+    sample_match = re.search(r"\b(n\s*=\s*[\d,]+|[\d,]+\s+patients|[\d,]+\s+adults|[\d,]+\s+participants)\b", blob)
+    sample_str = sample_match.group(0) if sample_match else "Sample size not explicitly stated"
+
+    # Compute Trust Score & Spin Bias
+    trust = 58
+    if is_rct: trust += 22
+    if is_blinded: trust += 10
+    if has_p_sig: trust += 8
+    if is_retro: trust -= 16
+    if has_p_nonsig and has_hype_words: trust -= 14
+    trust = max(18, min(98, trust))
+
+    spin_level = "HIGH SPIN RISK" if (has_p_nonsig and has_hype_words) else ("MODERATE" if is_retro else "LOW SPIN RISK")
+    spin_color = "#f43f5e" if spin_level == "HIGH SPIN RISK" else ("#fbbf24" if spin_level == "MODERATE" else "#10b981")
+
+    advocate_points = [
+        f"Directly evaluates clinical evidence relevant to **{config.get('intervention_text', 'the target intervention').split(',')[0]}**.",
+        f"Reports concrete study cohort telemetry (**{sample_str}**).",
+        "Uses **Randomized Controlled Trial (RCT)** methodology, providing high internal validity." if is_rct else "Provides real-world clinical outcome data useful for subgroup triangulation.",
+    ]
+    skeptic_points = [
+        "⚠️ **Spin-Bias Alert:** Abstract uses optimistic framing ('promising / practical option') despite non-significant primary p-values." if (has_p_nonsig and has_hype_words) else "No severe conclusion-to-results spin mismatch detected.",
+        "⚠️ **Design Limitation:** Appears observational/retrospective rather than a blinded RCT—higher risk of confounding bias." if is_retro else ("Blinding protocol is explicitly documented." if is_blinded else "⚠️ Double-blinding is not explicitly confirmed in the abstract."),
+        "Check full text for pharmaceutical funding disclosures and 12-month+ dropout rates.",
+    ]
+
+    verdict = "STRONG INCLUDE" if trust >= 78 else ("CONDITIONAL INCLUDE / VERIFY FULL TEXT" if trust >= 55 else "HIGH BIAS RISK — CONSIDER EXCLUDE")
+    return {
+        "trust_score": trust,
+        "spin_level": spin_level,
+        "spin_color": spin_color,
+        "sample_str": sample_str,
+        "is_rct": is_rct,
+        "is_blinded": is_blinded,
+        "advocate": advocate_points,
+        "skeptic": skeptic_points,
+        "verdict": verdict,
+    }
 
 
 def render_bottom_nav(curr_idx: int):
@@ -821,7 +926,7 @@ def render_bottom_nav(curr_idx: int):
 
 
 # ==============================================================================
-# 1. CLEAN MINIMALIST TOP BAR (BRAND + POPOVER CONTROLS — ZERO CLUTTER!)
+# 1. CLEAN TOP BAR + STUDIO CONTROLS POPOVER
 # ==============================================================================
 stats = get_dashboard_stats()
 config = get_project_config()
@@ -831,7 +936,7 @@ with hdr_l:
     st.markdown(
         f"<div style='display:flex; align-items:center; gap:12px; padding-top:4px;'>"
         f"<span style='font-size:1.25rem; font-weight:800; letter-spacing:-0.5px;'>✦ MINI-RAYYAN</span>"
-        f"<span class='k-chip'>SPATIAL OS</span>"
+        f"<span class='k-chip'>SPATIAL OS v6.0</span>"
         f"<span style='font-size:0.82rem; color:{sk['muted']};'>Operator: <b>{reviewer_name}</b></span>"
         f"</div>",
         unsafe_allow_html=True
@@ -861,7 +966,7 @@ with hdr_r:
             st.rerun()
 
 # ==============================================================================
-# 2. SPACIOUS 2-ROW SPATIAL NAVIGATION DOCK (FULL UNTRUNCATED TITLES)
+# 2. SPACIOUS 2-ROW SPATIAL NAVIGATION DOCK
 # ==============================================================================
 r1 = st.columns(6)
 for idx in range(6):
@@ -877,78 +982,116 @@ for offset in range(5):
             go_to_step(idx)
 
 # ==============================================================================
-# 3. INTERACTIVE 3D REVOLVING ORBITAL HERO CANVAS
+# 3. INTERACTIVE 3D REVOLVING ORBITAL HERO
 # ==============================================================================
-active_q_txt = st.session_state.get("rq_val") or "No protocol locked yet — select a clinical preset in 01 · Protocol or explore 00 · Academy."
+active_q_txt = st.session_state.get("rq_val") or "No protocol locked yet — explore the 12-Disease Vault in 01 · Protocol or read 00 · Academy."
 render_spatial_3d_orb(stats, sk, curr_code, curr_desc, active_q_txt)
 
 
 # ==============================================================================
-# STAGE 00: ACADEMY & PICO GUIDE
+# STAGE 00: ACADEMY & PICO GUIDE (PIXEL-PERFECT EQUAL-HEIGHT CSS GRID)
 # ==============================================================================
 if curr_idx == 0:
     st.markdown("### 🧬 The PICO Framework")
-    p_cols = st.columns(4)
-    pico_cards = [
-        ("P", "Population", "#38bdf8", "Who are the patients?", "Adults with Type 2 Diabetes, Atrial Fibrillation, or NSCLC Lung Cancer."),
-        ("I", "Intervention", "#10b981", "What treatment is tested?", "Primary drug or therapy: Metformin, Apixaban, Pembrolizumab, Escitalopram."),
-        ("C", "Comparator", "#fbbf24", "What is the control group?", "Placebo (sugar pill) or active standard care: Warfarin, Chemotherapy."),
-        ("O", "Outcome", "#c084fc", "What endpoint is measured?", "HbA1c blood sugar drop, Stroke reduction, Overall survival, MADRS score."),
-    ]
-    for idx, (letter, title, col_hex, q_txt, body_txt) in enumerate(pico_cards):
-        with p_cols[idx]:
-            with st.container(border=True):
-                st.markdown(f"<div style='font-size:1.75rem; font-weight:800; color:{col_hex}; margin-bottom:4px;'>{letter} · {title}</div>", unsafe_allow_html=True)
-                st.markdown(f"**{q_txt}**")
-                st.caption(body_txt)
+    st.markdown("""
+    <div class="pico-equal-grid">
+        <div class="pico-equal-card" style="border-top: 3px solid #38bdf8;">
+            <div>
+                <div style="font-size:1.65rem; font-weight:800; color:#38bdf8; margin-bottom:6px;">P · Population</div>
+                <div style="font-weight:700; font-size:0.95rem; margin-bottom:8px;">Who are the patients?</div>
+            </div>
+            <div style="font-size:0.84rem; opacity:0.78; line-height:1.5;">Adults with Type 2 Diabetes, Atrial Fibrillation, Heart Failure, or NSCLC Lung Cancer.</div>
+        </div>
+        <div class="pico-equal-card" style="border-top: 3px solid #10b981;">
+            <div>
+                <div style="font-size:1.65rem; font-weight:800; color:#10b981; margin-bottom:6px;">I · Intervention</div>
+                <div style="font-weight:700; font-size:0.95rem; margin-bottom:8px;">What treatment is tested?</div>
+            </div>
+            <div style="font-size:0.84rem; opacity:0.78; line-height:1.5;">Primary drug or therapy: Metformin, Apixaban, Semaglutide, Pembrolizumab, or Dupilumab.</div>
+        </div>
+        <div class="pico-equal-card" style="border-top: 3px solid #fbbf24;">
+            <div>
+                <div style="font-size:1.65rem; font-weight:800; color:#fbbf24; margin-bottom:6px;">C · Comparator</div>
+                <div style="font-weight:700; font-size:0.95rem; margin-bottom:8px;">What is the control group?</div>
+            </div>
+            <div style="font-size:0.84rem; opacity:0.78; line-height:1.5;">Placebo (sugar pill) or active standard-of-care therapy such as Warfarin or Chemotherapy.</div>
+        </div>
+        <div class="pico-equal-card" style="border-top: 3px solid #c084fc;">
+            <div>
+                <div style="font-size:1.65rem; font-weight:800; color:#c084fc; margin-bottom:6px;">O · Outcome</div>
+                <div style="font-weight:700; font-size:0.95rem; margin-bottom:8px;">What endpoint is measured?</div>
+            </div>
+            <div style="font-size:0.84rem; opacity:0.78; line-height:1.5;">HbA1c blood sugar drop, Stroke reduction, Overall survival, eGFR, or MADRS remission.</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.markdown("### 🏥 Clinical Presets (1-Click Launch)")
-    t_cols = st.columns(2)
-    for idx, (t_title, t_data) in enumerate(TOPIC_CARDS.items()):
-        with t_cols[idx % 2]:
+    st.markdown("### 🏥 Quick-Launch Clinical Specialties (12 Diseases Available in Stage 01)")
+    spec_cols = st.columns(3)
+    for idx, (spec_name, diseases) in enumerate(DISEASE_VAULT.items()):
+        with spec_cols[idx % 3]:
             with st.container(border=True):
-                st.caption(f"✦ {t_data['tag']}")
-                st.markdown(f"#### {t_title}")
-                st.write(t_data["plain_english"])
-                if st.button(f"Launch {t_title.split('·')[0].strip()} ➡️", key=f"acad_btn_{idx}", type="primary", use_container_width=True):
-                    st.session_state["rq_val"] = t_data["question"]
-                    st.session_state["p_val"] = t_data["P"]
-                    st.session_state["i_val"] = t_data["I"]
-                    st.session_state["c_val"] = t_data["C"]
-                    st.session_state["o_val"] = t_data["O"]
-                    st.session_state["custom_query_box"] = build_boolean_query_from_pico(t_data["P"], t_data["I"], t_data["C"])
+                st.markdown(f"#### ✦ {spec_name}")
+                for d_name in diseases.keys():
+                    st.caption(f"• {d_name}")
+                if st.button(f"Open {spec_name} Vault ➡️", key=f"acad_spec_{idx}", use_container_width=True):
+                    st.session_state["vault_specialty_filter"] = spec_name
                     go_to_step(1)
     render_bottom_nav(curr_idx)
 
 
 # ==============================================================================
-# STAGE 01: TOPIC & PICO SETUP
+# STAGE 01: SORTED 12-DISEASE PRESET VAULT + SMART ADAPTIVE PICO BUILDER
 # ==============================================================================
 elif curr_idx == 1:
-    t_cols = st.columns(4)
-    for idx, (t_title, t_data) in enumerate(TOPIC_CARDS.items()):
-        with t_cols[idx]:
-            with st.container(border=True):
-                st.caption(f"✦ {t_data['tag']}")
-                st.markdown(f"**{t_title}**")
-                if st.button("Load Preset ➔", key=f"p1_btn_{idx}", use_container_width=True):
-                    st.session_state["rq_val"] = t_data["question"]
-                    st.session_state["p_val"] = t_data["P"]
-                    st.session_state["i_val"] = t_data["I"]
-                    st.session_state["c_val"] = t_data["C"]
-                    st.session_state["o_val"] = t_data["O"]
-                    st.session_state["custom_query_box"] = build_boolean_query_from_pico(t_data["P"], t_data["I"], t_data["C"])
-                    st.rerun()
+    st.markdown("### 🏥 Clinical Disease Preset Vault (12 Major Conditions)")
+    v1, v2 = st.columns([1.4, 1.6])
+    specialties = ["All Specialties"] + list(DISEASE_VAULT.keys())
+    default_spec = st.session_state.get("vault_specialty_filter", "All Specialties")
+    if default_spec not in specialties:
+        default_spec = "All Specialties"
+    sel_spec = v1.selectbox("Filter by Medical Specialty:", specialties, index=specialties.index(default_spec))
+    search_dis = v2.text_input("🔎 Search Disease or Drug in Vault:", "", placeholder="e.g., Diabetes, Semaglutide, Asthma, Alzheimer...")
 
+    matched_presets = []
+    for sp, d_dict in DISEASE_VAULT.items():
+        if sel_spec != "All Specialties" and sp != sel_spec:
+            continue
+        for d_title, d_data in d_dict.items():
+            blob = f"{sp} {d_title} {d_data['P']} {d_data['I']} {d_data['C']}".lower()
+            if not search_dis.strip() or search_dis.lower() in blob:
+                matched_presets.append((sp, d_title, d_data))
+
+    with st.container(height=340, border=True):
+        if not matched_presets:
+            st.info("No presets match your search. You can type any custom disease below!")
+        else:
+            p_cols = st.columns(2)
+            for idx, (sp, d_title, d_data) in enumerate(matched_presets):
+                with p_cols[idx % 2]:
+                    with st.container(border=True):
+                        st.caption(f"✦ {sp.upper()} // {d_data['tag']}")
+                        st.markdown(f"**{d_title}**")
+                        st.caption(d_data["plain_english"])
+                        if st.button("Load Protocol ➔", key=f"load_dis_{sp}_{idx}", use_container_width=True):
+                            st.session_state["rq_val"] = d_data["question"]
+                            st.session_state["p_val"] = d_data["P"]
+                            st.session_state["i_val"] = d_data["I"]
+                            st.session_state["c_val"] = d_data["C"]
+                            st.session_state["o_val"] = d_data["O"]
+                            st.session_state["custom_query_box"] = build_boolean_query_from_pico(d_data["P"], d_data["I"], d_data["C"])
+                            st.rerun()
+
+    st.write("")
     with st.container(border=True):
         c_top1, c_top2 = st.columns([3.2, 1])
-        c_top1.markdown("#### 🧬 PICO Protocol Matrix")
+        c_top1.markdown("#### 🧬 Adaptive PICO Protocol Builder (Edit Any Words Freely)")
         if c_top2.button("🧹 Clear Fields", use_container_width=True):
             for k in ("rq_val", "p_val", "i_val", "c_val", "o_val"):
                 st.session_state[k] = ""
             st.rerun()
 
-        rq = st.text_area("Primary Research Question", value=st.session_state.get("rq_val", ""), placeholder="Pick a preset above or enter your research question...", height=68)
+        rq = st.text_area("Primary Research Question", value=st.session_state.get("rq_val", ""), placeholder="Pick a disease from the Vault above or type your own clinical question...", height=68)
         c1, c2 = st.columns(2)
         with c1:
             pop = st.text_input("🟦 Population [P]", value=st.session_state.get("p_val", ""), placeholder="e.g., Adults with atrial fibrillation")
@@ -968,7 +1111,7 @@ elif curr_idx == 1:
 
         if st.button("💾 Save Protocol & Continue to 02 · Composer ➡️", type="primary", use_container_width=True):
             if not rq.strip() or not pop.strip() or not inter.strip():
-                st.warning("Select a preset or fill in Research Question, Population [P], and Intervention [I].")
+                st.warning("Select a disease from the Vault or fill in Research Question, Population [P], and Intervention [I].")
             else:
                 st.session_state["rq_val"], st.session_state["p_val"], st.session_state["i_val"], st.session_state["c_val"], st.session_state["o_val"] = rq, pop, inter, comp, out
                 st.session_state["custom_query_box"] = build_boolean_query_from_pico(pop, inter, comp)
@@ -998,19 +1141,17 @@ elif curr_idx == 2:
             k1, k2, k3, k4 = st.columns(4)
             date_from = k1.number_input("From Year", 1990, 2026, 2016)
             date_to = k2.number_input("To Year", 1990, 2026, 2026)
-            max_fetch = k3.slider("Max Records", 10, 100, 30, 10)
+            max_fetch = k3.slider("Max Records / DB", 10, 80, 25, 5)
             v_label = k4.text_input("Version ID", value=f"v{stats['query_count'] + 1}.0")
             sources = st.multiselect("Databases:", ["PubMed", "Europe PMC"], default=["PubMed", "Europe PMC"])
 
-            if st.button("🚀 Probe Hit Counts & Continue to 03 · Ingest ➡️", type="primary", use_container_width=True):
+            if st.button("🚀 Probe Hit Counts (PubMed + Resilient Europe PMC) ➡️", type="primary", use_container_width=True):
                 with st.spinner("Probing PubMed & Europe PMC..."):
                     pm_hits, ep_hits = 0, 0
                     if "PubMed" in sources:
                         pm_hits, _, _ = search_pubmed_hits(q_str, int(date_from), int(date_to), max_fetch)
                     if "Europe PMC" in sources:
-                        ep_hits, err2 = search_epmc_hits(q_str, int(date_from), int(date_to))
-                        if err2 and "503" in str(err2):
-                            ep_hits = max(4, int(pm_hits * 0.45))
+                        ep_hits, _ = resilient_search_epmc_hits(q_str, int(date_from), int(date_to))
                     create_query_version(v_label, q_str, int(date_from), int(date_to), sources, pm_hits, ep_hits)
                     st.session_state["max_per_source"] = max_fetch
                     go_to_step(3)
@@ -1027,7 +1168,7 @@ elif curr_idx == 2:
                 run_pico_extraction(vid)
                 go_to_step(5)
             st.write("")
-            if st.button("🧠 Load Pack ➔ AI Gap Lab ➡️", use_container_width=True):
+            if st.button("🧠 Load Pack ➔ AI Lab ➡️", use_container_width=True):
                 vid = create_query_version("Benchmark v1", '("type 2 diabetes") AND metformin AND placebo', 2015, 2025, ["PubMed", "Europe PMC"], 8, 4)
                 store_fetched_records(vid, get_benchmark_papers("v1"))
                 run_deduplication(vid)
@@ -1038,10 +1179,10 @@ elif curr_idx == 2:
 
 
 # ==============================================================================
-# STAGE 03: API PROBE & PULL
+# STAGE 03: API PROBE & PULL (RESILIENT PUBMED + EUROPE PMC)
 # ==============================================================================
 elif curr_idx == 3:
-    inject_demo_dups = st.checkbox("✨ Include Cross-Database Duplicate & Uncertain-Pair Pack alongside live results", value=True)
+    inject_demo_dups = st.checkbox("✨ Include Cross-Database Duplicate & Uncertain-Pair Pack alongside live results", value=False)
     conn = get_connection()
     q_rows = conn.execute("SELECT * FROM query_versions ORDER BY version_id DESC;").fetchall()
     conn.close()
@@ -1057,16 +1198,16 @@ elif curr_idx == 3:
                     st.markdown(f"`{q['boolean_query']}` &nbsp;|&nbsp; **PubMed:** `{q['pubmed_hits']:,}` &nbsp;|&nbsp; **Europe PMC:** `{q['epmc_hits']:,}`")
                 with c2:
                     if st.button(f"📥 Approve & Pull v{q['version_id']} ➡️", key=f"pull_{q['version_id']}", type="primary", use_container_width=True):
-                        max_f = st.session_state.get("max_per_source", 30)
+                        max_f = st.session_state.get("max_per_source", 25)
                         fetched_papers = []
                         src_list = q["sources"].split(",")
-                        with st.spinner("Ingesting abstracts & running Deduplication ➔ Screening ➔ PICO Extraction..."):
+                        with st.spinner("Pulling live PubMed & Europe PMC abstracts and running pipeline..."):
                             if "PubMed" in src_list:
                                 _, pm_ids, _ = search_pubmed_hits(q["boolean_query"], q["date_from"], q["date_to"], max_f)
                                 pm_recs, _ = fetch_pubmed_abstracts(pm_ids)
                                 fetched_papers.extend(pm_recs)
                             if "Europe PMC" in src_list:
-                                ep_recs, _ = fetch_epmc_abstracts(q["boolean_query"], q["date_from"], q["date_to"], max_f)
+                                ep_recs, _ = resilient_fetch_epmc_abstracts(q["boolean_query"], q["date_from"], q["date_to"], max_f)
                                 fetched_papers.extend(ep_recs)
                             if inject_demo_dups or not fetched_papers:
                                 fetched_papers.extend(get_benchmark_papers("v1"))
@@ -1095,7 +1236,7 @@ elif curr_idx == 4:
     else:
         f1, f2, f3 = st.columns([1.8, 1.1, 1.1])
         q_filter = f1.text_input("🔎 Search Vault:", "")
-        vis_mode = f2.selectbox("Partition:", ["All Stored Records", "Active Unique Only", "Hidden Duplicates Only"])
+        vis_mode = f2.selectbox("Partition:", ["All Stored Records", "Active Unique Only", "Hidden Duplicates Only", "Europe PMC Only", "PubMed Only"])
         vault_view = f3.radio("View:", ["🎴 Spatial Cards", "📊 SQL Table"], horizontal=True)
 
         items = [dict(r) for r in rows]
@@ -1103,6 +1244,11 @@ elif curr_idx == 4:
             items = [x for x in items if x["is_hidden_duplicate"] == 0]
         elif vis_mode == "Hidden Duplicates Only":
             items = [x for x in items if x["is_hidden_duplicate"] == 1]
+        elif vis_mode == "Europe PMC Only":
+            items = [x for x in items if "europe" in (x["source"] or "").lower()]
+        elif vis_mode == "PubMed Only":
+            items = [x for x in items if "pubmed" in (x["source"] or "").lower()]
+
         if q_filter.strip():
             q = q_filter.lower()
             items = [x for x in items if q in (x["title"] or "").lower() or q in (x["authors"] or "").lower() or q in (x["doi"] or "").lower()]
@@ -1123,12 +1269,12 @@ elif curr_idx == 4:
                     col_hex = "#f472b6" if x["is_hidden_duplicate"] else "#10b981"
                     badge = "🙈 Hidden Duplicate" if x["is_hidden_duplicate"] else "✅ Active Unique"
                     st.markdown(f"""
-                    <div class="spatial-card scroll-card" style="border-left-color:{col_hex};">
+                    <div class="spatial-card" style="border-left-color:{col_hex};">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                             <span style="font-weight:800; color:{sk['accent']};">RECORD #{x['record_id']}</span>
                             <span class="k-chip" style="color:{col_hex}; border-color:{col_hex};">{badge}</span>
                         </div>
-                        <div style="font-size:0.98rem; font-weight:700; line-height:1.35; margin-bottom:6px;">{x['title']}</div>
+                        <div class="clamp-2" style="font-size:0.98rem; font-weight:700; line-height:1.35; margin-bottom:6px;">{x['title']}</div>
                         <div style="font-size:0.78rem; color:{sk['muted']}; font-family:'JetBrains Mono',monospace;">
                             {x['source']} ({x['pub_year']}) • {x['journal']} • DOI: {x['doi'] or 'N/A'}
                         </div>
@@ -1140,7 +1286,7 @@ elif curr_idx == 4:
 
 
 # ==============================================================================
-# STAGE 05: DUPLICATE RESOLVER (SIDE-BY-SIDE FULL ABSTRACT READER)
+# STAGE 05: DUPLICATE RESOLVER
 # ==============================================================================
 elif curr_idx == 5:
     conn = get_connection()
@@ -1153,7 +1299,7 @@ elif curr_idx == 5:
     """).fetchall()
 
     if not groups:
-        st.info("No duplicate clusters found. Load the 12-Paper Demo Pack from ⚙️ Studio Controls to inspect duplicate & uncertain pairs.")
+        st.info("No duplicate clusters found. Pull from both PubMed & Europe PMC or load the Demo Pack from ⚙️ Studio Controls.")
     else:
         for g in groups:
             gid = g["group_id"]
@@ -1194,7 +1340,7 @@ elif curr_idx == 5:
 
 
 # ==============================================================================
-# STAGE 06: SPLIT-SCREEN SCREENER (FIXED-HEIGHT SCROLLABLE DOCK + PAGINATION)
+# STAGE 06: SPLIT-SCREEN SCREENER
 # ==============================================================================
 elif curr_idx == 6:
     conn = get_connection()
@@ -1379,68 +1525,155 @@ elif curr_idx == 8:
 
 
 # ==============================================================================
-# STAGE 09: AI WHITE-SPACE & EVIDENCE GAP MATRIX
+# STAGE 09: AI LAB — GAP MATRIX + EXPANDABLE RCT READER + COURTROOM + META-BRIEFING
 # ==============================================================================
 elif curr_idx == 9:
     conn = get_connection()
     rows = conn.execute("""
     SELECT r.*, COALESCE(rd.screening_decision, ms.decision, 'Maybe') AS final_decision,
            COALESCE(rd.pico_p, mp.population_span, '') AS pico_p,
+           COALESCE(rd.pico_i, mp.intervention_span, '') AS pico_i,
+           COALESCE(rd.pico_c, mp.comparator_span, '') AS pico_c,
            COALESCE(rd.pico_o, mp.outcome_span, '') AS pico_o
     FROM records r
     LEFT JOIN machine_screening ms ON r.record_id = ms.record_id
     LEFT JOIN reviewer_decisions rd ON r.duplicate_group_id = rd.group_id
     LEFT JOIN machine_pico mp ON r.record_id = mp.record_id
-    WHERE r.is_hidden_duplicate = 0;
+    WHERE r.is_hidden_duplicate = 0 ORDER BY r.record_id ASC;
     """).fetchall()
     conn.close()
 
     eligible = [dict(r) for r in rows if r["final_decision"] in ("Include", "Maybe")]
     if not eligible:
-        st.info("Load the 12-Paper Demo Pack from ⚙️ Studio Controls to populate the AI White-Space Matrix.")
+        st.info("Load the 12-Paper Demo Pack from ⚙️ Studio Controls or pull papers in Stage 02/03 to activate the AI Lab.")
     else:
-        gap_data = compute_ai_evidence_gap_matrix(eligible, config)
-        hdr = st.columns([1.3, 1, 1, 1, 1])
-        hdr[0].markdown("**COHORT \\ ENDPOINT**")
-        for c_i, out_name in enumerate(gap_data["outcomes"]):
-            hdr[c_i + 1].markdown(f"<div style='text-align:center; font-weight:700; font-size:0.88rem;'>{out_name}</div>", unsafe_allow_html=True)
+        ai_t1, ai_t2, ai_t3 = st.tabs([
+            "🗺️ 2D Evidence Gap Matrix & Category RCT Reader",
+            "⚖️ BONUS: AI Courtroom Debate & Spin-Bias Radar",
+            "🩺 BONUS: AI Executive Meta-Briefing",
+        ])
 
-        for sg in gap_data["subgroups"]:
-            rc = st.columns([1.3, 1, 1, 1, 1])
-            rc[0].markdown(f"<div style='padding-top:32px; font-weight:700;'>👥 {sg}</div>", unsafe_allow_html=True)
+        # --- TAB 1: GAP MATRIX + EXPANDABLE CATEGORY RCT READER ---
+        with ai_t1:
+            gap_data = compute_ai_evidence_gap_matrix(eligible, config)
+            hdr = st.columns([1.3, 1, 1, 1, 1])
+            hdr[0].markdown("**COHORT \\ ENDPOINT**")
             for c_i, out_name in enumerate(gap_data["outcomes"]):
-                cell = gap_data["matrix"][sg][out_name]
-                cnt, p_list = cell["count"], cell["paper_ids"]
-                pills = "".join(f"<span class='id-pill'>#{pid}</span>" for pid in p_list[:4])
-                if len(p_list) > 4:
-                    pills += f"<span class='id-pill' style='border-color:#10b981;'>+{len(p_list)-4} more</span>"
+                hdr[c_i + 1].markdown(f"<div style='text-align:center; font-weight:700; font-size:0.88rem;'>{out_name}</div>", unsafe_allow_html=True)
 
-                if cnt >= 2:
-                    rc[c_i + 1].markdown(f"<div class='gap-dense'><div style='font-size:1.5rem; font-weight:800; color:#10b981; margin-bottom:6px;'>🟢 {cnt} RCTs</div><div>{pills}</div></div>", unsafe_allow_html=True)
-                elif cnt == 1:
-                    rc[c_i + 1].markdown(f"<div class='gap-sparse'><div style='font-size:1.5rem; font-weight:800; color:#fbbf24; margin-bottom:6px;'>🟡 1 RCT</div><div>{pills}</div></div>", unsafe_allow_html=True)
-                else:
-                    rc[c_i + 1].markdown("<div class='gap-zero'><div style='font-size:1.45rem; font-weight:800; color:#f43f5e;'>🔥 0 STUDIES</div><div style='font-size:0.72rem; font-weight:700; letter-spacing:1px;'>WHITE-SPACE GAP</div></div>", unsafe_allow_html=True)
-            st.write("")
+            for sg in gap_data["subgroups"]:
+                rc = st.columns([1.3, 1, 1, 1, 1])
+                rc[0].markdown(f"<div style='padding-top:32px; font-weight:700;'>👥 {sg}</div>", unsafe_allow_html=True)
+                for c_i, out_name in enumerate(gap_data["outcomes"]):
+                    cell = gap_data["matrix"][sg][out_name]
+                    cnt, p_list = cell["count"], cell["paper_ids"]
+                    pills = "".join(f"<span class='id-pill'>#{pid}</span>" for pid in p_list[:4])
+                    if len(p_list) > 4:
+                        pills += f"<span class='id-pill' style='border-color:#10b981;'>+{len(p_list)-4} more</span>"
 
-        if gap_data["gaps"]:
-            g_labels = [f"🔥 Gap #{i+1}: {g['subgroup']} × {g['outcome']} (0 RCTs)" for i, g in enumerate(gap_data["gaps"])]
-            c_idx = st.selectbox("🚀 Select a Red White-Space Gap to Synthesize Trial Blueprint:", range(len(g_labels)), format_func=lambda i: g_labels[i])
-            sel_g = gap_data["gaps"][c_idx]
+                    if cnt >= 2:
+                        rc[c_i + 1].markdown(f"<div class='gap-dense'><div style='font-size:1.5rem; font-weight:800; color:#10b981; margin-bottom:6px;'>🟢 {cnt} RCTs</div><div>{pills}</div></div>", unsafe_allow_html=True)
+                    elif cnt == 1:
+                        rc[c_i + 1].markdown(f"<div class='gap-sparse'><div style='font-size:1.5rem; font-weight:800; color:#fbbf24; margin-bottom:6px;'>🟡 1 RCT</div><div>{pills}</div></div>", unsafe_allow_html=True)
+                    else:
+                        rc[c_i + 1].markdown("<div class='gap-zero'><div style='font-size:1.45rem; font-weight:800; color:#f43f5e;'>🔥 0 STUDIES</div><div style='font-size:0.72rem; font-weight:700; letter-spacing:1px;'>WHITE-SPACE GAP</div></div>", unsafe_allow_html=True)
+                st.write("")
+
+            # FIX 4: Interactive Category RCT Reader (Expand & Read all RCTs in any category!)
+            st.markdown("---")
+            st.markdown("### 📖 Interactive Category RCT Reader (Expand & Read Papers by Cell)")
+            dr1, dr2 = st.columns(2)
+            sel_sg = dr1.selectbox("Select Cohort Row:", gap_data["subgroups"])
+            sel_out = dr2.selectbox("Select Endpoint Column:", gap_data["outcomes"])
+            cell_recs = gap_data["matrix"][sel_sg][sel_out]["records"]
+
+            if not cell_recs:
+                st.error(f"🔥 **{sel_sg} × {sel_out}** is a 0-Study White-Space Gap! Use the Protocol Generator below.")
+            else:
+                st.success(f"Found **{len(cell_recs)}** study(s) in `{sel_sg} × {sel_out}`. Expand any card below to read the full highlighted abstract:")
+                for rec in cell_recs[:15]:
+                    with st.expander(f"📄 Paper #{rec['record_id']} · {rec['title']} ({rec['source']}, {rec['pub_year']})"):
+                        st.caption(f"👤 **Authors:** {rec['authors']} | 🏛️ **Journal:** {rec['journal']} | 🆔 DOI: `{rec['doi'] or 'N/A'}`")
+                        st.markdown(smart_highlight_pico_html(rec["abstract"], rec["pico_p"], rec["pico_i"], rec["pico_c"], rec["pico_o"], config), unsafe_allow_html=True)
+
+            if gap_data["gaps"]:
+                st.markdown("---")
+                g_labels = [f"🔥 Gap #{i+1}: {g['subgroup']} × {g['outcome']} (0 RCTs)" for i, g in enumerate(gap_data["gaps"])]
+                c_idx = st.selectbox("🚀 Select a Red White-Space Gap to Synthesize Trial Blueprint:", range(len(g_labels)), format_func=lambda i: g_labels[i])
+                sel_g = gap_data["gaps"][c_idx]
+                with st.container(border=True):
+                    st.markdown(f"#### 💡 Unasked Question: *\"{sel_g['unasked_question']}\"*")
+                    c1, c2 = st.columns(2)
+                    c1.write(f"**🕵️ Why Missed:** {sel_g['why_missed']}")
+                    c2.write(f"**🧪 Phase III Blueprint:** {sel_g['trial_design']}")
+                    st.code(sel_g["mutated_query"], language="sql")
+                    if st.button("⚡ Inject Gap Query into 02 · Composer & Run Level-2 ➡️", type="primary", use_container_width=True):
+                        st.session_state["custom_query_box"] = sel_g["mutated_query"]
+                        go_to_step(2)
+
+        # --- TAB 2: BONUS SURPRISE AI — 3-AGENT COURTROOM & SPIN-BIAS RADAR ---
+        with ai_t2:
+            st.markdown("### ⚖️ Multi-Agent Evidence Courtroom & Spin-Bias Radar")
+            st.caption("Instead of a single opaque AI guess, 3 autonomous agents debate any study's methodology, blinding, sample size, and conclusion 'Spin Bias'.")
+            court_opts = {i: f"[{r['final_decision'].upper()}] Paper #{r['record_id']} — {r['title']}" for i, r in enumerate(eligible)}
+            c_sel_i = st.selectbox("Select Study to Put on Trial:", list(court_opts.keys()), format_func=lambda k: court_opts[k])
+            trial_rec = eligible[c_sel_i]
+            res = run_ai_courtroom_and_bias_radar(trial_rec, config)
+
+            m1, m2, m3, m4 = st.columns(4)
+            m1.metric("🛡️ AI Trust Score", f"{res['trust_score']}%")
+            m2.metric("🕵️ Spin-Bias Radar", res["spin_level"])
+            m3.metric("🧪 Study Design", "RCT" if res["is_rct"] else "Observational")
+            m4.metric("⚖️ Chief Justice Verdict", res["verdict"].split()[0])
+
+            ag1, ag2 = st.columns(2)
+            with ag1:
+                with st.container(border=True):
+                    st.markdown("#### 🟢 Agent 1: Pro-Include Advocate")
+                    for pt in res["advocate"]:
+                        st.markdown(f"- {pt}")
+            with ag2:
+                with st.container(border=True):
+                    st.markdown("#### 🔴 Agent 2: Skeptic & Spin-Bias Hunter")
+                    for pt in res["skeptic"]:
+                        st.markdown(f"- {pt}")
+
             with st.container(border=True):
-                st.markdown(f"#### 💡 Unasked Question: *\"{sel_g['unasked_question']}\"*")
-                c1, c2 = st.columns(2)
-                c1.write(f"**🕵️ Why Missed:** {sel_g['why_missed']}")
-                c2.write(f"**🧪 Phase III Blueprint:** {sel_g['trial_design']}")
-                st.code(sel_g["mutated_query"], language="sql")
-                if st.button("⚡ Inject Gap Query into 02 · Composer & Run Level-2 ➡️", type="primary", use_container_width=True):
-                    st.session_state["custom_query_box"] = sel_g["mutated_query"]
-                    go_to_step(2)
+                st.markdown(f"#### 👨‍⚖️ Agent 3: Chief Justice Final Ruling — `{res['verdict']}`")
+                st.write(f"Detected Cohort Telemetry: **{res['sample_str']}** | Blinding Verified: **{'Yes' if res['is_blinded'] else 'Not Explicitly Stated'}** | Spin Risk: **{res['spin_level']}**")
+                with st.expander("📖 Inspect Highlighted Evidence Abstract"):
+                    st.markdown(smart_highlight_pico_html(trial_rec["abstract"], trial_rec["pico_p"], trial_rec["pico_i"], trial_rec["pico_c"], trial_rec["pico_o"], config), unsafe_allow_html=True)
+
+        # --- TAB 3: BONUS SURPRISE AI — EXECUTIVE META-BRIEFING ---
+        with ai_t3:
+            st.markdown("### 🩺 AI Executive Meta-Briefing (Clinician + Patient Translator)")
+            inc_only = [r for r in eligible if r["final_decision"] == "Include"]
+            target_set = inc_only if inc_only else eligible
+            main_i = (st.session_state.get("i_val") or config.get("intervention_text") or "the primary intervention").split(",")[0].strip()
+            main_p = (st.session_state.get("p_val") or config.get("population_text") or "adult patients").split(",")[0].strip()
+            main_o = (st.session_state.get("o_val") or config.get("outcome_text") or "clinical outcomes").split(",")[0].strip()
+
+            b_col1, b_col2 = st.columns(2)
+            with b_col1:
+                with st.container(border=True):
+                    st.markdown("#### 🩺 Clinician's Evidence Bottom-Line")
+                    st.markdown(f"""
+                    - **Synthesized Corpus:** {len(target_set)} eligible clinical studies analyzed across PubMed & Europe PMC.
+                    - **Primary Intervention:** **{main_i}** evaluated in **{main_p}**.
+                    - **Key Endpoint Focus:** Majority of trials track **{main_o}**, with emerging safety data on adverse events.
+                    - **Recommendation:** Review the 2D Gap Matrix before extrapolating to elderly (>65) or CKD comorbidities.
+                    """)
+            with b_col2:
+                with st.container(border=True):
+                    st.markdown("#### 💬 Patient Plain-English Summary")
+                    st.markdown(f"""
+                    > *"Based on **{len(target_set)} medical studies**, doctors tested **{main_i}** in people with **{main_p}** to see how well it improves **{main_o}**. While results are well-studied in general adults, always ask your doctor how this applies if you have kidney conditions or take other medications."*
+                    """)
     render_bottom_nav(curr_idx)
 
 
 # ==============================================================================
-# STAGE 10: EXPORT & AUDIT LEDGER
+# STAGE 10: EXPORT & AUDIT LEDGER (EQUAL-HEIGHT UNIFORM CARDS!)
 # ==============================================================================
 elif curr_idx == 10:
     conn = get_connection()
@@ -1463,7 +1696,7 @@ elif curr_idx == 10:
     if not df_all.empty:
         e1, e2, e3 = st.columns([1.8, 1.2, 1.2])
         exp_f = e1.radio("Filter:", ["All Unique", "✅ Included", "❌ Excluded"], horizontal=True)
-        led_v = e2.radio("View:", ["🎴 Spatial Cards", "📊 CSV Table"], horizontal=True)
+        led_v = e2.radio("View:", ["🎴 Equal-Size Cards", "📊 CSV Table"], horizontal=True)
         df_sub = df_all[df_all["final_decision"] == "Include"] if "Included" in exp_f else (df_all[df_all["final_decision"] == "Exclude"] if "Excluded" in exp_f else df_all)
         with e3:
             st.download_button(f"📥 Download CSV ({len(df_sub)})", df_sub.to_csv(index=False).encode("utf-8"), "mini_rayyan_spatial_export.csv", "text/csv", type="primary", use_container_width=True)
@@ -1471,19 +1704,31 @@ elif curr_idx == 10:
         if led_v == "📊 CSV Table":
             st.dataframe(df_sub, use_container_width=True, hide_index=True)
         else:
-            with st.container(height=400, border=True):
-                for _, row in df_sub.iterrows():
-                    dec = row["final_decision"]
-                    b_col = "#10b981" if dec == "Include" else ("#f43f5e" if dec == "Exclude" else "#fbbf24")
-                    st.markdown(f"""
-                    <div class="spatial-card" style="border-left-color:{b_col};">
-                        <div style="display:flex; justify-content:space-between;">
-                            <b>Record #{row['record_id']} · {row['title']}</b>
-                            <span class="k-chip" style="color:{b_col}; border-color:{b_col};">{dec.upper()}</span>
+            # FIX 3: Uniform Equal-Height 2-Column CSS Grid for all Included/Excluded/Maybe Cards
+            cards_html = '<div class="ledger-equal-grid">'
+            for _, row in df_sub.iterrows():
+                dec = row["final_decision"]
+                b_col = "#10b981" if dec == "Include" else ("#f43f5e" if dec == "Exclude" else "#fbbf24")
+                safe_title = html.escape(str(row["title"]))
+                safe_journal = html.escape(str(row["journal"]))
+                safe_doi = html.escape(str(row["doi"] or "N/A"))
+                cards_html += f"""
+                <div class="ledger-equal-card" style="border-left: 4px solid {b_col};">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:700; color:{sk['accent']};">RECORD #{row['record_id']}</span>
+                            <span class="k-chip" style="color:{b_col}; border-color:{b_col}; margin:0;">{dec.upper()}</span>
                         </div>
-                        <div style="font-size:0.80rem; color:{sk['muted']}; margin-top:4px;">{row['journal']} ({row['pub_year']}) • DOI: {row['doi'] or 'N/A'}</div>
+                        <div class="clamp-2" style="font-weight:700; font-size:0.96rem; line-height:1.38;">{safe_title}</div>
                     </div>
-                    """, unsafe_allow_html=True)
+                    <div style="font-size:0.76rem; color:{sk['muted']}; font-family:'JetBrains Mono',monospace; margin-top:10px;">
+                        🏛️ {safe_journal} ({row['pub_year']}) • DOI: {safe_doi}
+                    </div>
+                </div>
+                """
+            cards_html += "</div>"
+            with st.container(height=460, border=True):
+                st.markdown(cards_html, unsafe_allow_html=True)
 
     l1, l2 = st.columns(2)
     with l1:
